@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/08 16:55:10 by hgutterr          #+#    #+#              #
-#    Updated: 2025/04/08 16:55:12 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/03/16 18:18:33 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,19 +42,19 @@ NAME = libft.a
 all: $(NAME)
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -I $(DEPS) -c $< -o $@
+	@$(CC) $(CFLAGS) -I $(DEPS) -c $< -o $@
 
 $(OBJDIR):
-	mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+	@ar rcs $(NAME) $(OBJS)
 
 bonus: .bonus
 
 .bonus: $(BONUS_OBJS) $(NAME)
 	@echo "Adding bonus objects to $(NAME)..."
-	ar r $(NAME) $(BONUS_OBJS)
+	@ar r $(NAME) $(BONUS_OBJS)
 	@touch .bonus
 
 clean:

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../libft/libft.h"
+#include "../inc/cub3d.h"
 
 void	free_char_arr(char **arr, int i)
 {
@@ -87,47 +88,105 @@ char	**read_map(int fd)
 //white spaces teem que estar rodeados por walls.
 
 
-int	**get_spaces_coordinates(char **map)
+int	*get_player_coords(char **map)
 {
-	int	**space_coordenates;
+	int	*player_coord;
 	int	i;
 	int	j;
-	int	k;
-
-	space_coordenates = malloc(sizeof(int *) * 100);
-	if (!space_coordenates)
-		return (0);
-	i = 0;
-
-	while (i < 30)
-	{
-		space_coordenates[i] = malloc(sizeof(int) * 2);
-		if (!space_coordenates[i])
-			return (free_int_arr(space_coordenates, i), NULL);
-		i++;
-	}
+	int	count;
 
 	i = 0;
-	k = 0;
+	count = 0;
+	player_coord = malloc(sizeof(int) * 2);
 	while (map[i])
 	{
 		j = 0;
 		while (map[i][j])
 		{
-			if (map[i][j] == ' ')
+			if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
 			{
-				space_coordenates[k][0] = i;
-				space_coordenates[k][1] = j;
-				k++;
+				player_coord[0] = i; //y
+				player_coord[1] = j; //x
+				count++;
 			}
 			j++;
 		}
 		i++;
 	}
-	return (space_coordenates);
+	if (count != 1)
+		return NULL;
+	return (player_coord);
 }
 
+//check all 0 surrounding for spaces
 
+
+int	check_walls(char **map, int y, int x)
+{
+	int	count = 0;
+	if (map[y - 1][x] == '1' || map[y - 1][x] == '0') // North
+		count++;
+	if (map[y + 1][x] == '1' || map[y + 1][x] == '0') // South
+		count++;
+	if (map[y][x - 1] == '1' || map[y][x - 1] == '0') // West
+		count++;
+	if (map[y][x + 1] == '1' || map[y][x + 1] == '0') // East
+		count++;
+	if (count == 4)
+		return (1);
+	printf("[%d][%d] = %d\n", y, x, count);
+	return (0);
+}
+
+int	check_map(char **map)
+{
+	int		y = 1;
+	int		x = 1;
+	int		*player_coords;
+	
+	player_coords = get_player_coords(map);
+	if (!player_coords)
+		return (0);
+
+	map[player_coords[0]][player_coords[1]] = '0';
+	while(map[0][x] != '\0')
+	{
+		if(map[0][x] == '0')
+		{
+			printf("here1\n");
+			return (0);
+		}
+		x++;
+	}
+
+	while(map[y][0] != '\0')
+	{
+		if(map[y][0] == '0')
+		{
+			printf("here2\n");
+			return (0);
+		}
+		y++;
+	}
+
+	y = 1;
+	while (map[y])
+	{
+		x = 1;
+		while (map[y][x])
+		{
+			if (map[y][x] == '0' && check_walls(map, y, x) == 0)
+			{
+				printf("here3\n");
+				return (0);
+			}
+			x++;
+		}
+		y++;
+	}
+	map[player_coords[0]][player_coords[1]] = 'N';
+	return (1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -136,7 +195,7 @@ int main(int argc, char *argv[])
 	char	**map;
 
 	if (argc != 2)
-		return (0);
+		return (0);	
 
 	file = argv[1];
 	if (!(ft_strnstr(file, ".cub", ft_strlen(file))))
@@ -155,6 +214,10 @@ int main(int argc, char *argv[])
 			printf("%c", map[i][j]);
 		printf("\n");
 	}
+	if (check_map(map))
+		printf("Great map\n");
+	else
+		printf("Shit map\n");
 
 	return (0);
 }
