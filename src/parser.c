@@ -1,9 +1,4 @@
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "../libft/libft.h"
-#include "../inc/cub3d.h"
+#include <cub3d.h>
 
 void	free_char_arr(char **arr, int i)
 {

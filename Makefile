@@ -1,18 +1,31 @@
-
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
+#    Updated: 2026/03/16 21:26:16 by hgutterr         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
 NAME = cub3d
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-CFLAGS += -Iincludes -I$(LIBFT_DIR)
+CFLAGS += -Iinc -I$(LIBFT_DIR)
+MLX_FLAGS = -Lmlx -lmlx -lXext -lX11 -lm -lbsd 
+
 #CFLAGS += -I"$(shell brew --prefix readline)/include"
 
 #LDFLAGS = -L"$(shell brew --prefix readline)/lib"
 
-LIBFT_DIR = libft
+LIBFT_DIR = inc/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS = $(SRCDIR)/parser.c
+SRCS =	$(SRCDIR)/parser.c \
+		$(SRCDIR)/exec.c
 
 
 SRCDIR = src
@@ -23,14 +36,15 @@ OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+	@echo "Ready!"
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -Imlx -c $< -o $@
 
 clean:
 	@rm -rf $(OBJDIR)
