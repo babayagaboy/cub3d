@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../libft/libft.h"
 
 void	free_char_arr(char **arr, int i)
 {
@@ -28,7 +29,6 @@ void	free_int_arr(int **arr, int i)
 	}
 	free(arr);
 }
-
 
 
 char	**read_map(int fd)
@@ -75,7 +75,7 @@ char	**read_map(int fd)
 			j++;
 			continue ;
 		}
-		map[k][l] = buff[j];
+		map[k][l]= buff[j];
 		j++;
 		l++;
 	}
@@ -103,7 +103,7 @@ int	**get_spaces_coordinates(char **map)
 	{
 		space_coordenates[i] = malloc(sizeof(int) * 2);
 		if (!space_coordenates[i])
-			return (free_int_arr(space_coordenates, i), 0);
+			return (free_int_arr(space_coordenates, i), NULL);
 		i++;
 	}
 
@@ -129,9 +129,6 @@ int	**get_spaces_coordinates(char **map)
 
 
 
-
-
-
 int main(int argc, char *argv[])
 {
 	char	*file;
@@ -142,11 +139,13 @@ int main(int argc, char *argv[])
 		return (0);
 
 	file = argv[1];
+	if (!(ft_strnstr(file, ".cub", ft_strlen(file))))
+		return (0);
 	fd = open(file, O_RDONLY);
 	if (fd == -1) 
 	{
 		printf("Error. Could not open file\n");
-		return 0;
+		return (0);
 	}
 	printf("File found, fd is %d\n", fd);
 	map = read_map(fd);
