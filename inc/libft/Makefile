@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+         #
+#    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/08 16:55:10 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/16 18:18:33 by myivanov         ###   ########.fr        #
+#    Updated: 2026/03/17 16:49:33 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ SRCS = \
 	ft_isprint.c ft_memchr.c ft_strdup.c ft_substr.c \
 	ft_itoa.c ft_memcmp.c ft_striteri.c ft_tolower.c \
 	ft_memcpy.c ft_strjoin.c ft_toupper.c \
-	ft_memmove.c ft_strlcat.c
+	ft_memmove.c ft_strlcat.c ft_isempty.c
 
 BONUS_SRCS = \
 	ft_lstadd_back.c ft_lstadd_front.c ft_lstnew.c \

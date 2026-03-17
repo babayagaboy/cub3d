@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/16 21:26:16 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/03/17 16:53:51 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME = cub3d
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 CFLAGS += -Iinc -I$(LIBFT_DIR)
-MLX_FLAGS = -Lmlx -lmlx -lXext -lX11 -lm -lbsd 
+#MLX_FLAGS = -Lmlx -lmlx -lXext -lX11 -lm -lbsd 
 
 #CFLAGS += -I"$(shell brew --prefix readline)/include"
 
@@ -25,7 +25,7 @@ LIBFT_DIR = inc/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS =	$(SRCDIR)/parser.c \
-		$(SRCDIR)/exec.c
+
 
 
 SRCDIR = src

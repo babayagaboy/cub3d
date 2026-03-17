@@ -7,7 +7,7 @@
 # include <stdlib.h>
 
 # include "libft/libft.h"
-# include "../mlx/mlx.h"
+//# include "../mlx/mlx.h"
 
 # define WIDTH 800
 # define HEIGHT 600
