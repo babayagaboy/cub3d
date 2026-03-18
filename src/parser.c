@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/17 18:28:59 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/18 17:18:38 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,71 +160,164 @@ size_t	ft_nl_strlen(char *str)
 	return (i);
 }
 
+int	f_c_type(char *str)
+{
+	if (!ft_strncmp(str, "./", 2))
+		return (2); //file type
+	else
+		return (1); //RGB type
+}
 
-/*int	check_all_elements_present(char **map, int *y)
+int	check_rbg(char *str)
+{
+	char **splited;
+	char	c[] = {',', '\0'};
+	int	i;
+	int	j;
+	int	result;
+
+	splited = ft_split(str, c);
+	if (!splited)
+		return (0);
+	i = 0;
+	while (splited[i])
+	{
+		j = 0;
+		while (splited[i][j])
+		{
+			if (!(splited[i][j] >= '0' && splited[i][j] <= '9'))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	i = 0;
+	while (splited[i])
+	{	
+		result = ft_atoi(splited[i]);
+		if (result < 0 || result > 255)
+			return (0);
+		i++;
+	}
+	if (i != 3)
+		return (0);
+	return (1);
+}
+
+
+int	check_elements(char **elements)
 {
 	int	elements_found;
 	int	opened;
 	int	open_test;
+	int	y;
+	int f_c_element = 0;
+	int	type;
 
+	y = 0;
 	elements_found = 0;
 	opened = 0;
-	while (map[*y])
+	while (elements[y])
 	{
-		if (ft_strnstr(map[*y], "NO", ft_nl_strlen(map[*y])) && ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])))
+		if (ft_strncmp(elements[y], "NO", 2) == 0 && elements[y][2] == ' ')
 		{
 			elements_found += 1;
-			open_test = open(ft_substr(map[*y], ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])), ft_nl_strlen(map[*y])), O_RDONLY);
-			if (open_test > 0)
+			open_test = open(&elements[y][5], O_RDONLY);
+			if (open_test >= 0)
+			{
 				opened += 1;
-			y++;
-			continue;
-		}
-		if (ft_strnstr(map[*y], "SO", ft_nl_strlen(map[*y])) && ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])))
-		{
-			elements_found += 2;
-			open_test = open(ft_substr(map[*y], ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])), ft_nl_strlen(map[*y])), O_RDONLY);
-			if (open_test > 0)
-				opened += 2;
+				close(open_test);
+			}
 			y++;
 			continue;
 			
 		}
-		if (ft_strnstr(map[*y], "WE", ft_nl_strlen(map[*y])) && ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])))
+		if (ft_strncmp(elements[y], "SO", 2) == 0 && elements[y][2] == ' ')
+		{
+			elements_found += 2;
+			open_test = open(&elements[y][5], O_RDONLY);
+			if (open_test >= 0)
+			{
+				opened += 2;
+				close(open_test);
+			}
+			y++;
+			continue;
+		}
+		if (ft_strncmp(elements[y], "WE", 2) == 0 && elements[y][2] == ' ')
 		{
 			elements_found += 3;
-			open_test = open(ft_substr(map[*y], ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])), ft_nl_strlen(map[*y])), O_RDONLY);
-			if (open_test > 0)
+			open_test = open(&elements[y][5], O_RDONLY);
+			if (open_test >= 0)
+			{
 				opened += 3;
+				close(open_test);
+			}
 			y++;
 			continue;
 		}
-		if (ft_strnstr(map[*y], "EA", ft_nl_strlen(map[*y])) && ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])))
+		if (ft_strncmp(elements[y], "EA", 2) == 0 && elements[y][2] == ' ')
 		{
 			elements_found += 4;
-			open_test = open(ft_substr(map[*y], ft_strnstr(map[*y], "./", ft_nl_strlen(map[*y])), ft_nl_strlen(map[*y])), O_RDONLY);
-			if (open_test > 0)
+			open_test = open(&elements[y][5], O_RDONLY);
+			if (open_test >= 0)
+			{
 				opened += 4;
+				close(open_test);
+			}
 			y++;
 			continue;
 		}
-		if (ft_strnstr(map[*y], "F", ft_nl_strlen(map[*y])))
+		if (ft_strncmp(elements[y], "F", 1) == 0 && elements[y][1] == ' ')
 		{
 			elements_found += 5;
+			type = f_c_type(&elements[y][2]);
+			if (type == 2)
+			{
+				open_test = open(&elements[y][4], O_RDONLY);
+				if (open_test >= 0)
+				{
+					f_c_element += 1;
+					close(open_test);
+				}
+			}
+			else
+			{
+				if (check_rbg(&elements[y][2]))
+					f_c_element += 1;
+			}
+			y++;
+			continue;
+			
+		}
+		if (ft_strncmp(elements[y], "C", 1) == 0 && elements[y][1] == ' ')
+		{
+			elements_found += 6;
+			type = f_c_type(&elements[y][2]);
+			if (type == 2)
+			{
+				open_test = open(&elements[y][4], O_RDONLY);
+				if (open_test >= 0)
+				{
+					f_c_element += 2;
+					close(open_test);
+				}
+				
+			}
+			else
+			{
+				if (check_rbg(&elements[y][2]))
+					f_c_element += 2;
+			}
 			y++;
 			continue;
 		}
-		if (ft_strnstr(map[*y], "C", ft_nl_strlen(map[*y])))
-		{
-			elements_found += 6;
-			y++;
-			break;
-		}
+		y++;
 	}
-	if (elements_found == 21 && opened == 10)
-		return (1);
+	if (elements_found == 21 && opened == 10 && f_c_element == 3)
+			return (1);
 	return (0);
-}*/
+}
 
 
 
@@ -293,62 +386,56 @@ int	is_space(char c)
 }
 
 char	*looksmax_string(char *str)
-{
-	int		i;
-	int		start2;
-	int		len1;
-	int		len2;
-	int		j;
-	char	*str1;
-	char	*str2;
+{	
+	char	**splited;
 	char	*cleaned;
+	int		size_to_malloc;
+	int		k;
+	int		l;
+	int		total_chars;
+	int		m;
+	char	c[] = {' ', '\t', '\b', '\f', '\r', '\0'};
 
 	if (!str)
 		return (NULL);
 
-	i = 0;
-	while (str[i] && is_space(str[i]))
-		i++;
-	start2 = i;
+	splited = ft_split(str, c);
+	if (!splited)
+		return (NULL);
 
-	while (str[i] && !is_space(str[i]))
-		i++;
-	len1 = i - start2;
-
-	while (str[i] && is_space(str[i]))
-		i++;
-	start2 = i;
-
-	while (str[i] && !is_space(str[i]))
-		i++;
-	len2 = i - start2;
-
-	str1 = malloc(len1 + 2);
-	str2 = malloc(len2 + 1);
-	if (!str1 || !str2)
-		return (free(str1), free(str2), NULL);
-
-	i = 0;
-	while (i < len1)
+	k = 0;
+	total_chars = 0;
+	while (splited[k])
 	{
-		str1[i] = str[i];
-		i++;
+		l = 0;
+		while (splited[k][l])
+			l++;
+		total_chars += l;
+		k++;
 	}
-	str1[i++] = ' ';
-	str1[i] = '\0';
 
-	j = 0;
-	while (j < len2)
+	if (k > 0)
+		size_to_malloc = total_chars + (k - 1);
+	else
+		size_to_malloc = 0;
+
+	cleaned = malloc(sizeof(char) * (size_to_malloc + 1));
+	if (!cleaned)
+		return (free_char_arr(splited, k), NULL);
+
+	k = 0;
+	m = 0;
+	while (splited[k])
 	{
-		str2[j] = str[start2 + j];
-		j++;
+		l = 0;
+		while (splited[k][l])
+			cleaned[m++] = splited[k][l++];
+		if (splited[k + 1] && splited[k][--l] != ',')
+			cleaned[m++] = ' ';
+		k++;
 	}
-	str2[j] = '\0';
-
-	cleaned = ft_strjoin(str1, str2);
-	free(str1);
-	free(str2);
-	return (cleaned);
+	cleaned[m] = '\0';
+	return (free_char_arr(splited, k), cleaned);
 }
 
 
@@ -356,8 +443,6 @@ char	**get_elements(char **cub, int *y)
 {
 	char	**elements_file;
 	int	i;
-	int	j;
-	int	x;
 
 	elements_file = malloc(sizeof(char *) * 500);
 	if (!elements_file)
@@ -370,30 +455,25 @@ char	**get_elements(char **cub, int *y)
 			return (free_char_arr(elements_file, i), NULL);
 		i++;
 	}
-
 	i = 0;
 	int	stop = 0;
 	while (cub[*y])
 	{
-		x = 0;
-		j = 0;
-		while (cub[*y][x])
+		if (cub[*y] && (ft_isempty(cub[*y]) || cub[*y][0] == '\n'))
 		{
-			if (ft_strnstr(ft_findspace(cub[*y]), "C", 1))
-				stop = 1;
-			elements_file[i] = ft_strdup(ft_findspace(cub[*y]));
-			if (!elements_file[i])
-				return (free_char_arr(elements_file, i), NULL);
-			j++;
-			x++;
+			(*y)++;
+			continue;
 		}
-		elements_file[i][j] = '\0';
+		if (ft_strnstr(ft_findspace(cub[*y]), "C", 1))
+			stop = 1;
+		elements_file[i] = looksmax_string(ft_findspace(cub[*y]));
+		if (!elements_file[i])
+			return (free_char_arr(elements_file, i), NULL);
 		(*y)++;
 		if (stop)
 			break ;
 		i++;
 	}
-	elements_file[i][j] = '\0';
 	elements_file[i + 1] = NULL;
 	return (elements_file);
 }
@@ -504,10 +584,20 @@ int main(int argc, char *argv[])
 			printf("%c", map[i][j]);
 		printf("\n");
 	}
-	/*if (check_map(cub))
-		printf("Great map\n");
+	
+	
+	if (!check_elements(elements_file))
+	{
+		printf("Elements file faild\n");
+		return (0);
+	}
+	if (!check_map(map))
+	{
+		printf("Map file faild\n");
+		return (0);
+	}
 	else
-		printf("Shit map\n");*/
+		printf("GOOD GOY\n");
 
 	return (0);
 }

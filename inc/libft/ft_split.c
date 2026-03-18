@@ -3,21 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:24:46 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/04/14 15:24:47 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/03/18 14:47:09 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	is_separator(char a, char c)
+static int	is_separator(char a, char c[])
 {
-	return (a == c);
+	int	i;
+
+	i = 0;
+	while (c[i])
+	{
+		if (a == c[i])
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-static int	ft_wordcount(char *s, char c)
+static int	ft_wordcount(char *s, char c[])
 {
 	int	i;
 	int	words;
@@ -38,7 +47,7 @@ static int	ft_wordcount(char *s, char c)
 	return (words);
 }
 
-static char	*ft_splitter(char *s, char c)
+static char	*ft_splitter(char *s, char c[])
 {
 	char	*word;
 	int		i;
@@ -59,7 +68,7 @@ static char	*ft_splitter(char *s, char c)
 	return (word);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c[])
 {
 	char	**str_splitted;
 	char	*s_ptr;
