@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/18 17:18:38 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/18 18:04:21 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,7 @@ int	check_map(char **map)
 		}
 		y++;
 	}
-	map[player_coords[0]][player_coords[1]] = player_orientation; //to do (dir_y, dir_x) = get_player_orientation()
+	map[player_coords[0]][player_coords[1]] = player_orientation; 	//to do (dir_y, dir_x) = get_player_orientation()
 	return (1);
 }
 char	*ft_findspace(char *str)
@@ -516,7 +516,7 @@ char	**get_map(char **cub, int *y)
 		i++;
 	}
 	map[i][j] = '\0';
-	map[i] = NULL;
+	map[i + 1] = NULL;
 	return map;
 }
 
