@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:15:34 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/18 14:44:11 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/20 13:13:25 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdint.h>
+# include "get_next_line.h"
 
 typedef struct s_list
 {
