@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/24 16:51:41 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/24 18:27:51 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,45 +26,6 @@ size_t	ft_nl_strlen(char *str)
 		i++;
 	return (i);
 }
-
-void	free_char_arr(char **arr, int i)
-{
-	int	j;
-
-	j = 0;
-	while (j < i)
-	{
-		free(arr[j]);
-		j++;
-	}
-	free(arr);
-}
-
-void	free_int_arr(int **arr, int i)
-{
-	int	j;
-
-	j = 0;
-	while (j < i)
-	{
-		free(arr[j]);
-		j++;
-	}
-	free(arr);
-}
-
-void	free_memory(char **arr)
-{
-	int	i;
-
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free (arr);
-}
-
 
 char	**read_file(char *file)
 {
@@ -196,10 +157,6 @@ int	check_walls(char **map, int y, int x)
 	printf("[%d][%d] = %d\n", y, x, count);
 	return (0);
 }
-
-
-
-
 
 int	f_c_type(char *str)
 {
@@ -367,9 +324,7 @@ int	check_elements(char **elements)
 	return (0);
 }
 
-
-
-int	check_map(char **map)
+int	check_map(char **map, t_player *p)
 {
 	int		y = 0;
 	int		x = 0;
@@ -412,6 +367,8 @@ int	check_map(char **map)
 		y++;
 	}
 	map[player_coords[0]][player_coords[1]] = player_orientation; 	//to do (dir_y, dir_x) = get_player_orientation()
+	p->pos_y = (double)player_coords[0];
+	p->pos_x = (double)player_coords[1];
 	return (1);
 }
 char	*ft_findspace(char *str)
@@ -557,7 +514,6 @@ char	**get_map(char **cub, int *y)
 		count++;
 		k++;
 	}
-	printf("COUNT: %d\n", count);
 	map = ft_calloc((count + 1), sizeof(char *));
 	if (!map)
 		return (NULL);
@@ -576,92 +532,80 @@ char	**get_map(char **cub, int *y)
 	return map;
 }
 
-
-
-
-
-
-int main(int argc, char *argv[])
+int	parser(int argc, char *argv[], t_game *g)
 {
 	char	*file;
-	char	**cub;
-	char	**elements_file;
-	char	**map;
 	int	y;
-
+    
 	if (argc != 2)
-		return (0);	
-
+    return (0);	
+    
 	file = argv[1];
 	if (!(ft_strnstr(file, ".cub", ft_strlen(file))))
 		return (0);
-	
-	cub = read_file(file);
-	if (!cub)
-	{
-		printf("Cub failed!\n");
+        
+        g->cub = read_file(file);
+        if (!g->cub)
+        {
+            printf("Cub failed!\n");
 		return (0);
 	}
 	y = 0;
-	elements_file = get_elements(cub, &y);
-	if (!elements_file)
+	g->elements_file = get_elements(g->cub, &y);
+	if (!g->elements_file)
 	{
-		printf("elements_file failed!\n");
-		free_memory(cub);
+        printf("elements_file failed!\n");
+		free_memory(g->cub);
 		return (0);
 	}
-	map = get_map(cub, &y);
-	if (!map)
+	g->map = get_map(g->cub, &y);
+	if (!g->map)
 	{
-		printf("map failed!\n");
-		free_memory(cub);
-		free_memory(elements_file);
+        printf("map failed!\n");
+		free_memory(g->cub);
+		free_memory(g->elements_file);
 		return (0);
 	}
-
+    
 	printf(".CUB FILE:\n");
-	for (int i = 0; cub[i]; i++)
+	for (int i = 0; g->cub[i]; i++)
 	{
-		for (int j = 0; cub[i][j]; j++)
-			printf("%c", cub[i][j]);
+        for (int j = 0; g->cub[i][j]; j++)
+        printf("%c", g->cub[i][j]);
 		printf("\n");
 	}
 	printf("ELEMENTS_FILE:\n");
-	for (int i = 0; elements_file[i]; i++)
+	for (int i = 0; g->elements_file[i]; i++)
 	{
-		for (int j = 0; elements_file[i][j]; j++)
-			printf("%c", elements_file[i][j]);
+        for (int j = 0; g->elements_file[i][j]; j++)
+        printf("%c", g->elements_file[i][j]);
 		printf("\n");
 	}
 	printf("MAP:\n");
-	for (int i = 0; map[i]; i++)
+	for (int i = 0; g->map[i]; i++)
 	{
-		for (int j = 0; map[i][j]; j++)
-			printf("%c", map[i][j]);
+		for (int j = 0; g->map[i][j]; j++)
+        printf("%c", g->map[i][j]);
 		printf("\n");
 	}
-	
-	if (!check_elements(elements_file))
+	if (!check_elements(g->elements_file))
 	{
-		printf("Elements file faild\n");
-		free_memory(cub);
-		free_memory(elements_file);
-		free_memory(map);
+        printf("Elements file faild\n");
+		free_memory(g->cub);
+		free_memory(g->elements_file);
+		free_memory(g->map);
 		return (0);
 	}
-	if (!check_map(map))
+	if (!check_map(g->map, g->player))
 	{
-		printf("Map file faild\n");
-		free_memory(cub);
-		free_memory(elements_file);
-		free_memory(map);
+        printf("Map file faild\n");
+		free_memory(g->cub);
+		free_memory(g->elements_file);
+		free_memory(g->map);
 		return (0);
 	}
 	else
-		printf("GOOD BOY\n");
-	
-	free_memory(cub);
-	free_memory(elements_file);
-	free_memory(map);
-	return (0);
+    	printf("GOOD BOY\n");
+    free_memory(g->cub);
+	return (1);
 }

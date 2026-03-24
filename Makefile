@@ -3,40 +3,42 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/24 16:03:11 by myivanov         ###   ########.fr        #
+#    Updated: 2026/03/24 17:54:01 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3d
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-CFLAGS += -Iinc -I$(LIBFT_DIR)
-#MLX_FLAGS = -Lmlx -lmlx -lXext -lX11 -lm -lbsd 
-
-#CFLAGS += -I"$(shell brew --prefix readline)/include"
-
-#LDFLAGS = -L"$(shell brew --prefix readline)/lib"
-
-LIBFT_DIR = inc/libft
-LIBFT = $(LIBFT_DIR)/libft.a
-
-SRCS =	$(SRCDIR)/parser.c \
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -g
+CFLAGS		+= -Iinc -I$(LIBFT_DIR)
+MLX_DIR		= mlx
+MLX			= $(MLX_DIR)/libmlx.a
+MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 
+LIBFT_DIR	= inc/libft
+LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRCDIR = src
-OBJDIR = obj
+SRCS		=	$(SRCDIR)/parser.c	\
+				$(SRCDIR)/exec.c	\
+				$(SRCDIR)/free.c	\
+				$(SRCDIR)/main.c
 
-OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
+
+
+SRCDIR		= src
+OBJDIR		= obj
+
+OBJS		= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -no-pie -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 	@echo "Ready!"
 
 $(LIBFT):
