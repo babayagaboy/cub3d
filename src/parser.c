@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/20 15:20:27 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/24 16:51:41 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,18 @@ void	free_int_arr(int **arr, int i)
 	free(arr);
 }
 
+void	free_memory(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free (arr);
+}
+
 
 char	**read_file(char *file)
 {
@@ -61,82 +73,70 @@ char	**read_file(char *file)
 	int		num_read;
 	int	i;
 	int	fd;
-
 	int	count;
-	char *line;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return NULL;
-
-	line = get_next_line(fd);
-	if (!line)
-		return NULL;
-	count = 0;
-	while (line)
-	{
-		count++;
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return NULL;
-	i = 0;
-	map = malloc(sizeof(char *) * (count + 1));
-	if (!map)
-		return (NULL);
-	line = get_next_line(fd);
-	while (i < count && line)
-	{
-		map[i] = malloc(sizeof(char) * (ft_nl_strlen(line) + 1));
-		if (!map[i])
-			return (free_char_arr(map, i), NULL);
-		i++;
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return NULL;
-	i = 0;
-	buff = malloc(sizeof(char *) * 100000);
-	if (!buff)
-		return (NULL);
-	num_read = read(fd, &buff[i], 1);
-	while (num_read > 0)
-		num_read = read(fd, &buff[++i], 1);
-	buff[i] = '\0';
-
-
-	printf("ORIGINAL BUFFER: %s\n", buff);
-	
 	int j;
 	int	k;
 	int	l;
+	int	line_start;
 
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return NULL;
+
+	buff = malloc(sizeof(char) * 100000);
+	if (!buff)
+		return NULL;
+	
+	i = 0;
+	num_read = read(fd, &buff[i], 1);
+	if (num_read == -1)
+		return (free(buff), NULL);
+	while (num_read > 0 && i < 99998)
+		num_read = read(fd, &buff[++i], 1);
+	buff[i] = '\0';
+	close(fd);
+	
+	count = 0;
 	j = 0;
-	k = 0;
-	l = 0;
 	while (buff[j])
 	{
 		if (buff[j] == '\n')
-		{
-			map[k][l] = '\0';
-			k++;
-			l = 0;
-			j++;
-			continue ;
-		}
-		map[k][l]= buff[j];
+			count++;
 		j++;
-		l++;
 	}
-	map[k][l] = '\0';	
-	map[k + 1] = NULL;
-	return (free (buff), map);
+	if (i > 0 && buff[i - 1] != '\n')
+		count++;
+	
+	map = ft_calloc(count + 1, sizeof(char *));
+	if (!map)
+		return (free(buff), NULL);
+	
+	
+	j = 0;
+	k = 0;
+	while (buff[j] && k < count)
+	{
+		line_start = j;
+		l = 0;
+		while (buff[j] && buff[j] != '\n')
+		{
+			l++;
+			j++;
+		}
+		
+
+		map[k] = malloc(sizeof(char) * (l + 1));
+		if (!map[k])
+			return (free_char_arr(map, k), free(buff), NULL);
+		
+		ft_strlcpy(map[k], &buff[line_start], l + 1);
+		k++;
+		
+		if (buff[j] == '\n')
+			j++;
+	}
+	map[k] = NULL;
+	return (free(buff), map);
 }
 
 
@@ -147,9 +147,14 @@ int	*get_player_coords(char **map)
 	int	j;
 	int	count;
 
+	if (!map)
+		return (0);
+
 	i = 0;
 	count = 0;
 	player_coord = malloc(sizeof(int) * 2);
+	if (!player_coord)
+		return (NULL);
 	while (map[i])
 	{
 		j = 0;
@@ -175,14 +180,16 @@ int	*get_player_coords(char **map)
 
 int	check_walls(char **map, int y, int x)
 {
+	if (!map)
+		return (0);
 	int	count = 0;
-	if (map[y - 1][x] == '1' || map[y - 1][x] == '0') // North
+	if (y > 0 && map[y - 1] && map[y - 1][x] && (map[y - 1][x] == '1' || map[y - 1][x] == '0')) // North
 		count++;
-	if (map[y + 1][x] == '1' || map[y + 1][x] == '0') // South
+	if (map[y + 1] && map[y + 1][x] && (map[y + 1][x] == '1' || map[y + 1][x] == '0')) // South
 		count++;
-	if (map[y][x - 1] == '1' || map[y][x - 1] == '0') // West
+	if (x > 0 && map[y][x - 1] && (map[y][x - 1] == '1' || map[y][x - 1] == '0')) // West
 		count++;
-	if (map[y][x + 1] == '1' || map[y][x + 1] == '0') // East
+	if (map[y][x + 1] && (map[y][x + 1] == '1' || map[y][x + 1] == '0')) // East
 		count++;
 	if (count == 4)
 		return (1);
@@ -209,6 +216,9 @@ int	check_rbg(char *str)
 	int	i;
 	int	j;
 	int	result;
+
+	if (!str)
+		return (0);
 
 	splited = ft_split(str, c);
 	if (!splited)
@@ -248,17 +258,13 @@ int	check_elements(char **elements)
 	int f_c_element = 0;
 	int	type;
 
+	if (!elements)
+		return (0);
+
 	y = 0;
 	elements_found = 0;
 	opened = 0;
 
-	printf("In check_elemets: ELEMENTS FILE:\n");
-	for (int i = 0; elements[i]; i++)
-	{
-		for (int j = 0; elements[i][j]; j++)
-			printf("%c", elements[i][j]);
-		printf("\n");
-	}
 	while (elements[y])
 	{
 		if (ft_strncmp(elements[y], "NO", 2) == 0 && elements[y][2] == ' ')
@@ -356,7 +362,6 @@ int	check_elements(char **elements)
 		}
 		y++;
 	}
-	printf("ABOUT TO RETURN FROM CHECK_ELEMENTS\n");
 	if (elements_found == 21 && opened == 10 && f_c_element == 3)
 			return (1);
 	return (0);
@@ -370,51 +375,42 @@ int	check_map(char **map)
 	int		x = 0;
 	int		*player_coords;
 	char	player_orientation;
+
+	if (!map || !map[0])
+		return (0);
 	
 	player_coords = get_player_coords(map); //to do save in (pos_y, pos_x)
 	if (!player_coords)
 		return (0);
-	printf("In check_map: AFTER PLAYER_COORDS\n");
 
 	player_orientation = map[player_coords[0]][player_coords[1]];
 	map[player_coords[0]][player_coords[1]] = '0';
-	printf("In check_map: MAP VIEW\n");
-	for (int i = 0; map[i]; i++)
-	{
-		for (int j = 0; map[i][j]; j++)
-			printf("%c", map[i][j]);
-		printf("\n");
-	}
+
 	while(map[0][x] != '\0')
 	{
 		if(map[0][x] == '0')
-			return (0);
+			return (free(player_coords), 0);
 		x++;
 	}
-	printf("After first while x\n");
 
-	while(map[y][0] != '\0')
+	while(map[y])
 	{
-		printf("map[%d]: %c\n",y, map[y][0]);
 		if(map[y][0] == '0')
-			return (0);
+			return (free(player_coords), 0);
 		y++;
 	}
-	printf("After first while y\n");
-
 	y = 1;
 	while (map[y])
 	{
 		x = 1;
-		while (map[y][x])
+		while (map[y][x] != '\0')
 		{
 			if (map[y][x] == '0' && check_walls(map, y, x) == 0)
-				return (0);
+				return (free(player_coords), 0);
 			x++;
 		}
 		y++;
 	}
-	printf("ABOUT TO RETURN FROM check_map\n");
 	map[player_coords[0]][player_coords[1]] = player_orientation; 	//to do (dir_y, dir_x) = get_player_orientation()
 	return (1);
 }
@@ -467,7 +463,7 @@ char	*looksmax_string(char *str)
 
 	cleaned = malloc(sizeof(char) * (size_to_malloc + 1));
 	if (!cleaned)
-		return (free_char_arr(splited, k), NULL);
+		return (free_memory(splited), NULL);
 
 	k = 0;
 	m = 0;
@@ -492,6 +488,8 @@ char	**get_elements(char **cub, int *y)
 	int	count;
 	int	j;
 
+	if (!cub)
+		return NULL;
 
 	j = 0;
 	count = 0;
@@ -542,81 +540,45 @@ char	**get_map(char **cub, int *y)
 {
 	char	**map;
 	int	i;
-	int	j;
-	int	x;
 	int	k;
 	int	count;
 
-	printf("ENTERED GET_MAP\n");
+	if (!cub)
+		return (NULL);
 
-	while (cub[*y] && (ft_isempty(cub[*y]) || cub[*y][0] == '\n'))
+
+	while (cub[*y] && (ft_isempty(cub[*y]) || cub[*y][0] == '\n')) //Skips all initial white spaces after elements
 		(*y)++;
 	
-	printf("AFTER 1st WHILE TO CLEAR OFF THE NEW LINTES\n");
-
 	k = *y;
 	count = 0;
-	while (cub[k])
+	while (cub[k] && !(ft_isempty(cub[k]) || cub[k][0] == '\n')) //line count to malloc
 	{
 		count++;
 		k++;
 	}
-
-	printf("AFTER THE COUNT WHILE. COUNT: %d\n", count);
-
-
-	map = ft_calloc(count + 1, sizeof(char *));
+	printf("COUNT: %d\n", count);
+	map = ft_calloc((count + 1), sizeof(char *));
 	if (!map)
 		return (NULL);
-	printf("ALOCATED MAP FOR A TOTAL OF %lu BYTES\n", sizeof(map));	
 	i = 0;
 	k = *y;
-	while (i < count)
+	while (i < count && cub[k])
 	{
 		map[i] = ft_calloc((ft_strlen(cub[k]) + 1), sizeof(char));
 		if (!map[i])
 			return (free_char_arr(map, i), NULL);
-		printf("MAP[%d]: with a size of %lu\n", i, ft_strlen(cub[k] + 1));
+		ft_strlcpy(map[i], cub[k], ft_strlen(cub[k]) + 1);
 		i++;
 		k++;
 	}
-
-	printf("MEMORY ALLOCATION SUCESSFUL\n");
-
-	i = 0;
-	while (cub[*y])
-	{
-		printf("cub[%d]: %s\n", *y, cub[*y]);
-		x = 0;
-		j = 0;
-		while (cub[*y][x])
-		{
-			map[i][j] = cub[*y][x];
-			j++;
-			x++;
-		}
-		map[i][j] = '\0';
-		(*y)++;
-		i++;
-	}
-	printf("At the end of the fucking while cub*y loop\n");
-	printf("After putting map[i][j] = '0' \n");
-	map[i + 1] = NULL;
-	printf("After map[i + 1] = NULL;\n");
+	map[i] = NULL;
 	return map;
 }
 
-void	free_memory(char **arr)
-{
-	int	i;
 
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free (arr);
-}
+
+
 
 
 int main(int argc, char *argv[])
@@ -645,16 +607,19 @@ int main(int argc, char *argv[])
 	if (!elements_file)
 	{
 		printf("elements_file failed!\n");
+		free_memory(cub);
 		return (0);
 	}
 	map = get_map(cub, &y);
 	if (!map)
 	{
 		printf("map failed!\n");
+		free_memory(cub);
+		free_memory(elements_file);
 		return (0);
 	}
 
-	/*printf(".CUB FILE:\n");
+	printf(".CUB FILE:\n");
 	for (int i = 0; cub[i]; i++)
 	{
 		for (int j = 0; cub[i][j]; j++)
@@ -674,23 +639,26 @@ int main(int argc, char *argv[])
 		for (int j = 0; map[i][j]; j++)
 			printf("%c", map[i][j]);
 		printf("\n");
-	}*/
-	
-	printf("OK BACK AT MAIN: NOW ENTERING CHECK_ELEMENTS\n");
+	}
 	
 	if (!check_elements(elements_file))
 	{
 		printf("Elements file faild\n");
+		free_memory(cub);
+		free_memory(elements_file);
+		free_memory(map);
 		return (0);
 	}
-	printf("OK BACK AT MAIN: NOW ENTERING CHECK_MAP\n");
 	if (!check_map(map))
 	{
 		printf("Map file faild\n");
+		free_memory(cub);
+		free_memory(elements_file);
+		free_memory(map);
 		return (0);
 	}
 	else
-		printf("GOOD GOY\n");
+		printf("GOOD BOY\n");
 	
 	free_memory(cub);
 	free_memory(elements_file);

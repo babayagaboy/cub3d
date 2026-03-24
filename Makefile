@@ -6,7 +6,7 @@
 #    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/17 16:53:51 by myivanov         ###   ########.fr        #
+#    Updated: 2026/03/24 16:03:11 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -no-pie -o $(NAME)
 	@echo "Ready!"
 
 $(LIBFT):

@@ -23,8 +23,10 @@ void	put_pixel(t_mlx *mlx, int x, int y, int color)
 void init_mlx(t_mlx *mlx)
 {
 	mlx->mlx = mlx_init();
-	mlx->win = mlx_new_window(mlx, WIDTH, HEIGHT, "cub3d");
-	mlx->img = mlx_new_image(mlx, 800, 600);
+	if (!mlx->mlx)
+		return ;
+	mlx->win = mlx_new_window(mlx->mlx, WIDTH, HEIGHT, "cub3d");
+	mlx->img = mlx_new_image(mlx->mlx, 800, 600);
 	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->line_len, &mlx->endian);
 }
 
