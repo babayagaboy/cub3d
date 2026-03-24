@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/24 18:27:51 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/03/24 21:17:12 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -605,7 +605,7 @@ int	parser(int argc, char *argv[], t_game *g)
 		return (0);
 	}
 	else
-    	printf("GOOD BOY\n");
+    	printf("GOOD GOY\n");
     free_memory(g->cub);
 	return (1);
 }

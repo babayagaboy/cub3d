@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/24 18:32:14 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/03/24 21:35:24 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,8 +172,8 @@ void	get_time(t_player *p)
 	p->old_time = p->time;
 	p->time = get_timestamp();
 	p->frame_time = p->time - p->old_time;			// time this frame has taken, in seconds
-	p->move_speed = p->frame_time * 500000.0;		// const value in squares per sec
-	p->rot_speed = p->frame_time * 300000.0;		// const value in radians per sec
+	p->move_speed = p->frame_time * 50000.0;		// const value in squares per sec
+	p->rot_speed = p->frame_time * 30000.0;		// const value in radians per sec
 }
 	
 void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
@@ -204,16 +204,16 @@ int		handle_input(int key, t_game *g)
 {
 	if (key == KEY_UP)
 	{
-		if ((g->map[(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))][(int)(g->player->pos_y)]) == '0')
+		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_x)][(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))]) == '0')
+		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0')
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
 	}
 	if (key == KEY_DOWN)
 	{
-		if ((g->map[(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_y)]) == '0')
+		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == '0')
 			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_x)][(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)]) == '0')
+		if ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == '0')
 			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
 	}
 	if (key == KEY_RIGHT)
