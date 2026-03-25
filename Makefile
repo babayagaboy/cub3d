@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/24 17:54:01 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/03/25 14:34:52 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,17 +15,24 @@ NAME = cub3d
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g
 CFLAGS		+= -Iinc -I$(LIBFT_DIR)
-MLX_DIR		= mlx
-MLX			= $(MLX_DIR)/libmlx.a
-MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+#MLX_DIR		= mlx
+#MLX			= $(MLX_DIR)/libmlx.a
+#MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 
 LIBFT_DIR	= inc/libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
 SRCS		=	$(SRCDIR)/parser.c	\
-				$(SRCDIR)/exec.c	\
 				$(SRCDIR)/free.c	\
+				$(SRCDIR)/check_elements.c \
+				$(SRCDIR)/check_map.c \
+				$(SRCDIR)/clean_string.c \
+				$(SRCDIR)/elements_helper.c \
+				$(SRCDIR)/get_elements.c \
+				$(SRCDIR)/get_map.c \
+				$(SRCDIR)/p_utils.c \
+				$(SRCDIR)/read_file.c \
 				$(SRCDIR)/main.c
 
 
