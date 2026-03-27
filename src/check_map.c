@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:07:46 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 15:20:37 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/27 14:58:40 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,13 @@ int		check_walls(char **map, int y, int x)
 	if (!map)
 		return (0);
 	int	count = 0;
-	if (y > 0 && map[y - 1] && map[y - 1][x] && (is_wall(map[y - 1][x]) || map[y - 1][x] == '0')) // North
+	if (y > 0 && map[y - 1] && map[y - 1][x] && (is_wall(map[y - 1][x]) || map[y - 1][x] == '0' || map[y - 1][x] == 'D')) // North
 		count++;
-	if (map[y + 1] && map[y + 1][x] && (is_wall(map[y + 1][x]) || map[y + 1][x] == '0')) // South
+	if (map[y + 1] && map[y + 1][x] && (is_wall(map[y + 1][x]) || map[y + 1][x] == '0' || map[y + 1][x] == 'D')) // South
 		count++;
-	if (x > 0 && map[y][x - 1] && (is_wall(map[y][x - 1]) || map[y][x - 1] == '0')) // West
+	if (x > 0 && map[y][x - 1] && (is_wall(map[y][x - 1]) || map[y][x - 1] == '0' || map[y][x - 1] == 'D')) // West
 		count++;
-	if (map[y][x + 1] && (is_wall(map[y][x + 1]) || map[y][x + 1] == '0')) // East
+	if (map[y][x + 1] && (is_wall(map[y][x + 1]) || map[y][x + 1] == '0' || map[y][x + 1] == 'D')) // East
 		count++;
 	if (count == 4)
 		return (1);
@@ -71,7 +71,7 @@ int		check_map_borders(char **map)
 	x = 0;
 	while (map[0][x] != '\0')
 	{
-		if (map[0][x] == '0')
+		if (map[0][x] == '0' || map[0][x] == 'D')
 			return (0);
 		x++;
 	}
@@ -80,12 +80,41 @@ int		check_map_borders(char **map)
 	y = 0;
 	while (map[y])
 	{
-		if (map[y][0] == '0')
+		if (map[y][0] == '0' || map[y][0] == 'D')
 			return (0);
 		y++;
 	}
 	return (1);
-}char	walls[] = {'1', '2', '3', '4', '5'}; 
+}
+
+int	check_doors(char **map, int y, int x)
+{
+	if (!map)
+		return (0);
+
+	if (y > 0 && map[y - 1] && map[y - 1][x] && is_wall(map[y - 1][x]))
+		if (map[y + 1] && map[y + 1][x] && is_wall(map[y + 1][x]))
+			if (x > 0 && map[y][x - 1] && map[y][x - 1] != ' ')
+				if (map[y][x + 1] && map[y][x + 1] != ' ')
+					return (1);
+	if (x > 0 && map[y][x - 1] && is_wall(map[y][x - 1]))
+	{
+		printf("Found wall on the left! Wall is: %c\n", map[y][x - 1]);
+		if (map[y][x + 1] && is_wall(map[y][x + 1]))
+		{
+			printf("Found wall on the right! Wall is: %c\n", map[y][x + 1]);
+			if (y > 0 && map[y - 1] && map[y - 1][x] && map[y - 1][x] != ' ')
+			{
+				printf("There is something above! Its: %c\n", map[y - 1][x]);
+				if (map[y + 1] && map[y + 1][x] && (map[y + 1][x]) != ' ')
+				{
+					return (1);
+				}
+			}
+		}
+	}
+	return (0);
+}
 
 int		check_map_interior(char **map)
 {
@@ -99,7 +128,15 @@ int		check_map_interior(char **map)
 		while (map[y][x] != '\0')
 		{
 			if (map[y][x] == '0' && check_walls(map, y, x) == 0)
+			{
+				printf ("The check wall failed\n");
 				return (0);
+			}
+			if (map[y][x] == 'D' && check_doors(map, y, x) == 0)
+			{
+				printf ("The check door failed\n");
+				return (0);
+			}
 			x++;
 		}
 		y++;

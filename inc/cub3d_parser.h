@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/25 15:20:44 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/27 14:30:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int		*get_player_coords(char **map);
 int		check_walls(char **map, int y, int x);
 int		check_map_borders(char **map);
 int		check_map_interior(char **map);
+int		check_doors(char **map, int y, int x);
 int		is_wall(char c);
 int		check_map(char **map, t_player *p);
 

@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:00:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 14:24:41 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/03/27 14:13:15 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ int	process_line(char *line, char **elements_file, int i, int *stop)
 	char	*clean;
 
 	clean = ft_findspace(line);
-	if (ft_strnstr(clean, "C", 1))
+	if (!ft_strnstr(clean, "./", ft_strlen(clean)))
+	{
 		*stop = 1;
+		return (1);
+	}
 	elements_file[i] = looksmax_string(clean);
 	if (!elements_file[i])
 		return (0);
@@ -66,12 +69,12 @@ char	**fill_elements(char **cub, int *y, int count)
 		}
 		if (!process_line(cub[*y], elements_file, i, &stop))
 			return (free_char_arr(elements_file, i), NULL);
-		(*y)++;
 		if (stop)
 			break ;
+		(*y)++;
 		i++;
 	}
-	elements_file[i + 1] = NULL;
+	elements_file[i] = NULL;
 	return (elements_file);
 }
 

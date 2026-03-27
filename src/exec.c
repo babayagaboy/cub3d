@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/24 21:35:24 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/03/27 13:39:33 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,6 @@ void	init_mlx(t_mlx *mlx)
 
 void    init_player(t_player *p)
 {
-	p->pos_y = 12;  //x and y start position //get_player_coords()
-	p->pos_x = 22;
-
-	p->dir_y = 0;	//initial direction vector (N, S, W, E)
-	p->dir_x = -1;
-
-	//^^ mykyta ^^
 
 	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
 	p->plane_x = -p->dir_y * 0.66;
