@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:07:46 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/27 14:58:40 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:50:07 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,21 +98,10 @@ int	check_doors(char **map, int y, int x)
 				if (map[y][x + 1] && map[y][x + 1] != ' ')
 					return (1);
 	if (x > 0 && map[y][x - 1] && is_wall(map[y][x - 1]))
-	{
-		printf("Found wall on the left! Wall is: %c\n", map[y][x - 1]);
 		if (map[y][x + 1] && is_wall(map[y][x + 1]))
-		{
-			printf("Found wall on the right! Wall is: %c\n", map[y][x + 1]);
 			if (y > 0 && map[y - 1] && map[y - 1][x] && map[y - 1][x] != ' ')
-			{
-				printf("There is something above! Its: %c\n", map[y - 1][x]);
 				if (map[y + 1] && map[y + 1][x] && (map[y + 1][x]) != ' ')
-				{
 					return (1);
-				}
-			}
-		}
-	}
 	return (0);
 }
 

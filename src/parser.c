@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 14:34:24 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:26:51 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,13 @@ int	load_elements_and_map(t_game *g)
 	if (!g->elements_file)
 	{
 		printf("elements_file failed!\n");
-		free_memory(g->cub);
 		return (0);
 	}
 	g->map = get_map(g->cub, &y);
 	if (!g->map)
 	{
-		printf("map failed!\n");
-		free_memory(g->cub);
 		free_memory(g->elements_file);
+		printf("map failed!\n");
 		return (0);
 	}
 	return (1);
@@ -102,7 +100,7 @@ int	parser(int argc, char *argv[], t_game *g)
 	if (!load_cub_file(g, argv[1]))
 		return (0);
 	if (!load_elements_and_map(g))
-		return (0);
+		return (free_memory(g->cub), 0);
 	print_debug(g);
 	if (!check_elements(g->elements_file))
 		return (printf("Elements file failed\n"), free_all(g), 0);

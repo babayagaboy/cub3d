@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:00:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/27 14:13:15 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:49:16 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	count_elements(char **cub, int y)
 			continue;
 		}
 		count++;
-		if (ft_strnstr(ft_findspace(cub[y]), "C", 1))
+		if (count == 7)
 			break ;
 		y++;
 	}
@@ -38,7 +38,7 @@ int	process_line(char *line, char **elements_file, int i, int *stop)
 	char	*clean;
 
 	clean = ft_findspace(line);
-	if (!ft_strnstr(clean, "./", ft_strlen(clean)))
+	if (i > 6)
 	{
 		*stop = 1;
 		return (1);
@@ -55,7 +55,7 @@ char	**fill_elements(char **cub, int *y, int count)
 	int		i;
 	int		stop;
 
-	elements_file = malloc(sizeof(char *) * (count + 2));
+	elements_file = ft_calloc(count + 2, sizeof(char *));
 	if (!elements_file)
 		return (NULL);
 	i = 0;

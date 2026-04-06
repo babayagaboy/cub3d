@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 13:49:24 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:51:01 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	process_element_line(char *line, int *elements_found,
 		handle_floor_ceiling(line, 5, elements_found, f_c_element);
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
 		handle_floor_ceiling(line, 6, elements_found, f_c_element);
+	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
+		handle_floor_ceiling(line, 7, elements_found, f_c_element);
 }
 
 int	check_elements(char **elements)
@@ -109,7 +111,7 @@ int	check_elements(char **elements)
 			&elements_found, &opened, &f_c_element);
 		y++;
 	}
-	if (elements_found == 21 && opened == 10 && f_c_element == 3)
+	if (elements_found == 28 && opened == 10 && f_c_element == 5)
 		return (1);
 	return (0);
 }

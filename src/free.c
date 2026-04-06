@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/24 17:51:47 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:49:20 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	free_memory(char **arr)
 		free(arr[i++]);
 	free (arr);
 }
+
 void	free_char_arr(char **arr, int i)
 {
 	int	j;

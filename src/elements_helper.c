@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:49:52 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 14:22:13 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:09:03 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,5 @@ int	validate_rgb_values(char **splited)
 			return (0);
 		i++;
 	}
-	if (i != 3)
-		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/25 15:01:12 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/06 15:51:46 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(int argc, char **argv)
 		return (free(game), 1);
 	init_player(game->player);
 	if(!parser(argc, argv, game))
-		return (free(game->player), 0);
+		return (free(game->player), free(game), 0);
 	printf("player coords = y: %f, x: %f\n", game->player->pos_y, game->player->pos_x);
 	printf("player orientation = dir_y: %f, dir_x: %f\n", game->player->dir_y, game->player->dir_x);
 	/*game->mlx = malloc(sizeof(t_mlx));
@@ -65,7 +65,9 @@ int	main(int argc, char **argv)
 	free(game->mlx);
 	free(game->player);
 	free(game->ray);*/
+	free(game->player);
 	free_memory(game->elements_file);
 	free_memory(game->map);
+	free (game);
 	return (0);
 }
