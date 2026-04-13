@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: myivanov <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/03/25 14:34:52 by myivanov         ###   ########.fr        #
+#    Updated: 2026/04/13 15:45:52 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,9 @@ NAME = cub3d
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g
 CFLAGS		+= -Iinc -I$(LIBFT_DIR)
-#MLX_DIR		= mlx
-#MLX			= $(MLX_DIR)/libmlx.a
-#MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+MLX_DIR		= mlx
+MLX			= $(MLX_DIR)/libmlx.a
+MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 
 LIBFT_DIR	= inc/libft
@@ -33,6 +33,7 @@ SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/get_map.c \
 				$(SRCDIR)/p_utils.c \
 				$(SRCDIR)/read_file.c \
+				$(SRCDIR)/exec.c \
 				$(SRCDIR)/main.c
 
 

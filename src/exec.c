@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/27 13:39:33 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/13 16:12:31 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,8 @@ void	get_time(t_player *p)
 	p->old_time = p->time;
 	p->time = get_timestamp();
 	p->frame_time = p->time - p->old_time;			// time this frame has taken, in seconds
-	p->move_speed = p->frame_time * 50000.0;		// const value in squares per sec
-	p->rot_speed = p->frame_time * 30000.0;		// const value in radians per sec
+	p->move_speed = p->frame_time * 5000.0;			// const value in squares per sec
+	p->rot_speed = p->frame_time * 3000.0;			// const value in radians per sec
 }
 	
 void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
@@ -212,20 +212,20 @@ int		handle_input(int key, t_game *g)
 	if (key == KEY_RIGHT)
 	{
 		g->player->old_dir_x = g->player->dir_x;
-		g->player->dir_x = g->player->dir_x * cos(g->player->rot_speed) - g->player->dir_y * sin(g->player->rot_speed);
-		g->player->dir_y = g->player->old_dir_x * sin(g->player->rot_speed) + g->player->dir_y * cos(g->player->rot_speed);
-		g->player->old_plane_x = g->player->plane_x;
-		g->player->plane_x = g->player->plane_x * cos(g->player->rot_speed) - g->player->plane_y * sin(g->player->rot_speed);
-		g->player->plane_y = g->player->plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
-	}
-	if (key == KEY_LEFT)
-	{
-		g->player->old_dir_x = g->player->dir_x;
 		g->player->dir_x = g->player->dir_x * cos(-g->player->rot_speed) - g->player->dir_y * sin(-g->player->rot_speed);
 		g->player->dir_y = g->player->old_dir_x * sin(-g->player->rot_speed) + g->player->dir_y * cos(-g->player->rot_speed);
 		g->player->old_plane_x = g->player->plane_x;
 		g->player->plane_x = g->player->plane_x * cos(-g->player->rot_speed) - g->player->plane_y * sin(-g->player->rot_speed);
 		g->player->plane_y = g->player->plane_x * sin(-g->player->rot_speed) + g->player->plane_y * cos(-g->player->rot_speed);
+	}
+	if (key == KEY_LEFT)
+	{
+		g->player->old_dir_x = g->player->dir_x;
+		g->player->dir_x = g->player->dir_x * cos(g->player->rot_speed) - g->player->dir_y * sin(g->player->rot_speed);
+		g->player->dir_y = g->player->old_dir_x * sin(g->player->rot_speed) + g->player->dir_y * cos(g->player->rot_speed);
+		g->player->old_plane_x = g->player->plane_x;
+		g->player->plane_x = g->player->plane_x * cos(g->player->rot_speed) - g->player->plane_y * sin(g->player->rot_speed);
+		g->player->plane_y = g->player->plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
 
 	}
 	calc_rays(g->mlx, g->ray, g->player, g->map);

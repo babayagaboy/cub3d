@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/06 15:51:46 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/13 15:50:17 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-void    init_player(t_player *p)
+/*void    init_player(t_player *p)
 {
 	//p->pos_y = 12;  //x and y start position //get_player_coords()
 	//p->pos_x = 22;
@@ -31,7 +31,7 @@ void    init_player(t_player *p)
 
 	p->move_speed = 0;
 	p->rot_speed = 0;
-}
+}*/
 
 int	main(int argc, char **argv)
 {
@@ -48,7 +48,7 @@ int	main(int argc, char **argv)
 		return (free(game->player), free(game), 0);
 	printf("player coords = y: %f, x: %f\n", game->player->pos_y, game->player->pos_x);
 	printf("player orientation = dir_y: %f, dir_x: %f\n", game->player->dir_y, game->player->dir_x);
-	/*game->mlx = malloc(sizeof(t_mlx));
+	game->mlx = malloc(sizeof(t_mlx));
 	if (!game->mlx)
 		return (1);
 	init_mlx(game->mlx);
@@ -64,7 +64,7 @@ int	main(int argc, char **argv)
 	free(game);
 	free(game->mlx);
 	free(game->player);
-	free(game->ray);*/
+	free(game->ray);
 	free(game->player);
 	free_memory(game->elements_file);
 	free_memory(game->map);
