@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/13 15:49:56 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/13 17:36:15 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,15 @@
 
 # include "../mlx/mlx.h"
 
-# define mapWidth 24
-# define mapHeight 24
-# define screenWidth 640
-# define screenHeight 480
-# define KEY_UP        119
-# define KEY_DOWN      115
-# define KEY_LEFT      97
-# define KEY_RIGHT     100
+# define mapWidth		24
+# define mapHeight		24
+# define screenWidth	640
+# define screenHeight	480
+# define KEY_UP			119
+# define KEY_DOWN		115
+# define KEY_LEFT		97
+# define KEY_RIGHT		100
+# define KEY_ESC		65307
 
 
 typedef struct s_player
@@ -50,6 +51,12 @@ typedef struct s_player
 	double	frame_time;
 	double	move_speed;
 	double	rot_speed;
+
+	int		kp_w;
+	int		kp_s;
+	int		kp_a;
+	int		kp_d;
+
 }	t_player;
 
 typedef struct s_ray

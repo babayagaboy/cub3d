@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/13 16:12:31 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/13 17:42:12 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@ int	ft_isdigit(int c)
 	if (c >= '0' && c <= '9')
 		return (1);
 	return (0);
+}
+
+double	get_timestamp(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return ((double)tv.tv_sec + (double)tv.tv_usec / 1e6);
 }
 
 void	put_pixel(t_mlx *mlx, int x, int y, int color)
@@ -51,12 +59,16 @@ void	init_mlx(t_mlx *mlx)
 
 void    init_player(t_player *p)
 {
+	p->kp_w = 0;
+	p->kp_s = 0;
+	p->kp_a = 0;
+	p->kp_d = 0;
 
 	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
 	p->plane_x = -p->dir_y * 0.66;
 	
-	p->time = 0; //time of current frame
-	p->old_time = 0; //time of previous frame
+	p->time = get_timestamp(); 
+	p->old_time = p->time; 
 	p->frame_time = 0;
 
 	p->move_speed = 0;
@@ -152,21 +164,14 @@ void	draw_column(t_mlx *mlx, t_ray *r, int i)
 		put_column(mlx, i, draw_start, draw_end, 0x00FF0000);
 }
 
-double	get_timestamp(void)
-{
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	return ((double)tv.tv_sec + (double)tv.tv_usec / 1e6);
-}
-
 void	get_time(t_player *p)
 {
 	p->old_time = p->time;
 	p->time = get_timestamp();
 	p->frame_time = p->time - p->old_time;			// time this frame has taken, in seconds
-	p->move_speed = p->frame_time * 5000.0;			// const value in squares per sec
-	p->rot_speed = p->frame_time * 3000.0;			// const value in radians per sec
+	p->move_speed = p->frame_time * 5.0;			// const value in squares per sec
+	p->rot_speed = p->frame_time * 3.0;			// const value in radians per sec
+	printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
 }
 	
 void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
@@ -180,9 +185,9 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
 		i++;
 	}
 	i = 0;
+	get_time(player);
 	while (i < screenWidth) // calculate ray
 	{
-		get_time(player);
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, map);
@@ -193,14 +198,45 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
+int		key_press(int key, t_player *p)
+{
+	if (key == KEY_UP)
+		p->kp_w = 1;
+	if (key == KEY_DOWN)
+		p->kp_s = 1;
+	if (key == KEY_LEFT)
+		p->kp_a = 1;
+	if (key == KEY_RIGHT)
+		p->kp_d = 1;
+	if (key == KEY_ESC)
+		exit(0);
+	return (0);
+}
+int		key_release(int key, t_player *p)
+{
+	if (key == KEY_UP)
+		p->kp_w = 0;
+	if (key == KEY_DOWN)
+		p->kp_s = 0;
+	if (key == KEY_LEFT)
+		p->kp_a = 0;
+	if (key == KEY_RIGHT)
+		p->kp_d = 0;
+	return (0);
+}
+
 int		handle_input(int key, t_game *g)
 {
+	int moved;
+
+	moved = 0;
 	if (key == KEY_UP)
 	{
 		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
 		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0')
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
+		moved = 1;
 	}
 	if (key == KEY_DOWN)
 	{
@@ -208,32 +244,38 @@ int		handle_input(int key, t_game *g)
 			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
 		if ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == '0')
 			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
+		moved = 1;	
 	}
 	if (key == KEY_RIGHT)
-	{
-		g->player->old_dir_x = g->player->dir_x;
-		g->player->dir_x = g->player->dir_x * cos(-g->player->rot_speed) - g->player->dir_y * sin(-g->player->rot_speed);
-		g->player->dir_y = g->player->old_dir_x * sin(-g->player->rot_speed) + g->player->dir_y * cos(-g->player->rot_speed);
-		g->player->old_plane_x = g->player->plane_x;
-		g->player->plane_x = g->player->plane_x * cos(-g->player->rot_speed) - g->player->plane_y * sin(-g->player->rot_speed);
-		g->player->plane_y = g->player->plane_x * sin(-g->player->rot_speed) + g->player->plane_y * cos(-g->player->rot_speed);
-	}
-	if (key == KEY_LEFT)
 	{
 		g->player->old_dir_x = g->player->dir_x;
 		g->player->dir_x = g->player->dir_x * cos(g->player->rot_speed) - g->player->dir_y * sin(g->player->rot_speed);
 		g->player->dir_y = g->player->old_dir_x * sin(g->player->rot_speed) + g->player->dir_y * cos(g->player->rot_speed);
 		g->player->old_plane_x = g->player->plane_x;
 		g->player->plane_x = g->player->plane_x * cos(g->player->rot_speed) - g->player->plane_y * sin(g->player->rot_speed);
-		g->player->plane_y = g->player->plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
-
+		g->player->plane_y = g->player->old_plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
+		moved = 1;
 	}
-	calc_rays(g->mlx, g->ray, g->player, g->map);
+	if (key == KEY_LEFT)
+	{
+		g->player->old_dir_x = g->player->dir_x;
+		g->player->dir_x = g->player->dir_x * cos(-g->player->rot_speed) - g->player->dir_y * sin(-g->player->rot_speed);
+		g->player->dir_y = g->player->old_dir_x * sin(-g->player->rot_speed) + g->player->dir_y * cos(-g->player->rot_speed);
+		g->player->old_plane_x = g->player->plane_x;
+		g->player->plane_x = g->player->plane_x * cos(-g->player->rot_speed) - g->player->plane_y * sin(-g->player->rot_speed);
+		g->player->plane_y = g->player->old_plane_x * sin(-g->player->rot_speed) + g->player->plane_y * cos(-g->player->rot_speed);
+		moved = 1;
+	}
+	if (moved)
+		calc_rays(g->mlx, g->ray, g->player, g->map);
 	return (0);
 }
 
 void	start(t_game *game)
 {
+	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
+	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game->player);
+	mlx_hook(game->mlx->win, 3, 1L<<1, key_release, game->player);
+	mlx_loop_hook(game->mlx->mlx, handle_input, game);
 	calc_rays(game->mlx, game->ray, game->player, game->map);
-	mlx_key_hook(game->mlx->win, handle_input, game);
 }
