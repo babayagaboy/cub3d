@@ -198,39 +198,39 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
-int		key_press(int key, t_player *p)
+int		key_press(int key, t_game *g)
 {
 	if (key == KEY_UP)
-		p->kp_w = 1;
+		g->player->kp_w = 1;
 	if (key == KEY_DOWN)
-		p->kp_s = 1;
+		g->player->kp_s = 1;
 	if (key == KEY_LEFT)
-		p->kp_a = 1;
+		g->player->kp_a = 1;
 	if (key == KEY_RIGHT)
-		p->kp_d = 1;
+		g->player->kp_d = 1;
 	if (key == KEY_ESC)
 		exit(0);
 	return (0);
 }
-int		key_release(int key, t_player *p)
+int		key_release(int key, t_game *g)
 {
 	if (key == KEY_UP)
-		p->kp_w = 0;
+		g->player->kp_w = 0;
 	if (key == KEY_DOWN)
-		p->kp_s = 0;
+		g->player->kp_s = 0;
 	if (key == KEY_LEFT)
-		p->kp_a = 0;
+		g->player->kp_a = 0;
 	if (key == KEY_RIGHT)
-		p->kp_d = 0;
+		g->player->kp_d = 0;
 	return (0);
 }
 
-int		handle_input(int key, t_game *g)
+int		handle_input(t_game *g)
 {
 	int moved;
 
 	moved = 0;
-	if (key == KEY_UP)
+	if (g->player->kp_w)
 	{
 		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
@@ -238,7 +238,7 @@ int		handle_input(int key, t_game *g)
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
-	if (key == KEY_DOWN)
+	if (g->player->kp_s)
 	{
 		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == '0')
 			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
@@ -246,7 +246,7 @@ int		handle_input(int key, t_game *g)
 			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
 		moved = 1;	
 	}
-	if (key == KEY_RIGHT)
+	if (g->player->kp_d)
 	{
 		g->player->old_dir_x = g->player->dir_x;
 		g->player->dir_x = g->player->dir_x * cos(g->player->rot_speed) - g->player->dir_y * sin(g->player->rot_speed);
@@ -256,7 +256,7 @@ int		handle_input(int key, t_game *g)
 		g->player->plane_y = g->player->old_plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
 		moved = 1;
 	}
-	if (key == KEY_LEFT)
+	if (g->player->kp_a)
 	{
 		g->player->old_dir_x = g->player->dir_x;
 		g->player->dir_x = g->player->dir_x * cos(-g->player->rot_speed) - g->player->dir_y * sin(-g->player->rot_speed);
@@ -274,8 +274,11 @@ int		handle_input(int key, t_game *g)
 void	start(t_game *game)
 {
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
-	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game->player);
-	mlx_hook(game->mlx->win, 3, 1L<<1, key_release, game->player);
+	
+	// Passa 'game' em vez de 'game->player'
+	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);
+	mlx_hook(game->mlx->win, 3, 1L<<1, key_release, game);
+	
 	mlx_loop_hook(game->mlx->mlx, handle_input, game);
 	calc_rays(game->mlx, game->ray, game->player, game->map);
 }
