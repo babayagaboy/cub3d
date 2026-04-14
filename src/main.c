@@ -6,32 +6,19 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/13 16:36:48 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/14 16:19:06 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-/*void    init_player(t_player *p)
+void dubg(t_game *game)
 {
-	//p->pos_y = 12;  //x and y start position //get_player_coords()
-	//p->pos_x = 22;
+	printf("player coords = y: %f, x: %f\n", game->player->pos_y, game->player->pos_x);
+	printf("player orientation = dir_y: %f, dir_x: %f\n", game->player->dir_y, game->player->dir_x);
+	printf("map coords = y: %i, x: %d\n", game->map_h, game->map_w);
 
-	//p->dir_y = 0;	//initial direction vector (N, S, W, E)
-	//p->dir_x = -1;
-
-	//^^ mykyta ^^
-
-	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
-	p->plane_x = -p->dir_y * 0.66;
-	
-	p->time = 0; //time of current frame
-	p->old_time = 0; //time of previous frame
-	p->frame_time = 0;
-
-	p->move_speed = 0;
-	p->rot_speed = 0;
-}*/
+}
 
 int	main(int argc, char **argv)
 {
@@ -47,8 +34,6 @@ int	main(int argc, char **argv)
 	if(!parser(argc, argv, game))
 		return (free(game->player), free(game), 0);
 	init_player(game->player);
-	printf("player coords = y: %f, x: %f\n", game->player->pos_y, game->player->pos_x);
-	printf("player orientation = dir_y: %f, dir_x: %f\n", game->player->dir_y, game->player->dir_x);
 	game->mlx = malloc(sizeof(t_mlx));
 	if (!game->mlx)
 		return (1);
@@ -58,9 +43,8 @@ int	main(int argc, char **argv)
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 		return (free(game->mlx), free(game->player), 1);
-	printf("BEFORE START\n");
+	dubg(game);
 	start(game);
-	printf("AFTER START\n");
 	mlx_loop(game->mlx->mlx);
 	free(game);
 	free(game->mlx);

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/13 17:42:12 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/14 17:10:24 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,24 @@ void	put_column(t_mlx *mlx,int x, int start, int end, int color)
 	{
 		put_pixel(mlx, x, start, color);
 		start++;
+	}
+}
+
+void	put_square(int y, int x, int color, t_game *g)
+{
+	int i;
+	int j;
+
+	i = y * g->sp;
+	while (i < y * g->sp + g->sp)
+	{
+		j = x * g->sp;
+		while (j < x * g->sp + g->sp)
+		{
+			put_pixel(g->mlx,  j, i, color);
+			j++;
+		}
+		i++;
 	}
 }
 
@@ -174,25 +192,40 @@ void	get_time(t_player *p)
 	printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
 }
 
-void	minimap(t_mlx *mlx)
+void	minimap(t_game *g)
 {
 	int	i;
 	int	j;
 
+	if (g->map_h > g->map_w)
+		g->sp = (int)(300 / g->map_h);
+	else
+		g->sp = (int)(300 / g->map_w);
 	i = 0;
-	while (i < 10)
+	printf("sp = %i\n" , g->sp);
+
+	for (i = 0; g->map[i]; i++)
 	{
-		j = 0;
-		while (j < 10)
+		for (j = 0; g->map[i][j]; j++)
 		{
-			put_pixel(mlx, 500, 500, 0x00FF0000);
-			j++;
+			printf("%c", g->map[i][j]);
+			if (is_wall(g->map[i][j]))
+				put_square(i, j, 0x48494B, g);
+			if (g->map[i][j] == '0')
+				put_square(i, j, 0x808588, g);
+			if (g->map[i][j] == 'D')
+				put_square(i, j, 0x0000FF, g);
+			if (is_player(g->map[i][j]))
+				put_square(i, j, 0xFF0000, g);
 		}
-		i++;
+		printf("\n");
 	}
 }
+
+// 0x48494B wall
+// 0x808588 floor
 	
-void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
+void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 {
 	int i;
 
@@ -203,17 +236,17 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
 		i++;
 	}
 	i = 0;
+	//g->map[(int)player->pos_y][(int)player->pos_x] = 'N'; to do update_player_pos()
 	get_time(player);
 	while (i < screenWidth) // calculate ray
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
-		run_dda(ray, map);
-//		printf("BEFORE IMAGE TO WINDOW\n");
-		minimap(mlx);
+		run_dda(ray, g->map);
 		draw_column(mlx, ray, i);
 		i++;
 	}
+	minimap(g);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
@@ -286,7 +319,7 @@ int		handle_input(t_game *g)
 		moved = 1;
 	}
 	if (moved)
-		calc_rays(g->mlx, g->ray, g->player, g->map);
+		calc_rays(g->mlx, g->ray, g->player, g);
 	return (0);
 }
 
@@ -294,12 +327,12 @@ int		handle_input(t_game *g)
 
 void	start(t_game *game)
 {
-	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
+	//game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
 	
 	// Passa 'game' em vez de 'game->player'
 	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L<<1, key_release, game);
 	
 	mlx_loop_hook(game->mlx->mlx, handle_input, game);
-	calc_rays(game->mlx, game->ray, game->player, game->map);
+	calc_rays(game->mlx, game->ray, game->player, game);
 }

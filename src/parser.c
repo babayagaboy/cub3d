@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/06 15:26:51 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/14 16:16:11 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	load_elements_and_map(t_game *g)
 		printf("elements_file failed!\n");
 		return (0);
 	}
-	g->map = get_map(g->cub, &y);
+	g->map = get_map(g->cub, &y, g);
 	if (!g->map)
 	{
 		free_memory(g->elements_file);
@@ -104,7 +104,7 @@ int	parser(int argc, char *argv[], t_game *g)
 	print_debug(g);
 	if (!check_elements(g->elements_file))
 		return (printf("Elements file failed\n"), free_all(g), 0);
-	if (!check_map(g->map, g->player))
+	if (!check_map(g->map, g->player, g))
 		return (printf("Map file failed\n"), free_all(g), 0);
 	printf("GOOD GOY\n");
 	free_memory(g->cub);

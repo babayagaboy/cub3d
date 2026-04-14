@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:56:23 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 13:56:49 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/14 16:09:00 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	**copy_map(char **cub, int start, int count)
 	return (map);
 }
 
-char	**get_map(char **cub, int *y)
+char	**get_map(char **cub, int *y, t_game *g)
 {
 	int		count;
 	char	**map;
@@ -63,5 +63,6 @@ char	**get_map(char **cub, int *y)
 		return (NULL);
 	count = get_map_bounds(cub, y);
 	map = copy_map(cub, *y, count);
+	g->map_h = count;
 	return (map);
 }

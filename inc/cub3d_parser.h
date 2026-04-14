@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_parser.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/27 14:30:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/14 17:03:21 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ void	process_element_line(char *line, int *elements_found,
 
 int		*get_player_coords(char **map);
 int		check_walls(char **map, int y, int x);
-int		check_map_borders(char **map);
+int		check_map_borders(char **map, t_game *g);
 int		check_map_interior(char **map);
 int		check_doors(char **map, int y, int x);
 int		is_wall(char c);
-int		check_map(char **map, t_player *p);
+int		is_player(char c);
+int		check_map(char **map, t_player *p, t_game *g);
 
 
 
@@ -58,7 +59,7 @@ char	**get_elements(char **cub, int *y);
 
 int		get_map_bounds(char **cub, int *y);
 char	**copy_map(char **cub, int start, int count);
-char	**get_map(char **cub, int *y);
+char	**get_map(char **cub, int *y, t_game *g);
 
 
 int		find_player(char **map, int *coord);

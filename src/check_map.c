@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:07:46 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/06 15:50:07 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/14 17:01:47 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,21 @@ int	is_wall(char c)
 	return (0);
 }
 
+int	is_player(char c)
+{
+	int	i;
+	char	player[] = {'N', 'S', 'E', 'W'};
+	i = 0;
+
+	while (i < 4)
+	{
+		if (player[i] == c)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int		check_walls(char **map, int y, int x)
 {
 	if (!map)
@@ -62,20 +77,23 @@ int		check_walls(char **map, int y, int x)
 	return (0);
 }
 
-int		check_map_borders(char **map)
+int		check_map_borders(char **map, t_game *g)
 {
 	int	x;
 	int	y;
+	int	x_max;
 
 	// topo
 	x = 0;
+	x_max = x;
 	while (map[0][x] != '\0')
 	{
 		if (map[0][x] == '0' || map[0][x] == 'D')
 			return (0);
 		x++;
+		if (x > x_max)
+			x_max = x;
 	}
-
 	// esquerda
 	y = 0;
 	while (map[y])
@@ -84,6 +102,7 @@ int		check_map_borders(char **map)
 			return (0);
 		y++;
 	}
+	g->map_w = x_max;
 	return (1);
 }
 
@@ -158,7 +177,7 @@ void	get_player_orientation(char player_orientation, t_player *p)
 }
 
 
-int		check_map(char **map, t_player *p)
+int		check_map(char **map, t_player *p, t_game *g)
 {
 	int	*player_coords;
 	char	player_orientation;
@@ -171,7 +190,7 @@ int		check_map(char **map, t_player *p)
 		return (0);
 	player_orientation = map[player_coords[0]][player_coords[1]];
 	map[player_coords[0]][player_coords[1]] = '0';
-	if (!check_map_borders(map) || !check_map_interior(map))
+	if (!check_map_borders(map, g) || !check_map_interior(map))
 	{
 		free(player_coords);
 		return (0);

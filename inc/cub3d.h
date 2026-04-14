@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/13 17:36:15 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/14 16:53:53 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,8 @@
 
 # include "../mlx/mlx.h"
 
-# define mapWidth		24
-# define mapHeight		24
-# define screenWidth	1040
-# define screenHeight	980
+# define screenWidth	1920
+# define screenHeight	1080
 # define KEY_UP			119
 # define KEY_DOWN		115
 # define KEY_LEFT		97
@@ -96,6 +94,9 @@ typedef struct s_game
 	char		**cub;
 	char		**elements_file;
 	char		**map;
+	int			map_h;
+	int			map_w;
+	int			sp;
 }	t_game;
 
 # include <cub3d_exec.h>
