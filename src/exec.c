@@ -82,6 +82,10 @@ void    init_player(t_player *p)
 	p->kp_a = 0;
 	p->kp_d = 0;
 
+	p->old_pos_x = p->pos_x;
+	p->old_pos_y = p->pos_y;
+
+
 	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
 	p->plane_x = -p->dir_y * 0.66;
 	
@@ -192,6 +196,15 @@ void	get_time(t_player *p)
 	printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
 }
 
+void	upd_player_minimap(t_game *g)
+{
+	
+	g->minimap[(int)g->player->old_pos_y][(int)g->player->old_pos_x] = '0';
+	g->minimap[(int)g->player->pos_y][(int)g->player->pos_x] = 'N';
+	g->player->old_pos_y = g->player->pos_y;
+	g->player->old_pos_x = g->player->pos_x;
+}
+
 void	minimap(t_game *g)
 {
 	int	i;
@@ -202,23 +215,19 @@ void	minimap(t_game *g)
 	else
 		g->sp = (int)(300 / g->map_w);
 	i = 0;
-	printf("sp = %i\n" , g->sp);
-
-	for (i = 0; g->map[i]; i++)
+	for (i = 0; g->minimap[i]; i++)
 	{
-		for (j = 0; g->map[i][j]; j++)
+		for (j = 0; g->minimap[i][j]; j++)
 		{
-			printf("%c", g->map[i][j]);
-			if (is_wall(g->map[i][j]))
+			if (is_wall(g->minimap[i][j]))
 				put_square(i, j, 0x48494B, g);
-			if (g->map[i][j] == '0')
+			if (g->minimap[i][j] == '0')
 				put_square(i, j, 0x808588, g);
-			if (g->map[i][j] == 'D')
+			if (g->minimap[i][j] == 'D')
 				put_square(i, j, 0x0000FF, g);
-			if (is_player(g->map[i][j]))
+			if (is_player(g->minimap[i][j]))
 				put_square(i, j, 0xFF0000, g);
 		}
-		printf("\n");
 	}
 }
 
@@ -236,8 +245,6 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		i++;
 	}
 	i = 0;
-	//g->map[(int)player->pos_y][(int)player->pos_x] = 'N'; to do update_player_pos()
-	get_time(player);
 	while (i < screenWidth) // calculate ray
 	{
 		calc_camera(ray, player, i);
@@ -284,9 +291,11 @@ int		handle_input(t_game *g)
 	moved = 0;
 	if (g->player->kp_w)
 	{
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
+		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))])
+			&& (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0')
+		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)])
+			&& (g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0')
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
@@ -318,8 +327,12 @@ int		handle_input(t_game *g)
 		g->player->plane_y = g->player->old_plane_x * sin(-g->player->rot_speed) + g->player->plane_y * cos(-g->player->rot_speed);
 		moved = 1;
 	}
+	get_time(g->player);
 	if (moved)
+	{
+		upd_player_minimap(g);
 		calc_rays(g->mlx, g->ray, g->player, g);
+	}
 	return (0);
 }
 
@@ -327,7 +340,8 @@ int		handle_input(t_game *g)
 
 void	start(t_game *game)
 {
-	//game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
+	game->minimap = copy_map(game->map, 0, game->map_h);
+	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
 	
 	// Passa 'game' em vez de 'game->player'
 	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);

@@ -37,6 +37,8 @@ typedef struct s_player
 {
 	double	pos_y; // y/2
 	double	pos_x; // x/2
+	double	old_pos_y;
+	double	old_pos_x;
 	double	dir_y; // -1=N 1=S
 	double	dir_x; // -1=W 1=E
 	double	old_dir_x;
@@ -94,6 +96,7 @@ typedef struct s_game
 	char		**cub;
 	char		**elements_file;
 	char		**map;
+	char		**minimap;
 	int			map_h;
 	int			map_w;
 	int			sp;
