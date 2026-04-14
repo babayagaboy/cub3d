@@ -169,9 +169,27 @@ void	get_time(t_player *p)
 	p->old_time = p->time;
 	p->time = get_timestamp();
 	p->frame_time = p->time - p->old_time;			// time this frame has taken, in seconds
-	p->move_speed = p->frame_time * 5.0;			// const value in squares per sec
-	p->rot_speed = p->frame_time * 3.0;			// const value in radians per sec
+	p->move_speed = p->frame_time * 3.0;			// const value in squares per sec
+	p->rot_speed = p->frame_time * 2.0;			// const value in radians per sec
 	printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
+}
+
+void	minimap(t_mlx *mlx)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < 10)
+	{
+		j = 0;
+		while (j < 10)
+		{
+			put_pixel(mlx, 500, 500, 0x00FF0000);
+			j++;
+		}
+		i++;
+	}
 }
 	
 void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
@@ -192,6 +210,7 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, char **map)
 		calc_dda(ray, player);
 		run_dda(ray, map);
 //		printf("BEFORE IMAGE TO WINDOW\n");
+		minimap(mlx);
 		draw_column(mlx, ray, i);
 		i++;
 	}
@@ -270,6 +289,8 @@ int		handle_input(t_game *g)
 		calc_rays(g->mlx, g->ray, g->player, g->map);
 	return (0);
 }
+
+
 
 void	start(t_game *game)
 {
