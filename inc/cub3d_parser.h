@@ -19,12 +19,12 @@ void	free_memory(char **arr);
 
 
 int 	check_rbg(char *str);
-int	    handle_texture(char *line, int value, int *elements_found, int *opened);
-int	    handle_floor_ceiling(char *line, int value,
-		int *elements_found, int *f_c_element);
-int	    check_elements(char **elements);
-void	process_element_line(char *line, int *elements_found,
-							int *opened, int *f_c_element);
+void	choose_corect_path(char *line, int value, t_ori_tex *tex);
+int		handle_texture(char *line, int value, t_ele_var *vars, char *tex_path);
+int		handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex);
+int		check_elements(char **elements, t_ori_tex *tex);
+void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex);
+
 
 
 int		*get_player_coords(char **map);

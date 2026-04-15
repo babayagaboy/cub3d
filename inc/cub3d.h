@@ -24,13 +24,32 @@
 
 # include "../mlx/mlx.h"
 
-# define screenWidth	1920
-# define screenHeight	1080
+# define screenWidth	1520
+# define screenHeight	980
 # define KEY_UP			119
 # define KEY_DOWN		115
 # define KEY_LEFT		97
 # define KEY_RIGHT		100
 # define KEY_ESC		65307
+
+typedef struct s_elements_var
+{
+	char	*line;
+	int 	elements_found;
+	int 	opened;
+	int 	f_c_element;
+}	t_ele_var;
+
+typedef struct s_textures
+{
+	void	*img_ptr;
+	char	*data;
+	int		width;
+	int		height;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}	t_texture;
 
 
 typedef struct s_player
@@ -88,11 +107,35 @@ typedef struct s_mlx
 	int		endian;
 }	t_mlx;
 
+typedef struct s_ori_tex
+{
+	t_texture	*tex_north;
+	t_texture	*tex_south;
+	t_texture	*tex_east;
+	t_texture	*tex_west;
+	t_texture	*floor;
+	t_texture	*ceiling;
+	t_texture	*door;
+
+	char	*path_north;
+	char	*path_south;
+	char	*path_east;
+	char	*path_west;
+	char	*path_floor;
+	char	*path_ceiling;
+	char	*path_door;
+
+	int		rgb_floor[3];
+	int		rgb_ceiling[3];
+}	t_ori_tex;
+
 typedef struct s_game
 {
 	t_mlx		*mlx;
 	t_player	*player;
 	t_ray		*ray;
+	t_texture	*txt;
+	t_ori_tex	*o_text;
 	char		**cub;
 	char		**elements_file;
 	char		**map;

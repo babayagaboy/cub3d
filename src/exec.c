@@ -64,6 +64,8 @@ void	put_square(int y, int x, int color, t_game *g)
 	}
 }
 
+
+
 void	init_mlx(t_mlx *mlx)
 {
 	mlx->mlx = mlx_init();

@@ -95,6 +95,12 @@ void	free_all(t_game *g)
 
 int	parser(int argc, char *argv[], t_game *g)
 {
+	t_ori_tex *tex;
+
+	tex = malloc(sizeof(t_ori_tex));
+	if (!tex)
+		return (0);
+
 	if (!validate_args(argc, argv))
 		return (0);
 	if (!load_cub_file(g, argv[1]))
@@ -102,7 +108,7 @@ int	parser(int argc, char *argv[], t_game *g)
 	if (!load_elements_and_map(g))
 		return (free_memory(g->cub), 0);
 	print_debug(g);
-	if (!check_elements(g->elements_file))
+	if (!check_elements(g->elements_file, tex))
 		return (printf("Elements file failed\n"), free_all(g), 0);
 	if (!check_map(g->map, g->player, g))
 		return (printf("Map file failed\n"), free_all(g), 0);
