@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/14 16:19:06 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/15 17:34:18 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,16 @@ int	main(int argc, char **argv)
 	game->player = malloc(sizeof(t_player));
 	if (!game->player)
 		return (free(game), 1);
-	init_player(game->player);
-	if(!parser(argc, argv, game))
-		return (free(game->player), free(game), 0);
-	init_player(game->player);
 	game->mlx = malloc(sizeof(t_mlx));
 	if (!game->mlx)
 		return (1);
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win || !game->mlx->img || !game->mlx->addr)
-		return (free(game->mlx), free(game->player), 1);
+		return (free(game->mlx), 1);
+	init_player(game->player);
+	if(!parser(argc, argv, game))
+		return (free(game->player), free(game->mlx) ,free(game), 0);
+	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 		return (free(game->mlx), free(game->player), 1);

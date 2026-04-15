@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_elements.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/06 15:51:01 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/04/15 17:48:19 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	check_rbg(char *str)
 	return (result);
 }
 
-int	handle_texture(char *line, int value, t_ele_var *vars, char *tex_path)
+int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
 {
 	int	fd;
 
@@ -38,7 +38,7 @@ int	handle_texture(char *line, int value, t_ele_var *vars, char *tex_path)
 	if (fd >= 0)
 	{
 		vars->opened += value;
-		ft_strlcpy(tex_path, &line[5], ft_strlen(&line[5]) + 1);
+		*tex_path = ft_strdup(&line[5]);
 		close(fd);
 	}
 	else
@@ -49,17 +49,11 @@ int	handle_texture(char *line, int value, t_ele_var *vars, char *tex_path)
 void	choose_corect_path(char *line, int value, t_ori_tex *tex)
 {
 	if (value == 5)
-	{
-		ft_strlcpy(tex->path_floor, &line[4], ft_strlen(&line[4]) + 1);
-	}
+		tex->path_floor = ft_strdup(&line[4]);
 	else if (value == 6)
-	{
-		ft_strlcpy(tex->path_ceiling, &line[4], ft_strlen(&line[4]) + 1);
-	}
+		tex->path_ceiling = ft_strdup(&line[4]);
 	else if (value == 7)
-	{
-		ft_strlcpy(tex->path_door, &line[4], ft_strlen(&line[4]) + 1);
-	}
+		tex->path_door = ft_strdup(&line[4]);
 }
 
 int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
@@ -99,13 +93,13 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 {
 	if (ft_strncmp(line, "NO", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 1, vars, tex->path_north);
+		handle_texture(line, 1, vars, &tex->path_north);
 	else if (ft_strncmp(line, "SO", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 2, vars, tex->path_south);
+		handle_texture(line, 2, vars, &tex->path_south);
 	else if (ft_strncmp(line, "WE", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 3, vars, tex->path_west);
+		handle_texture(line, 3, vars, &tex->path_west);
 	else if (ft_strncmp(line, "EA", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 4, vars, tex->path_east);
+		handle_texture(line, 4, vars, &tex->path_east);
 	else if (ft_strncmp(line, "F", 1) == 0 && line[1] == ' ')
 		 handle_floor_ceiling(line, 5, vars, tex);
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')

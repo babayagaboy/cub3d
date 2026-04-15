@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/14 16:53:53 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/15 16:22:50 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,15 @@ typedef struct s_ori_tex
 	t_texture	*tex_south;
 	t_texture	*tex_east;
 	t_texture	*tex_west;
-	t_texture	*floor;
-	t_texture	*ceiling;
-	t_texture	*door;
+	t_texture	*tex_floor;
+	t_texture	*tex_ceiling;
+	t_texture	*tex_door;
+	t_texture	*tex_one;
+	t_texture	*tex_two;
+	t_texture	*tex_three;
+	t_texture	*tex_four;
+	t_texture	*tex_five;
+
 
 	char	*path_north;
 	char	*path_south;
@@ -124,6 +130,11 @@ typedef struct s_ori_tex
 	char	*path_floor;
 	char	*path_ceiling;
 	char	*path_door;
+	char	*path_one;
+	char	*path_two;
+	char	*path_three;
+	char	*path_four;
+	char	*path_five;
 
 	int		rgb_floor[3];
 	int		rgb_ceiling[3];

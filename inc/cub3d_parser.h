@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/14 17:03:21 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/15 17:47:00 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	free_memory(char **arr);
 
 int 	check_rbg(char *str);
 void	choose_corect_path(char *line, int value, t_ori_tex *tex);
-int		handle_texture(char *line, int value, t_ele_var *vars, char *tex_path);
+int		handle_texture(char *line, int value, t_ele_var *vars, char **tex_path);
 int		handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex);
 int		check_elements(char **elements, t_ori_tex *tex);
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex);
@@ -81,6 +81,9 @@ int		load_cub_file(t_game *g, char *file);
 int		load_elements_and_map(t_game *g);
 void	print_debug(t_game *g);
 void	free_all(t_game *g);
+
+int get_textures(t_mlx *mlx, t_ori_tex *tex);
+
 
 # include <cub3d.h>
 

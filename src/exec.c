@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/14 17:10:24 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/15 17:50:57 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void    init_player(t_player *p)
 	p->old_pos_y = p->pos_y;
 
 
-	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
-	p->plane_x = -p->dir_y * 0.66;
+	p->plane_y = p->dir_x * 0.95; //the 2d raycaster version of camera plane
+	p->plane_x = -p->dir_y * 0.95;
 	
 	p->time = get_timestamp(); 
 	p->old_time = p->time; 
@@ -195,7 +195,7 @@ void	get_time(t_player *p)
 	p->frame_time = p->time - p->old_time;			// time this frame has taken, in seconds
 	p->move_speed = p->frame_time * 3.0;			// const value in squares per sec
 	p->rot_speed = p->frame_time * 2.0;			// const value in radians per sec
-	printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
+	//printf("frame: %f | moveSpeed: %f\n", p->frame_time, p->move_speed);
 }
 
 void	upd_player_minimap(t_game *g)

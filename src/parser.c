@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/14 16:16:11 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/15 16:43:10 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int	parser(int argc, char *argv[], t_game *g)
 {
 	t_ori_tex *tex;
 
-	tex = malloc(sizeof(t_ori_tex));
+	tex = ft_calloc(1, sizeof(t_ori_tex));
 	if (!tex)
 		return (0);
 
@@ -112,6 +112,10 @@ int	parser(int argc, char *argv[], t_game *g)
 		return (printf("Elements file failed\n"), free_all(g), 0);
 	if (!check_map(g->map, g->player, g))
 		return (printf("Map file failed\n"), free_all(g), 0);
+	if (!get_textures(g->mlx, tex))
+		return (printf("Textures failed\n"), free_all(g), 0);
+	else
+		printf("text xorosho\n");
 	printf("GOOD GOY\n");
 	free_memory(g->cub);
 	return (1);

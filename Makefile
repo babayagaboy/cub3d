@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/04/13 15:45:52 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/04/15 16:12:04 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/get_map.c \
 				$(SRCDIR)/p_utils.c \
 				$(SRCDIR)/read_file.c \
+				$(SRCDIR)/textures.c \
 				$(SRCDIR)/exec.c \
 				$(SRCDIR)/main.c
 
