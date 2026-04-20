@@ -64,6 +64,10 @@ void	put_square(int y, int x, int color, t_game *g)
 	}
 }
 
+int		get_color(int r, int g, int b)
+{
+	return (r * (256 * 256) + g * 256 + b);
+}
 
 
 void	init_mlx(t_mlx *mlx)
@@ -188,6 +192,41 @@ void	draw_column(t_mlx *mlx, t_ray *r, int i)
 		put_column(mlx, i, draw_start, draw_end, 0x00FF0000);
 }
 
+void	draw_fc(t_mlx *mlx, t_ori_tex *tex)
+{
+	int	x;
+	int	y;
+	int half_h;
+
+	x = 0;
+	y = 0;
+	half_h = screenHeight >> 1;
+	while (x < screenWidth)
+	{
+		y = 0;
+
+		while (y < half_h)
+		{
+			put_pixel(mlx, x, y, get_color(tex->rgb_ceiling[0], tex->rgb_ceiling[1], tex->rgb_ceiling[2]));
+			++y;
+		}
+		++x;
+	}
+	x = 0;
+	while (x < screenWidth)
+	{
+		y = half_h;
+		while (y < screenHeight)
+		{
+			put_pixel(mlx, x, y, get_color(tex->rgb_floor[0], tex->rgb_floor[1], tex->rgb_floor[2]));
+			++y;
+		}
+		++x;
+	}
+}
+
+
+
 void	get_time(t_player *p)
 {
 	p->old_time = p->time;
@@ -244,16 +283,17 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 	while (i < screenWidth * screenHeight * 4)
 	{
 		mlx->addr[i] = 0;
-		i++;
+		++i;
 	}
 	i = 0;
+	draw_fc(mlx, g->o_text);
 	while (i < screenWidth) // calculate ray
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, g->map);
 		draw_column(mlx, ray, i);
-		i++;
+		++i;
 	}
 	minimap(g);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);

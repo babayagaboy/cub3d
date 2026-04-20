@@ -33,12 +33,22 @@ int	main(int argc, char **argv)
 	game->mlx = malloc(sizeof(t_mlx));
 	if (!game->mlx)
 		return (1);
+	game->o_text = malloc(sizeof(t_ori_tex));
+	if (!game->o_text)
+		return (1);
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win || !game->mlx->img || !game->mlx->addr)
 		return (free(game->mlx), 1);
 	init_player(game->player);
 	if(!parser(argc, argv, game))
 		return (free(game->player), free(game->mlx) ,free(game), 0);
+
+	for (int i = 0; i < 3; ++i)
+		printf("In main rbg_ceiling[%d]: %d\n", i, game->o_text->rgb_ceiling[i]);
+	printf("\n");
+	for (int i = 0; i < 3; ++i)
+		printf("In main rbg_floor[%d]: %d\n", i, game->o_text->rgb_floor[i]);
+		
 	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)

@@ -1,0 +1,73 @@
+int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
+{
+	int	type;
+	int	fd;
+	int	increment;
+
+	vars->elements_found += value;
+	type = f_c_type(&line[2]);
+	if (value == 5)
+		increment = 1;
+	else
+		increment = 2;
+	if (type == 2)
+	{
+		fd = open(&line[4], O_RDONLY);
+		if (fd >= 0)
+		{
+			vars->f_c_element += increment;
+			choose_corect_path(line, value, tex);
+			close(fd);
+		}
+		else
+			return (0);
+	}
+	else
+	{
+		if (value == 5 && check_rbg(&line[2], tex->rgb_floor))
+			vars->f_c_element += increment;
+		if (value == 6 && check_rbg(&line[2], tex->rgb_ceiling))
+			vars->f_c_element += increment;
+		else
+			return (0);
+	}
+	return (1);
+}
+
+
+int	check_rbg(char *str, int *arr)
+{
+	char	**splited;
+	char	c[] = {',', '\0'};
+	int		result;
+
+	if (!str)
+		return (0);
+	splited = ft_split(str, c);
+	if (!splited)
+		return (0);
+	result = validate_rgb_values(splited, arr);
+	free_memory(splited);
+	return (result);
+}
+
+int	validate_rgb_values(char **splited, int *arr)
+{
+	int	i;
+	int	result;
+
+	i = 0;
+	while (splited[i])
+	{
+		if (!is_numeric_str(splited[i]))
+			return (0);
+		result = ft_atoi(splited[i]);
+		if (result < 0 || result > 255 || i > 2)
+			return (0);
+		arr[i] = result;
+		i++;
+	}
+	if (i != 3)
+		return (0);
+	return (1);
+}

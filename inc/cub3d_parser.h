@@ -18,7 +18,7 @@ void	free_char_arr(char **arr, int i);
 void	free_memory(char **arr);
 
 
-int 	check_rbg(char *str);
+int 	check_rbg(char *str, int *arr);
 void	choose_corect_path(char *line, int value, t_ori_tex *tex);
 int		handle_texture(char *line, int value, t_ele_var *vars, char **tex_path);
 int		handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex);
@@ -46,7 +46,7 @@ char	*looksmax_string(char *str);
 
 int	    f_c_type(char *str);
 int	    is_numeric_str(char *str);
-int		validate_rgb_values(char **splited);
+int		validate_rgb_values(char **splited, int *arr);
 
 
 

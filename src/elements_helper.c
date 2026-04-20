@@ -37,7 +37,7 @@ int	is_numeric_str(char *str)
 	return (1);
 }
 
-int	validate_rgb_values(char **splited)
+int	validate_rgb_values(char **splited, int *arr)
 {
 	int	i;
 	int	result;
@@ -48,9 +48,12 @@ int	validate_rgb_values(char **splited)
 		if (!is_numeric_str(splited[i]))
 			return (0);
 		result = ft_atoi(splited[i]);
-		if (result < 0 || result > 255)
+		if (result < 0 || result > 255 || i > 2)
 			return (0);
+		arr[i] = result;
 		i++;
 	}
+	if (i != 3)
+		return (0);
 	return (1);
 }

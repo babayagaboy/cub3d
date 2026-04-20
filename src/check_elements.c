@@ -13,7 +13,7 @@
 #include <cub3d.h>
 #include "../inc/libft/libft.h"
 
-int	check_rbg(char *str)
+int	check_rbg(char *str, int *arr)
 {
 	char	**splited;
 	char	c[] = {',', '\0'};
@@ -24,7 +24,7 @@ int	check_rbg(char *str)
 	splited = ft_split(str, c);
 	if (!splited)
 		return (0);
-	result = validate_rgb_values(splited);
+	result = validate_rgb_values(splited, arr);
 	free_memory(splited);
 	return (result);
 }
@@ -82,7 +82,9 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 	}
 	else
 	{
-		if (check_rbg(&line[2]))
+		if (value == 5 && check_rbg(&line[2], tex->rgb_floor))
+			vars->f_c_element += increment;
+		if (value == 6 && check_rbg(&line[2], tex->rgb_ceiling))
 			vars->f_c_element += increment;
 		else
 			return (0);

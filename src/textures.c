@@ -47,13 +47,15 @@ int get_textures(t_mlx *mlx, t_ori_tex *tex)
     printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_west, tex->path_west);
     printf("r = %d\n", r);
-    r += load_texture(mlx, &tex->tex_floor, tex->path_floor);
+    if (tex->path_floor)
+        r += load_texture(mlx, &tex->tex_floor, tex->path_floor);
     printf("r = %d\n", r);
-    r += load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
+    if (tex->path_ceiling)
+        r += load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
     printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_door, tex->path_door);
     printf("r = %d\n", r);
-    if (r == 7)
+    if (r == 7 || r == 5)
         return (1);
     return (0);
 }
