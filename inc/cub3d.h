@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/15 16:22:50 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/20 16:19:52 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,9 @@ typedef struct s_ray
 	int		hit;
 	int		side;
 	double	perp_wall_dist;
+	double	wall_hit_pos_x;
+	double	tex_step;
+	double	tex_pos;
 }	t_ray;
 
 typedef struct s_mlx

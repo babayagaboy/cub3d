@@ -6,11 +6,13 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/15 17:50:57 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/20 17:58:32 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+int buffer[screenHeight][screenWidth];
 
 int	ft_isdigit(int c)
 {
@@ -37,12 +39,21 @@ void	put_pixel(t_mlx *mlx, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	put_column(t_mlx *mlx,int x, int start, int end, int color)
+void	drawbuffer(t_mlx *mlx)
 {
-	while (start < end)
+	int y;
+	int x;
+
+	y = 0;
+	while(y < screenHeight)
 	{
-		put_pixel(mlx, x, start, color);
-		start++;
+		x = 0;
+		while (x < screenWidth)
+		{
+			put_pixel(mlx, x, y, buffer[y][x]);
+			++x;
+		}
+		++y;
 	}
 }
 
@@ -171,8 +182,9 @@ void	run_dda(t_ray *r, char **map)
 		r->perp_wall_dist = (r->side_dist_y - r->delta_dist_y);
 }
 
-void	draw_column(t_mlx *mlx, t_ray *r, int i)
+void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
 {
+	t_texture *t = NULL;
 	int	line_height;
 	int	draw_start;
 	int	draw_end;
@@ -180,16 +192,61 @@ void	draw_column(t_mlx *mlx, t_ray *r, int i)
 	if (r->perp_wall_dist <= 0)
 		r->perp_wall_dist = 0.1;
 	line_height = (int)(screenHeight / r->perp_wall_dist);
-	draw_start = (-1 * line_height) / 2 + screenHeight / 2;
+	draw_start = ((-1 * line_height) >> 1) + (screenHeight >> 1);
 	if (draw_start < 0)
 		draw_start = 0;
-	draw_end = line_height / 2 + screenHeight / 2;
+	draw_end = (line_height >> 1) + (screenHeight >> 1);
 	if (draw_end >= screenHeight)
 		draw_end = screenHeight - 1;
-	if (r->side == 1)
-		put_column(mlx, i, draw_start, draw_end, (0x00FF0000 / 2));
+
+	if (r->side == 0)
+		r->wall_hit_pos_x = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
 	else
-		put_column(mlx, i, draw_start, draw_end, 0x00FF0000);
+		r->wall_hit_pos_x = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
+	if (r->side == 0 && r->ray_dir_x > 0)
+		t = tex->tex_west;
+	else if (r->side == 0)
+		t = tex->tex_east;
+	else if (r->ray_dir_y > 0)
+		t = tex->tex_north;
+	else
+		t = tex->tex_south;
+	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x); // where in the wall has the ray hit
+	r->tex_step = 1.0 * t->height / line_height;
+	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
+
+	int tex_x;
+
+	tex_x = (int)(r->wall_hit_pos_x * (1.0 * t->width));
+	if(r->side == 0 && r->ray_dir_x > 0) tex_x = t->width - tex_x - 1;
+	if(r->side == 1 && r->ray_dir_y < 0) tex_x = t->width - tex_x - 1;
+
+	int tex_y;
+	int start = draw_start;
+	int end = draw_end;
+	int color;
+	while (start <= end)
+	{
+		if (start >= 0 && start < screenHeight && i >= 0 && i < screenWidth)
+		{
+			tex_y = (int)r->tex_pos;
+
+			if (tex_y < 0)
+				tex_y = 0;
+			if (tex_y >= t->height)
+				tex_y = t->height - 1;
+
+			int *pixels = (int *)t->data;
+			color = pixels[tex_y * (t->line_len / 4) + tex_x];
+
+			if (r->side == 1)
+				color = (color >> 1) & 8355711;
+
+			buffer[start][i] = color;
+		}
+		r->tex_pos += r->tex_step;
+		start++;
+}
 }
 
 void	draw_fc(t_mlx *mlx, t_ori_tex *tex)
@@ -292,8 +349,14 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, g->map);
-		draw_column(mlx, ray, i);
+		get_walls(ray, player, g->o_text, i);
 		++i;
+	}
+	drawbuffer(g->mlx);
+	for(int y = 0; y < screenHeight; y++) {
+		for(int x = 0; x < screenWidth; x++) {
+			buffer[y][x] = 0;
+		}
 	}
 	minimap(g);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
