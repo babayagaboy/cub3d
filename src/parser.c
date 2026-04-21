@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/15 16:43:10 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/21 16:22:26 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,18 +102,18 @@ int	parser(int argc, char *argv[], t_game *g)
 		return (0);
 	if (!load_elements_and_map(g))
 		return (free_memory(g->cub), 0);
-	print_debug(g);
+	//print_debug(g);
 	if (!check_elements(g->elements_file, g->o_text))
 		return (printf("Elements file failed\n"), free_all(g), 0);
 	if (!check_map(g->map, g->player, g))
 		return (printf("Map file failed\n"), free_all(g), 0);
 	if (!get_textures(g->mlx, g->o_text))
 		return (printf("Textures failed\n"), free_all(g), 0);
-	for (int i = 0; i < 3; ++i)
-		printf("In parser rbg_ceiling[%d]: %d\n", i, g->o_text->rgb_ceiling[i]);
-	printf("\n");
-	for (int i = 0; i < 3; ++i)
-		printf("In parser rbg_floor[%d]: %d\n", i, g->o_text->rgb_floor[i]);
+	// for (int i = 0; i < 3; ++i)
+	// 	printf("In parser rbg_ceiling[%d]: %d\n", i, g->o_text->rgb_ceiling[i]);
+	// printf("\n");
+	// for (int i = 0; i < 3; ++i)
+	// 	printf("In parser rbg_floor[%d]: %d\n", i, g->o_text->rgb_floor[i]);
 	printf("GOOD GOY\n");
 	free_memory(g->cub);
 	return (1);

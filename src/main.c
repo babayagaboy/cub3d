@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/15 17:34:18 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/21 17:35:05 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	main(int argc, char **argv)
 	if(!parser(argc, argv, game))
 		return (free(game->player), free(game->mlx) ,free(game), 0);
 
-	for (int i = 0; i < 3; ++i)
-		printf("In main rbg_ceiling[%d]: %d\n", i, game->o_text->rgb_ceiling[i]);
-	printf("\n");
-	for (int i = 0; i < 3; ++i)
-		printf("In main rbg_floor[%d]: %d\n", i, game->o_text->rgb_floor[i]);
+	// for (int i = 0; i < 3; ++i)
+	// 	printf("In main rbg_ceiling[%d]: %d\n", i, game->o_text->rgb_ceiling[i]);
+	// printf("\n");
+	// for (int i = 0; i < 3; ++i)
+	// 	printf("In main rbg_floor[%d]: %d\n", i, game->o_text->rgb_floor[i]);
 		
 	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));

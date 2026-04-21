@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/20 17:58:32 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/21 18:15:46 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,55 @@ void	run_dda(t_ray *r, char **map)
 		r->perp_wall_dist = (r->side_dist_y - r->delta_dist_y);
 }
 
+void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
+{
+	int pos;
+	int j;
+	int	tex_x;
+	int	tex_y;
+	int	color;
+
+	j = 0;
+	r->ray_dir_x_l = p->dir_x - p->plane_x;
+	r->ray_dir_y_l = p->dir_y - p->plane_y;
+	r->ray_dir_x_r = p->dir_x + p->plane_x;
+	r->ray_dir_y_r = p->dir_y + p->plane_y;
+	if (i <= (screenHeight >> 1))
+		return ;
+	pos = i - (screenHeight >> 1);
+	p->pos_z = (screenHeight >> 1);
+	p->row_dis = p->pos_z / pos;
+	r->floor_step_x = p->row_dis * (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
+	r->floor_step_y = p->row_dis * (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
+	r->floor_x = p->pos_x + p->row_dis * r->ray_dir_x_l;
+	r->floor_y = p->pos_y + p->row_dis * r->ray_dir_y_l;
+	while (j < screenWidth)
+	{
+		double	frac_x = r->floor_x - floor(r->floor_x);
+		double	frac_y = r->floor_y - floor(r->floor_y);
+
+		if(t->path_ceiling)
+		{
+			int *pixels = (int *)t->tex_ceiling->data;
+			tex_x = (int)(t->tex_ceiling->width * frac_x);
+			tex_y = (int)(t->tex_ceiling->height * frac_y);
+			color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
+			buffer[screenHeight - i - 1][j] = color;
+		}
+		if(t->path_floor)
+		{
+			int *pixels = (int *)t->tex_floor->data;
+			tex_x = (int)(t->tex_floor->width * frac_x);
+			tex_y = (int)(t->tex_floor->height * frac_y);
+			color = pixels[tex_y * (t->tex_floor->line_len / 4) + tex_x];
+			buffer[i][j] = color;
+		}
+		r->floor_x += r->floor_step_x;
+		r->floor_y += r->floor_step_y;
+		++j;
+	}
+}
+
 void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
 {
 	t_texture *t = NULL;
@@ -238,10 +287,6 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
 
 			int *pixels = (int *)t->data;
 			color = pixels[tex_y * (t->line_len / 4) + tex_x];
-
-			if (r->side == 1)
-				color = (color >> 1) & 8355711;
-
 			buffer[start][i] = color;
 		}
 		r->tex_pos += r->tex_step;
@@ -292,9 +337,6 @@ void	get_f_colored(t_ori_tex *tex)
 		++x;
 	}
 }
-
-
-
 
 void	get_time(t_player *p)
 {
@@ -349,9 +391,12 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 	int i;
 
 	i = 0;
-	while (i < screenWidth * screenHeight * 4)
+	int size = mlx->line_len * screenHeight;
+	for (int j = 0; j < size; j++)
+		mlx->addr[j] = 0;
+	while (i < screenHeight)
 	{
-		mlx->addr[i] = 0;
+		get_fc(ray, player, g->o_text, i);
 		++i;
 	}
 	i = 0;

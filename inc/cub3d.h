@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/20 16:19:52 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/21 15:44:26 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,21 @@ typedef struct s_player
 {
 	double	pos_y; // y/2
 	double	pos_x; // x/2
+	double	pos_z; // where the camera "is"
 	double	old_pos_y;
 	double	old_pos_x;
 	double	dir_y; // -1=N 1=S
 	double	dir_x; // -1=W 1=E
+	double	row_dis;
 	double	old_dir_x;
 	double	plane_y; // FOV is 2 * atan(0.66/1.0)=66°
 	double	plane_x;
 	double	old_plane_x;
-	
 	double	time;
 	double	old_time;
 	double	frame_time;
 	double	move_speed;
 	double	rot_speed;
-
 	int		kp_w;
 	int		kp_s;
 	int		kp_a;
@@ -82,7 +82,11 @@ typedef struct s_ray
 {
 	double	camera_x;
 	double	ray_dir_x;
+	double	ray_dir_x_l;
+	double	ray_dir_x_r;
 	double	ray_dir_y;
+	double	ray_dir_y_l;
+	double	ray_dir_y_r;
 	int		map_x;
 	int		map_y;
 	double	delta_dist_x;
@@ -97,6 +101,10 @@ typedef struct s_ray
 	double	wall_hit_pos_x;
 	double	tex_step;
 	double	tex_pos;
+	double	floor_step_x;
+	double	floor_step_y;
+	double	floor_x;
+	double	floor_y;
 }	t_ray;
 
 typedef struct s_mlx
