@@ -69,9 +69,9 @@ void	put_square(int y, int x, int color, t_game *g)
 		while (j < x * g->sp + g->sp)
 		{
 			put_pixel(g->mlx,  j, i, color);
-			j++;
+			++j;
 		}
-		i++;
+		++i;
 	}
 }
 
@@ -103,8 +103,8 @@ void    init_player(t_player *p)
 	p->old_pos_y = p->pos_y;
 
 
-	p->plane_y = p->dir_x * 0.95; //the 2d raycaster version of camera plane
-	p->plane_x = -p->dir_y * 0.95;
+	p->plane_y = p->dir_x * 0.66; //the 2d raycaster version of camera plane
+	p->plane_x = -p->dir_y * 0.66;
 	
 	p->time = get_timestamp(); 
 	p->old_time = p->time; 
@@ -245,11 +245,11 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
 			buffer[start][i] = color;
 		}
 		r->tex_pos += r->tex_step;
-		start++;
+		++start;
 }
 }
 
-void	draw_fc(t_mlx *mlx, t_ori_tex *tex)
+void	get_c_colored(t_ori_tex *tex)
 {
 	int	x;
 	int	y;
@@ -264,23 +264,35 @@ void	draw_fc(t_mlx *mlx, t_ori_tex *tex)
 
 		while (y < half_h)
 		{
-			put_pixel(mlx, x, y, get_color(tex->rgb_ceiling[0], tex->rgb_ceiling[1], tex->rgb_ceiling[2]));
-			++y;
-		}
-		++x;
-	}
-	x = 0;
-	while (x < screenWidth)
-	{
-		y = half_h;
-		while (y < screenHeight)
-		{
-			put_pixel(mlx, x, y, get_color(tex->rgb_floor[0], tex->rgb_floor[1], tex->rgb_floor[2]));
+			if (buffer[y][x] == 0)
+				buffer[y][x] =  get_color(tex->rgb_ceiling[0], tex->rgb_ceiling[1], tex->rgb_ceiling[2]);
 			++y;
 		}
 		++x;
 	}
 }
+
+void	get_f_colored(t_ori_tex *tex)
+{
+	int	x;
+	int	y;
+	int half_h;
+
+	x = 0;
+	half_h = screenHeight >> 1;
+	while (x < screenWidth)
+	{
+		y = half_h;
+		while (y < screenHeight)
+		{
+			if (buffer[y][x] == 0)
+				buffer[y][x] =  get_color(tex->rgb_floor[0], tex->rgb_floor[1], tex->rgb_floor[2]);
+			++y;
+		}
+		++x;
+	}
+}
+
 
 
 
@@ -313,9 +325,9 @@ void	minimap(t_game *g)
 	else
 		g->sp = (int)(300 / g->map_w);
 	i = 0;
-	for (i = 0; g->minimap[i]; i++)
+	for (i = 0; g->minimap[i]; ++i)
 	{
-		for (j = 0; g->minimap[i][j]; j++)
+		for (j = 0; g->minimap[i][j]; ++j)
 		{
 			if (is_wall(g->minimap[i][j]))
 				put_square(i, j, 0x48494B, g);
@@ -343,7 +355,6 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		++i;
 	}
 	i = 0;
-	draw_fc(mlx, g->o_text);
 	while (i < screenWidth) // calculate ray
 	{
 		calc_camera(ray, player, i);
@@ -352,9 +363,13 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		get_walls(ray, player, g->o_text, i);
 		++i;
 	}
+	if (!g->o_text->path_ceiling)
+		get_c_colored(g->o_text);
+	if (!g->o_text->path_floor)
+		get_f_colored(g->o_text);
 	drawbuffer(g->mlx);
-	for(int y = 0; y < screenHeight; y++) {
-		for(int x = 0; x < screenWidth; x++) {
+	for(int y = 0; y < screenHeight; ++y) {
+		for(int x = 0; x < screenWidth; ++x) {
 			buffer[y][x] = 0;
 		}
 	}

@@ -30,31 +30,31 @@ int get_textures(t_mlx *mlx, t_ori_tex *tex)
 {
     int r;
 
-    printf("NO: [%s]\n", tex->path_north);
+    /*printf("NO: [%s]\n", tex->path_north);
     printf("SO: [%s]\n", tex->path_south);
     printf("WE: [%s]\n", tex->path_west);
     printf("EA: [%s]\n", tex->path_east);
     printf("F : [%s]\n", tex->path_floor);
     printf("C : [%s]\n", tex->path_ceiling);
-    printf("D : [%s]\n", tex->path_door);
+    printf("D : [%s]\n", tex->path_door);*/
  
     r = 0;
     r += load_texture(mlx, &tex->tex_north, tex->path_north);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_south, tex->path_south);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_east, tex->path_east);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_west, tex->path_west);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     if (tex->path_floor)
         r += load_texture(mlx, &tex->tex_floor, tex->path_floor);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     if (tex->path_ceiling)
         r += load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     r += load_texture(mlx, &tex->tex_door, tex->path_door);
-    printf("r = %d\n", r);
+    //printf("r = %d\n", r);
     if (r == 7 || r == 5)
         return (1);
     return (0);

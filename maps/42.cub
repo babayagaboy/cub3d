@@ -1,7 +1,7 @@
-F 34, 234, 12
-SO ./textures/south.xpm  
-WE ./textures/west.xpm
-EA ./textures/east.xpm
+F 101, 67, 33
+SO ./textures/starWarsWall.xpm
+WE ./textures/starWarsWall.xpm
+EA ./textures/starWarsWall.xpm
 C       23, 42, 63
 
 
@@ -12,11 +12,11 @@ C       23, 42, 63
 
 
 
-NO ./textures/north.xpm
+NO ./textures/starWarsWall.xpm
 
 
 
-D ./textures/north.xpm
+D ./textures/sciFiIronWall.xpm
 
 
         1111111111111111111111111

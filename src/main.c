@@ -36,6 +36,9 @@ int	main(int argc, char **argv)
 	game->o_text = malloc(sizeof(t_ori_tex));
 	if (!game->o_text)
 		return (1);
+	game->txt = malloc(sizeof(t_texture));
+	if (!game->txt)
+		return (1);
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win || !game->mlx->img || !game->mlx->addr)
 		return (free(game->mlx), 1);
