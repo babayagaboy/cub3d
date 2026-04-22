@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/21 18:15:46 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/22 15:54:55 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
 	}
 }
 
-void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
+void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 {
 	t_texture *t = NULL;
 	int	line_height;
@@ -258,8 +258,10 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex ,int i)
 		t = tex->tex_east;
 	else if (r->ray_dir_y > 0)
 		t = tex->tex_north;
-	else
+	else if (r->side == 1)
 		t = tex->tex_south;
+	else if (g->map[(int)(p->pos_y + r->ray_dir_y)][(int)(p->pos_x + r->ray_dir_x)] == 'D')
+		t = tex->tex_door;
 	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x); // where in the wall has the ray hit
 	r->tex_step = 1.0 * t->height / line_height;
 	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
@@ -405,7 +407,7 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, g->map);
-		get_walls(ray, player, g->o_text, i);
+		get_walls(ray, player, g->o_text, g, i);
 		++i;
 	}
 	if (!g->o_text->path_ceiling)
