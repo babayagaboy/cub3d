@@ -22,7 +22,7 @@ int 	check_rbg(char *str, int *arr);
 void	choose_corect_path(char *line, int value, t_ori_tex *tex);
 int		handle_texture(char *line, int value, t_ele_var *vars, char **tex_path);
 int		handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex);
-int		check_elements(char **elements, t_ori_tex *tex);
+int		check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars);
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex);
 
 
@@ -50,10 +50,10 @@ int		validate_rgb_values(char **splited, int *arr);
 
 
 
-int		count_elements(char **cub, int y);
-int		process_line(char *line, char **elements_file, int i, int *stop);
-char	**fill_elements(char **cub, int *y, int count);
-char	**get_elements(char **cub, int *y);
+int		count_elements(char **cub, int y, int *door_found);
+int		process_line(char *line, char **elements_file, int i, int *stop, int door_found);
+char	**fill_elements(char **cub, int *y, int count, int door_found);
+char	**get_elements(char **cub, int *y, t_ele_var *vars);
 
 
 
@@ -78,7 +78,7 @@ char	**read_file(char *file);
 int		parser(int argc, char *argv[], t_game *g);
 int		validate_args(int argc, char *argv[]);
 int		load_cub_file(t_game *g, char *file);
-int		load_elements_and_map(t_game *g);
+int		load_elements_and_map(t_game *g, t_ele_var *vars);
 void	print_debug(t_game *g);
 void	free_all(t_game *g);
 

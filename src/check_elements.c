@@ -107,43 +107,36 @@ void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
 		handle_floor_ceiling(line, 6, vars, tex);
 	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
+	{
+		vars->door_found = 1;
 		handle_floor_ceiling(line, 7, vars, tex);
+	}
 }
 
 
 
-int	check_elements(char **elements, t_ori_tex *tex)
+int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 {
 	int	y;
-	//int	elements_found;
-	//int	opened;
-	//int	f_c_element;
-
-	t_ele_var	*vars;
-
-	vars = malloc(sizeof(t_ele_var));
-	if (!vars)
-		return (0);
-
+	
 	if (!elements)
 		return (0);
 	y = 0;
-	//elements_found = 0;
-	//opened = 0;
-	//f_c_element = 0;
-
-	vars->elements_found = 0;
-	vars->opened = 0;
-	vars->f_c_element = 0;
-
-
 	while (elements[y])
 	{
 		process_element_line(elements[y], vars, tex);
 		y++;
 	}
-	if (vars->elements_found == 28 && vars->opened == 10 && vars->f_c_element == 5)
-		return (1);
+	if (vars->door_found)
+	{
+		if (vars->elements_found == 28 && vars->opened == 10 && vars->f_c_element == 5)
+			return (1);
+	}
+	else
+	{
+		if (vars->elements_found == 21 && vars->opened == 10 && vars->f_c_element == 3)
+			return (1);
+	}
 	return (0);
 }
 

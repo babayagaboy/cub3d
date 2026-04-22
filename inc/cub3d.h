@@ -38,6 +38,7 @@ typedef struct s_elements_var
 	int 	elements_found;
 	int 	opened;
 	int 	f_c_element;
+	int		door_found;
 }	t_ele_var;
 
 typedef struct s_textures

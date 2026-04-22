@@ -13,9 +13,10 @@
 #include <cub3d.h>
 #include "../inc/libft/libft.h"
 
-int	count_elements(char **cub, int y)
+int	count_elements(char **cub, int y, int *door_found)
 {
 	int	count;
+	char	*clean;
 
 	count = 0;
 	while (cub[y])
@@ -25,20 +26,39 @@ int	count_elements(char **cub, int y)
 			y++;
 			continue;
 		}
+		clean = ft_findspace(cub[y]);
+		if (ft_strncmp(clean, "D", 1) == 0)
+			*door_found = 1;
+		printf("Door status: %d\n", *door_found);
+		printf("String: %s\n", clean);
 		count++;
-		if (count == 7)
-			break ;
+		if (*door_found == 1)
+		{
+			if (count == 8)
+				break ;
+		}
+		else
+		{
+			if (count == 7)
+				break ;
+		}
 		y++;
 	}
 	return (count);
 }
 
-int	process_line(char *line, char **elements_file, int i, int *stop)
+int	process_line(char *line, char **elements_file, int i, int *stop, int door_found)
 {
 	char	*clean;
+	int		find_stop;
 
 	clean = ft_findspace(line);
-	if (i > 6)
+	if (door_found == 1)
+		find_stop = 6;
+	else
+		find_stop = 5;
+	
+	if (i > find_stop)
 	{
 		*stop = 1;
 		return (1);
@@ -49,7 +69,7 @@ int	process_line(char *line, char **elements_file, int i, int *stop)
 	return (1);
 }
 
-char	**fill_elements(char **cub, int *y, int count)
+char	**fill_elements(char **cub, int *y, int count, int door_found)
 {
 	char	**elements_file;
 	int		i;
@@ -67,7 +87,7 @@ char	**fill_elements(char **cub, int *y, int count)
 			(*y)++;
 			continue;
 		}
-		if (!process_line(cub[*y], elements_file, i, &stop))
+		if (!process_line(cub[*y], elements_file, i, &stop, door_found))
 			return (free_char_arr(elements_file, i), NULL);
 		if (stop)
 			break ;
@@ -78,14 +98,15 @@ char	**fill_elements(char **cub, int *y, int count)
 	return (elements_file);
 }
 
-char	**get_elements(char **cub, int *y)
+char	**get_elements(char **cub, int *y, t_ele_var *vars)
 {
 	char	**elements_file;
 	int		count;
 
 	if (!cub)
 		return (NULL);
-	count = count_elements(cub, *y);
-	elements_file = fill_elements(cub, y, count);
+
+	count = count_elements(cub, *y, &vars->door_found);
+	elements_file = fill_elements(cub, y, count, vars->door_found);
 	return (elements_file);
 }

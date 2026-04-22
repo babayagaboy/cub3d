@@ -1,3 +1,184 @@
+int	parser(int argc, char *argv[], t_game *g)
+{
+	t_ele_var *vars;
+
+	vars = malloc(sizeof(t_ele_var));
+	if (!vars)
+		return (0);
+
+	vars->elements_found = 0;
+	vars->opened = 0;
+	vars->f_c_element = 0;
+	vars->door_found = 0;
+
+	if (!validate_args(argc, argv))
+		return (0);
+	if (!load_cub_file(g, argv[1]))
+		return (0);
+	if (!load_elements_and_map(g, vars))
+		return (free_memory(g->cub), 0);
+	print_debug(g);
+	if (!check_elements(g->elements_file, g->o_text, vars))
+		return (printf("Elements file failed\n"), free_all(g), 0);
+	if (!check_map(g->map, g->player, g))
+		return (printf("Map file failed\n"), free_all(g), 0);
+	if (!get_textures(g->mlx, g->o_text))
+		return (printf("Textures failed\n"), free_all(g), 0);
+	for (int i = 0; i < 3; ++i)
+		printf("In parser rbg_ceiling[%d]: %d\n", i, g->o_text->rgb_ceiling[i]);
+	printf("\n");
+	for (int i = 0; i < 3; ++i)
+		printf("In parser rbg_floor[%d]: %d\n", i, g->o_text->rgb_floor[i]);
+	printf("GOOD GOY\n");
+	free_memory(g->cub);
+	return (1);
+}
+
+
+
+
+int	count_elements(char **cub, int y, int *door_found)
+{
+	int	count;
+	char	*clean;
+
+	count = 0;
+	while (cub[y])
+	{
+		if (cub[y] && (ft_isempty(cub[y]) || cub[y][0] == '\n'))
+		{
+			y++;
+			continue;
+		}
+		clean = ft_findspace(cub[y]);
+		if (ft_strncmp(clean, "D", 1) == 0)
+			*door_found = 1;
+		printf("Door status: %d\n", *door_found);
+		printf("String: %s\n", clean);
+		count++;
+		if (*door_found == 1)
+		{
+			if (count == 8)
+				break ;
+		}
+		else
+		{
+			if (count == 7)
+				break ;
+		}
+		y++;
+	}
+	return (count);
+}
+
+int	process_line(char *line, char **elements_file, int i, int *stop, int door_found)
+{
+	char	*clean;
+	int		find_stop;
+
+	clean = ft_findspace(line);
+	if (door_found == 1)
+		find_stop = 6;
+	else
+		find_stop = 5;
+	
+	if (i > find_stop)
+	{
+		*stop = 1;
+		return (1);
+	}
+	elements_file[i] = looksmax_string(clean);
+	if (!elements_file[i])
+		return (0);
+	return (1);
+}
+
+char	**fill_elements(char **cub, int *y, int count, int door_found)
+{
+	char	**elements_file;
+	int		i;
+	int		stop;
+
+	elements_file = ft_calloc(count + 2, sizeof(char *));
+	if (!elements_file)
+		return (NULL);
+	i = 0;
+	stop = 0;
+	while (cub[*y])
+	{
+		if (cub[*y] && (ft_isempty(cub[*y]) || cub[*y][0] == '\n'))
+		{
+			(*y)++;
+			continue;
+		}
+		if (!process_line(cub[*y], elements_file, i, &stop, door_found))
+			return (free_char_arr(elements_file, i), NULL);
+		if (stop)
+			break ;
+		(*y)++;
+		i++;
+	}
+	elements_file[i] = NULL;
+	return (elements_file);
+}
+
+char	**get_elements(char **cub, int *y, t_ele_var *vars)
+{
+	char	**elements_file;
+	int		count;
+
+	if (!cub)
+		return (NULL);
+
+	count = count_elements(cub, *y, &vars->door_found);
+	elements_file = fill_elements(cub, y, count, vars->door_found);
+	return (elements_file);
+}
+
+
+int	check_rbg(char *str, int *arr)
+{
+	char	**splited;
+	char	c[] = {',', '\0'};
+	int		result;
+
+	if (!str)
+		return (0);
+	splited = ft_split(str, c);
+	if (!splited)
+		return (0);
+	result = validate_rgb_values(splited, arr);
+	free_memory(splited);
+	return (result);
+}
+
+int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
+{
+	int	fd;
+
+	fd = open(&line[5], O_RDONLY);
+	vars->elements_found += value;
+	if (fd >= 0)
+	{
+		vars->opened += value;
+		*tex_path = ft_strdup(&line[5]);
+		close(fd);
+	}
+	else
+		return (0);
+	return (1);
+}
+
+void	choose_corect_path(char *line, int value, t_ori_tex *tex)
+{
+	if (value == 5)
+		tex->path_floor = ft_strdup(&line[4]);
+	else if (value == 6)
+		tex->path_ceiling = ft_strdup(&line[4]);
+	else if (value == 7)
+		tex->path_door = ft_strdup(&line[4]);
+}
+
 int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 {
 	int	type;
@@ -34,40 +215,50 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 	return (1);
 }
 
-
-int	check_rbg(char *str, int *arr)
+void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 {
-	char	**splited;
-	char	c[] = {',', '\0'};
-	int		result;
-
-	if (!str)
-		return (0);
-	splited = ft_split(str, c);
-	if (!splited)
-		return (0);
-	result = validate_rgb_values(splited, arr);
-	free_memory(splited);
-	return (result);
+	if (ft_strncmp(line, "NO", 2) == 0 && line[2] == ' ')
+		handle_texture(line, 1, vars, &tex->path_north);
+	else if (ft_strncmp(line, "SO", 2) == 0 && line[2] == ' ')
+		handle_texture(line, 2, vars, &tex->path_south);
+	else if (ft_strncmp(line, "WE", 2) == 0 && line[2] == ' ')
+		handle_texture(line, 3, vars, &tex->path_west);
+	else if (ft_strncmp(line, "EA", 2) == 0 && line[2] == ' ')
+		handle_texture(line, 4, vars, &tex->path_east);
+	else if (ft_strncmp(line, "F", 1) == 0 && line[1] == ' ')
+		 handle_floor_ceiling(line, 5, vars, tex);
+	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
+		handle_floor_ceiling(line, 6, vars, tex);
+	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
+	{
+		vars->door_found = 1;
+		handle_floor_ceiling(line, 7, vars, tex);
+	}
 }
 
-int	validate_rgb_values(char **splited, int *arr)
-{
-	int	i;
-	int	result;
 
-	i = 0;
-	while (splited[i])
-	{
-		if (!is_numeric_str(splited[i]))
-			return (0);
-		result = ft_atoi(splited[i]);
-		if (result < 0 || result > 255 || i > 2)
-			return (0);
-		arr[i] = result;
-		i++;
-	}
-	if (i != 3)
+
+int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
+{
+	int	y;
+	
+	if (!elements)
 		return (0);
-	return (1);
+	y = 0;
+	while (elements[y])
+	{
+		process_element_line(elements[y], vars, tex);
+		y++;
+	}
+	if (vars->door_found)
+	{
+		if (vars->elements_found == 28 && vars->opened == 10 && vars->f_c_element == 5)
+			return (1);
+	}
+	else
+	{
+		if (vars->elements_found == 21 && vars->opened == 10 && vars->f_c_element == 3)
+			return (1);
+	}
+	return (0);
 }
