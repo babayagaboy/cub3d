@@ -30,6 +30,7 @@
 # define KEY_DOWN		115
 # define KEY_LEFT		97
 # define KEY_RIGHT		100
+# define KEY_E 
 # define KEY_ESC		65307
 
 typedef struct s_elements_var

@@ -231,6 +231,7 @@ void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
 	}
 }
 
+
 void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 {
 	t_texture *t = NULL;
@@ -247,12 +248,15 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 	draw_end = (line_height >> 1) + (screenHeight >> 1);
 	if (draw_end >= screenHeight)
 		draw_end = screenHeight - 1;
-
 	if (r->side == 0)
 		r->wall_hit_pos_x = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
 	else
 		r->wall_hit_pos_x = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
-	if (r->side == 0 && r->ray_dir_x > 0)
+	if (g->map[r->map_y][r->map_x] == 'D')
+	{
+		t = tex->tex_door;
+	}
+	else if (r->side == 0 && r->ray_dir_x > 0)
 		t = tex->tex_west;
 	else if (r->side == 0)
 		t = tex->tex_east;
@@ -260,14 +264,11 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 		t = tex->tex_north;
 	else if (r->side == 1)
 		t = tex->tex_south;
-	else if (g->map[(int)(p->pos_y + r->ray_dir_y)][(int)(p->pos_x + r->ray_dir_x)] == 'D')
-		t = tex->tex_door;
-	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x); // where in the wall has the ray hit
+	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x);
 	r->tex_step = 1.0 * t->height / line_height;
 	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
 
 	int tex_x;
-
 	tex_x = (int)(r->wall_hit_pos_x * (1.0 * t->width));
 	if(r->side == 0 && r->ray_dir_x > 0) tex_x = t->width - tex_x - 1;
 	if(r->side == 1 && r->ray_dir_y < 0) tex_x = t->width - tex_x - 1;
@@ -293,7 +294,7 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 		}
 		r->tex_pos += r->tex_step;
 		++start;
-}
+	}
 }
 
 void	get_c_colored(t_ori_tex *tex)
