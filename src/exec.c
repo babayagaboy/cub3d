@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/22 15:54:55 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/22 23:45:17 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,22 +137,22 @@ void	calc_dda(t_ray *r, t_player *p)
 	if (r->ray_dir_x < 0)	// ray on the left or rigth
 	{
 		r->step_x = -1;
-		r->side_dist_x = (p->pos_x - r->map_x) * r->delta_dist_x;
+		r->side_dist_x = ((p->pos_x - r->map_x) * r->delta_dist_x);
 	}
 	else
 	{
 		r->step_x = 1;
-		r->side_dist_x = (r->map_x + 1.0 - p->pos_x) * r->delta_dist_x;
+		r->side_dist_x = ((r->map_x + 1.0 - p->pos_x) * r->delta_dist_x);
 	}
 	if (r->ray_dir_y < 0)	// ray on the up or down
 	{
 		r->step_y = -1;
-		r->side_dist_y = (p->pos_y - r->map_y) * r->delta_dist_y;
+		r->side_dist_y = ((p->pos_y - r->map_y) * r->delta_dist_y);
 	}
 	else
 	{
 		r->step_y = 1;
-		r->side_dist_y = (r->map_y + 1.0 - p->pos_y) * r->delta_dist_y;
+		r->side_dist_y = ((r->map_y + 1.0 - p->pos_y) * r->delta_dist_y);
 	}
 }
 
@@ -173,7 +173,9 @@ void	run_dda(t_ray *r, char **map)
 			r->map_y += r->step_y;
 			r->side = 1;
 		}
-		if (map[r->map_y][r->map_x] != '0')
+		if (map[r->map_y][r->map_x] == 'D')
+			r->hit = 2;
+		else if (map[r->map_y][r->map_x] != '0')
 			r->hit = 1;
 	}
 	if (r->side == 0)
@@ -232,7 +234,7 @@ void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
 }
 
 
-void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
+void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex, int i)
 {
 	t_texture *t = NULL;
 	int	line_height;
@@ -252,10 +254,8 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex , t_game *g, int i)
 		r->wall_hit_pos_x = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
 	else
 		r->wall_hit_pos_x = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
-	if (g->map[r->map_y][r->map_x] == 'D')
-	{
+	if (r->hit == 2)
 		t = tex->tex_door;
-	}
 	else if (r->side == 0 && r->ray_dir_x > 0)
 		t = tex->tex_west;
 	else if (r->side == 0)
@@ -408,7 +408,7 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, g->map);
-		get_walls(ray, player, g->o_text, g, i);
+		get_walls(ray, player, g->o_text, i);
 		++i;
 	}
 	if (!g->o_text->path_ceiling)
