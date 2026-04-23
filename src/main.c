@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/21 17:35:05 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/23 17:38:00 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ int	main(int argc, char **argv)
 		return (1);
 	game->txt = malloc(sizeof(t_texture));
 	if (!game->txt)
+		return (1);
+	game->door =  malloc(sizeof(t_door *));
+	if (!game->door)
 		return (1);
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win || !game->mlx->img || !game->mlx->addr)

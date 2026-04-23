@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/04/15 16:12:04 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/04/23 17:21:07 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ NAME = cub3d
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g
 CFLAGS		+= -Iinc -I$(LIBFT_DIR)
+CFLAGS		+= -O3 -march=native -flto -ftree-vectorize -funroll-loops -ffast-math
 MLX_DIR		= mlx
 MLX			= $(MLX_DIR)/libmlx.a
 MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz

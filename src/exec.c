@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/23 01:22:43 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/23 17:38:56 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ int	get_door_count(char **map)
 	return (doors);
 }
 
-void	fill_door_cords(int **door_cords, char **map)
+void	fill_door_cords(t_door **door, char **map)
 {
 	int	y;
 	int	x;
@@ -249,37 +249,39 @@ void	fill_door_cords(int **door_cords, char **map)
 		{
 			if (map[y][x] == 'D')
 			{
-				door_cords[i][0] = y;
-				door_cords[i][1] = x;
+				door[i]->pos_y = y;
+				door[i]->pos_x = x;
 				++i;
 			}
 			++x;
 		}
 		++y;
 	}
-}int	j;
+}
 
-int		**get_door_cords(char **map)
+t_door	**get_door_cords(char **map)
 {
-	int	**door_cords;
-	int	count;
-	int	i;
-
-	count = get_door_count(map);
-	door_cords = malloc(sizeof(int *) * (count + 1));
-	if (!door_cords)
-		return (NULL);
+	t_door **door;
+	int		i;
+	int		door_count;
 	i = 0;
-	while (i < count)
+	door_count = get_door_count(map);
+	door = malloc(sizeof(t_door *) * (door_count + 1));
+	if (!door)
+		return (NULL);
+	while (i < door_count)
 	{
-		door_cords[i] = malloc(sizeof(int) * 2);
-		if (!door_cords[i])
-			return (free_int_arr(door_cords, i), NULL);
+		door[i] = malloc(sizeof(t_door));
+		if (!door[i])
+		{
+			while (--i)
+				free(door[i]);
+			return (NULL);
+		}
 		++i;
 	}
-	door_cords[i] = NULL;
-	fill_door_cords(door_cords, map);
-	return (door_cords);
+	fill_door_cords(door, map);
+	return (door);
 }
 
 void	run_dda(t_ray *r, t_player *p, char **map)
@@ -586,38 +588,27 @@ int		key_release(int key, t_game *g)
 	return (0);
 }
 
-int player_near_door(t_game *g)
+int player_near_door(t_game *g, t_door **door)
 {
-    int **doors;
-    int i;
-
-    doors = get_door_cords(g->map);
-    if (!doors)
-        return (0);
+	int	i;
 
     i = 0;
-    while (doors[i])
+    while (door[i])
     {
-        int door_y = doors[i][0];
-        int door_x = doors[i][1];
+        int door_y = door[i]->pos_y;
+        int door_x = door[i]->pos_x;
 
         int dy = g->player->pos_y - door_y;
         int dx = g->player->pos_x - door_x;
 
         // apenas 4 direções (distância Manhattan == 1)
-        if ((dy == 1 && dx == 0) ||   // baixo
-            (dy == -1 && dx == 0) ||  // cima
-            (dy == 0 && dx == 1) ||   // direita
-            (dy == 0 && dx == -1))    // esquerda
-        {
-            free_memory_int(doors);
+        if ((dy == 1 && dx == 0)
+		|| (dy == -1 && dx == 0)
+		|| (dy == 0 && dx == 1)
+		|| (dy == 0 && dx == -1))
             return (1);
-        }
-
-        i++;
+        ++i;
     }
-
-    free_memory_int(doors);
     return (0);
 }
 
@@ -674,7 +665,7 @@ int		handle_input(t_game *g)
 	if (moved)
 	{
 		upd_player_minimap(g);
-		if (player_near_door(g))
+		if (player_near_door(g, g->door))
 			printf("ABRE TE SESAMO\n");
 		calc_rays(g->mlx, g->ray, g->player, g);
 	}
@@ -689,13 +680,13 @@ void	start(t_game *game)
 {
 	game->minimap = copy_map(game->map, 0, game->map_h);
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
-	get_door_count(game->map);
-	get_door_cords(game->map);
 	
 	// Passa 'game' em vez de 'game->player'
 	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L<<1, key_release, game);
 	
+	game->door = NULL;
+	game->door = get_door_cords(game->map);
 	mlx_loop_hook(game->mlx->mlx, handle_input, game);
 	calc_rays(game->mlx, game->ray, game->player, game);
 }

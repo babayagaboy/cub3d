@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/21 15:44:26 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/23 17:38:06 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,14 @@
 # define KEY_RIGHT		100
 # define KEY_E 
 # define KEY_ESC		65307
+
+typedef struct s_door
+{
+	double	pos_x;
+	double	pos_y;
+	int		open;
+}			t_door;
+
 
 typedef struct s_elements_var
 {
@@ -161,6 +169,7 @@ typedef struct s_game
 	t_ray		*ray;
 	t_texture	*txt;
 	t_ori_tex	*o_text;
+	t_door		**door;
 	char		**cub;
 	char		**elements_file;
 	char		**map;
