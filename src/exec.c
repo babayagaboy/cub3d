@@ -6,13 +6,26 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/22 23:45:17 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/23 01:22:43 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
 int buffer[screenHeight][screenWidth];
+
+static char	get_player_marker(t_player *player)
+{
+	if (fabs(player->dir_x) >= fabs(player->dir_y))
+	{
+		if (player->dir_x >= 0)
+			return ('E');
+		return ('W');
+	}
+	if (player->dir_y >= 0)
+		return ('S');
+	return ('N');
+}
 
 int	ft_isdigit(int c)
 {
@@ -156,7 +169,48 @@ void	calc_dda(t_ray *r, t_player *p)
 	}
 }
 
-void	run_dda(t_ray *r, char **map)
+int	get_door_side(char **map, int y, int x)
+{
+	if (y > 0 && map[y - 1] && map[y - 1][x] && is_wall(map[y - 1][x]))
+	{
+		if (map[y + 1] && map[y + 1][x] && is_wall(map[y + 1][x]))
+			return (0);
+	}
+	return (1);
+}
+
+int	hit_door_plane(t_ray *r, t_player *p, char **map)
+{
+	double	door_plane;
+	double	hit_pos;
+
+	r->door_side = get_door_side(map, r->map_y, r->map_x);
+	if (r->door_side == 0)
+	{
+		if (r->ray_dir_x == 0)
+			return (0);
+		door_plane = r->map_x + 0.5;
+		r->perp_wall_dist = (door_plane - p->pos_x) / r->ray_dir_x;
+		hit_pos = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
+		if (r->perp_wall_dist > 0 && hit_pos >= r->map_y
+			&& hit_pos <= r->map_y + 1.0)
+			return (1);
+	}
+	else
+	{
+		if (r->ray_dir_y == 0)
+			return (0);
+		door_plane = r->map_y + 0.5;
+		r->perp_wall_dist = (door_plane - p->pos_y) / r->ray_dir_y;
+		hit_pos = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
+		if (r->perp_wall_dist > 0 && hit_pos >= r->map_x
+			&& hit_pos <= r->map_x + 1.0)
+			return (1);
+	}
+	return (0);
+}
+
+void	run_dda(t_ray *r, t_player *p, char **map)
 {
 	r->hit = 0;
 	while(r->hit == 0)	// search dda till it hits a wall
@@ -174,10 +228,18 @@ void	run_dda(t_ray *r, char **map)
 			r->side = 1;
 		}
 		if (map[r->map_y][r->map_x] == 'D')
-			r->hit = 2;
+		{
+			if (hit_door_plane(r, p, map))
+			{
+				r->hit = 2;
+				r->side = r->door_side;
+			}
+		}
 		else if (map[r->map_y][r->map_x] != '0')
 			r->hit = 1;
 	}
+	if (r->hit == 2)
+		return ;
 	if (r->side == 0)
 		r->perp_wall_dist = (r->side_dist_x - r->delta_dist_x);
 	else
@@ -353,9 +415,9 @@ void	get_time(t_player *p)
 
 void	upd_player_minimap(t_game *g)
 {
-	
 	g->minimap[(int)g->player->old_pos_y][(int)g->player->old_pos_x] = '0';
-	g->minimap[(int)g->player->pos_y][(int)g->player->pos_x] = 'N';
+	g->minimap[(int)g->player->pos_y][(int)g->player->pos_x]
+		= get_player_marker(g->player);
 	g->player->old_pos_y = g->player->pos_y;
 	g->player->old_pos_x = g->player->pos_x;
 }
@@ -407,7 +469,7 @@ void    calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
-		run_dda(ray, g->map);
+		run_dda(ray, player, g->map);
 		get_walls(ray, player, g->o_text, i);
 		++i;
 	}

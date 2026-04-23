@@ -101,6 +101,7 @@ typedef struct s_ray
 	int		side;
 	double	perp_wall_dist;
 	double	wall_hit_pos_x;
+	int		door_side;
 	double	tex_step;
 	double	tex_pos;
 	double	floor_step_x;
