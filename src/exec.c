@@ -604,15 +604,19 @@ int player_near_door(t_game *g)
         int dy = g->player->pos_y - door_y;
         int dx = g->player->pos_x - door_x;
 
-        if (dy >= -1 && dy <= 1 &&
-            dx >= -1 && dx <= 1 &&
-            !(dy == 0 && dx == 0))
+        // apenas 4 direções (distância Manhattan == 1)
+        if ((dy == 1 && dx == 0) ||   // baixo
+            (dy == -1 && dx == 0) ||  // cima
+            (dy == 0 && dx == 1) ||   // direita
+            (dy == 0 && dx == -1))    // esquerda
         {
-           free_memory_int(doors);
+            free_memory_int(doors);
             return (1);
         }
+
         i++;
     }
+
     free_memory_int(doors);
     return (0);
 }
