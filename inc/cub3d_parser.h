@@ -16,6 +16,7 @@
 void	free_int_arr(int **arr, int i);
 void	free_char_arr(char **arr, int i);
 void	free_memory(char **arr);
+void	free_memory_int(int **arr);
 
 
 int 	check_rbg(char *str, int *arr);

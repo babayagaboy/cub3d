@@ -210,6 +210,78 @@ int	hit_door_plane(t_ray *r, t_player *p, char **map)
 	return (0);
 }
 
+int	get_door_count(char **map)
+{
+	int	y;
+	int	x;
+	int	doors;
+
+	if (!map || !map[0])
+		return (0);
+	y = 0;
+	doors = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			if (map[y][x] == 'D')
+				++doors;
+			++x;
+		}
+		++y;
+	}
+	return (doors);
+}
+
+void	fill_door_cords(int **door_cords, char **map)
+{
+	int	y;
+	int	x;
+	int	i;
+
+	y = 0;
+	i = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			if (map[y][x] == 'D')
+			{
+				door_cords[i][0] = y;
+				door_cords[i][1] = x;
+				++i;
+			}
+			++x;
+		}
+		++y;
+	}
+}int	j;
+
+int		**get_door_cords(char **map)
+{
+	int	**door_cords;
+	int	count;
+	int	i;
+
+	count = get_door_count(map);
+	door_cords = malloc(sizeof(int *) * (count + 1));
+	if (!door_cords)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		door_cords[i] = malloc(sizeof(int) * 2);
+		if (!door_cords[i])
+			return (free_int_arr(door_cords, i), NULL);
+		++i;
+	}
+	door_cords[i] = NULL;
+	fill_door_cords(door_cords, map);
+	return (door_cords);
+}
+
 void	run_dda(t_ray *r, t_player *p, char **map)
 {
 	r->hit = 0;
@@ -514,6 +586,37 @@ int		key_release(int key, t_game *g)
 	return (0);
 }
 
+int player_near_door(t_game *g)
+{
+    int **doors;
+    int i;
+
+    doors = get_door_cords(g->map);
+    if (!doors)
+        return (0);
+
+    i = 0;
+    while (doors[i])
+    {
+        int door_y = doors[i][0];
+        int door_x = doors[i][1];
+
+        int dy = g->player->pos_y - door_y;
+        int dx = g->player->pos_x - door_x;
+
+        if (dy >= -1 && dy <= 1 &&
+            dx >= -1 && dx <= 1 &&
+            !(dy == 0 && dx == 0))
+        {
+           free_memory_int(doors);
+            return (1);
+        }
+        i++;
+    }
+    free_memory_int(doors);
+    return (0);
+}
+
 int		handle_input(t_game *g)
 {
 	int moved;
@@ -522,18 +625,24 @@ int		handle_input(t_game *g)
 	if (g->player->kp_w)
 	{
 		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))])
-			&& (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0')
+			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0'
+			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == 'D'))
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
 		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)])
-			&& (g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0')
+			&& ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0'
+			|| (g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == 'D'))
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
 	if (g->player->kp_s)
 	{
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == '0')
+		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)])
+			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == '0'
+			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == 'D'))
 			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == '0')
+		if ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)])
+		&& ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == '0'
+		|| (g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == 'D'))
 			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
 		moved = 1;	
 	}
@@ -561,6 +670,8 @@ int		handle_input(t_game *g)
 	if (moved)
 	{
 		upd_player_minimap(g);
+		if (player_near_door(g))
+			printf("ABRE TE SESAMO\n");
 		calc_rays(g->mlx, g->ray, g->player, g);
 	}
 	return (0);
@@ -568,10 +679,14 @@ int		handle_input(t_game *g)
 
 
 
+
+
 void	start(t_game *game)
 {
 	game->minimap = copy_map(game->map, 0, game->map_h);
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
+	get_door_count(game->map);
+	get_door_cords(game->map);
 	
 	// Passa 'game' em vez de 'game->player'
 	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);

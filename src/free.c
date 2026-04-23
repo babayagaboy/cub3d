@@ -24,6 +24,18 @@ void	free_memory(char **arr)
 	free (arr);
 }
 
+void	free_memory_int(int **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free (arr);
+}
+
 void	free_char_arr(char **arr, int i)
 {
 	int	j;
