@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:20:03 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/23 17:38:56 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/04/23 21:59:44 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -671,9 +671,6 @@ int		handle_input(t_game *g)
 	}
 	return (0);
 }
-
-
-
 
 
 void	start(t_game *game)
