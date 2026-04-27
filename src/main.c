@@ -59,7 +59,7 @@ int	main(int argc, char **argv)
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 		return (free(game->mlx), free(game->player), 1);
-	dubg(game);
+	//dubg(game);
 	start(game);
 	mlx_loop(game->mlx->mlx);
 	free(game);

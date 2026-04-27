@@ -21,16 +21,16 @@
 # include <string.h>
 # include <limits.h>
 # include <sys/time.h>
-
 # include "../mlx/mlx.h"
 
 # define screenWidth	1520
 # define screenHeight	980
-# define KEY_UP			119
-# define KEY_DOWN		115
-# define KEY_LEFT		97
-# define KEY_RIGHT		100
-# define KEY_E 
+# define KEY_W			119
+# define KEY_S			115
+# define KEY_A			97
+# define KEY_D			100
+# define KEY_LEFT 		65361
+# define KEY_RIGHT 		65363
 # define KEY_ESC		65307
 
 typedef struct s_door
@@ -86,7 +86,8 @@ typedef struct s_player
 	int		kp_s;
 	int		kp_a;
 	int		kp_d;
-
+	int		kp_la;
+	int		kp_ra;
 }	t_player;
 
 typedef struct s_ray
@@ -178,6 +179,13 @@ typedef struct s_game
 	int			map_h;
 	int			map_w;
 	int			sp;
+	int			mouse_x;
+	int			mouse_y;
+	int			old_mx;
+	int			center_x;
+	int			center_y;
+	int			mouse_dx;
+	int			warping;
 }	t_game;
 
 # include <cub3d_exec.h>

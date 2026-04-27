@@ -119,12 +119,12 @@ int	parser(int argc, char *argv[], t_game *g)
 		return (printf("Map file failed\n"), free_all(g), 0);
 	if (!get_textures(g->mlx, g->o_text))
 		return (printf("Textures failed\n"), free_all(g), 0);
-	for (int i = 0; i < 3; ++i)
+	/*for (int i = 0; i < 3; ++i)
 		printf("In parser rbg_ceiling[%d]: %d\n", i, g->o_text->rgb_ceiling[i]);
 	printf("\n");
 	for (int i = 0; i < 3; ++i)
 		printf("In parser rbg_floor[%d]: %d\n", i, g->o_text->rgb_floor[i]);
-	printf("GOOD GOY\n");
+	printf("GOOD GOY\n");*/
 	free_memory(g->cub);
 	return (1);
 }
