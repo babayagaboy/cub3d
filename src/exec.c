@@ -489,7 +489,9 @@ void	get_time(t_player *p)
 
 void	upd_player_minimap(t_game *g)
 {
-	g->minimap[(int)g->player->old_pos_y][(int)g->player->old_pos_x] = '0';
+	g->minimap[(int)g->player->old_pos_y][(int)g->player->old_pos_x] = g->player->prev_tile;
+	g->player->prev_tile = g->minimap[(int)g->player->pos_y][(int)g->player->pos_x];
+	
 	g->minimap[(int)g->player->pos_y][(int)g->player->pos_x]
 		= get_player_marker(g->player);
 	g->player->old_pos_y = g->player->pos_y;
@@ -677,6 +679,7 @@ void	start(t_game *game)
 {
 	game->minimap = copy_map(game->map, 0, game->map_h);
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
+	game->player->prev_tile = '0';
 	
 	// Passa 'game' em vez de 'game->player'
 	mlx_hook(game->mlx->win, 2, 1L<<0, key_press, game);

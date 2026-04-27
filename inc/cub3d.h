@@ -67,6 +67,7 @@ typedef struct s_player
 	double	pos_y; // y/2
 	double	pos_x; // x/2
 	double	pos_z; // where the camera "is"
+	char	prev_tile;
 	double	old_pos_y;
 	double	old_pos_x;
 	double	dir_y; // -1=N 1=S
