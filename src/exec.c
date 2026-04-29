@@ -1,8 +1,107 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/29 14:29:02 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/04/29 14:35:42 by hgutterr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <cub3d.h>
 
 int buffer[screenHeight][screenWidth];
 
-static char	get_player_marker(t_player *player)
+t_door	*find_door(t_game *g, int y, int x)
+{
+	int	i;
+
+	if (!g->door)
+		return (NULL);
+	i = 0;
+	while (g->door[i])
+	{
+		if ((int)g->door[i]->pos_y == y && (int)g->door[i]->pos_x == x)
+			return (g->door[i]);
+		++i;
+	}
+	return (NULL);
+}
+
+int	is_player_adjacent_to_door(t_game *g, t_door *door)
+{
+	int	player_y;
+	int	player_x;
+	int	door_y;
+	int	door_x;
+	int	diff_y;
+	int	diff_x;
+
+	player_y = (int)g->player->pos_y;
+	player_x = (int)g->player->pos_x;
+	door_y = (int)door->pos_y;
+	door_x = (int)door->pos_x;
+	diff_y = player_y - door_y;
+	diff_x = player_x - door_x;
+	if ((diff_y == 0 && diff_x == 0)
+		|| (diff_y == 1 && diff_x == 0)
+		|| (diff_y == -1 && diff_x == 0)
+		|| (diff_y == 0 && diff_x == 1)
+		|| (diff_y == 0 && diff_x == -1))
+		return (1);
+	return (0);
+}
+
+int	update_doors(t_game *g)
+{
+	int		i;
+	int		changed;
+	double	old_pct;
+	double	speed;
+
+	if (!g->door)
+		return (0);
+	i = 0;
+	changed = 0;
+	speed = g->player->frame_time * 1.5;
+	while (g->door[i])
+	{
+		old_pct = g->door[i]->open_pct;
+		g->door[i]->opening = is_player_adjacent_to_door(g, g->door[i]);
+		if (g->door[i]->opening)
+			g->door[i]->open_pct += speed;
+		else
+			g->door[i]->open_pct -= speed;
+		if (g->door[i]->open_pct < 0.0)
+			g->door[i]->open_pct = 0.0;
+		if (g->door[i]->open_pct > 1.0)
+			g->door[i]->open_pct = 1.0;
+		if (fabs(g->door[i]->open_pct - old_pct) > 0.0001)
+			changed = 1;
+		++i;
+	}
+	return (changed);
+}
+
+int	is_walkable_tile(t_game *g, int y, int x)
+{
+	t_door	*door;
+
+	if (!g->map[y] || !g->map[y][x])
+		return (0);
+	if (g->map[y][x] == '0')
+		return (1);
+	if (g->map[y][x] != 'D')
+		return (0);
+	door = find_door(g, y, x);
+	if (!door)
+		return (0);
+	return (door->open_pct >= 0.9);
+}
+
+char	get_player_marker(t_player *player)
 {
 	if (fabs(player->dir_x) >= fabs(player->dir_y))
 	{
@@ -165,12 +264,17 @@ int	get_door_side(char **map, int y, int x)
 	return (1);
 }
 
-int	hit_door_plane(t_ray *r, t_player *p, char **map)
+int	hit_door_plane(t_ray *r, t_player *p, t_game *g)
 {
 	double	door_plane;
 	double	hit_pos;
+	double	local_pos;
+	t_door	*door;
 
-	r->door_side = get_door_side(map, r->map_y, r->map_x);
+	door = find_door(g, r->map_y, r->map_x);
+	if (!door || door->open_pct >= 1.0)
+		return (0);
+	r->door_side = get_door_side(g->map, r->map_y, r->map_x);
 	if (r->door_side == 0)
 	{
 		if (r->ray_dir_x == 0)
@@ -178,9 +282,13 @@ int	hit_door_plane(t_ray *r, t_player *p, char **map)
 		door_plane = r->map_x + 0.5;
 		r->perp_wall_dist = (door_plane - p->pos_x) / r->ray_dir_x;
 		hit_pos = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
-		if (r->perp_wall_dist > 0 && hit_pos >= r->map_y
-			&& hit_pos <= r->map_y + 1.0)
+		local_pos = hit_pos - r->map_y;
+		if (r->perp_wall_dist > 0 && local_pos >= 0.0
+			&& local_pos <= (1.0 - door->open_pct))
+		{
+			r->wall_hit_pos_x = local_pos + door->open_pct;
 			return (1);
+		}
 	}
 	else
 	{
@@ -189,12 +297,15 @@ int	hit_door_plane(t_ray *r, t_player *p, char **map)
 		door_plane = r->map_y + 0.5;
 		r->perp_wall_dist = (door_plane - p->pos_y) / r->ray_dir_y;
 		hit_pos = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
-		if (r->perp_wall_dist > 0 && hit_pos >= r->map_x
-			&& hit_pos <= r->map_x + 1.0)
+		local_pos = hit_pos - r->map_x;
+		if (r->perp_wall_dist > 0 && local_pos >= 0.0
+			&& local_pos <= (1.0 - door->open_pct))
+		{
+			r->wall_hit_pos_x = local_pos + door->open_pct;
 			return (1);
+		}
 	}
 	return (0);
-
 }
 
 int	get_door_count(char **map)
@@ -238,6 +349,8 @@ void	fill_door_cords(t_door **door, char **map)
 			{
 				door[i]->pos_y = y;
 				door[i]->pos_x = x;
+				door[i]->open_pct = 0.0;
+				door[i]->opening = 0;
 				++i;
 			}
 			++x;
@@ -273,7 +386,7 @@ t_door	**get_door_cords(char **map)
 	return (door);
 }
 
-void	run_dda(t_ray *r, t_player *p, char **map)
+void	run_dda(t_ray *r, t_player *p, t_game *g)
 {
 	r->hit = 0;
 	while (r->hit == 0)
@@ -290,15 +403,15 @@ void	run_dda(t_ray *r, t_player *p, char **map)
 			r->map_y += r->step_y;
 			r->side = 1;
 		}
-		if (map[r->map_y][r->map_x] == 'D')
+		if (g->map[r->map_y][r->map_x] == 'D')
 		{
-			if (hit_door_plane(r, p, map))
+			if (hit_door_plane(r, p, g))
 			{
 				r->hit = 2;
 				r->side = r->door_side;
 			}
 		}
-		else if (map[r->map_y][r->map_x] != '0')
+		else if (g->map[r->map_y][r->map_x] != '0')
 			r->hit = 1;
 	}
 	if (r->hit == 2)
@@ -380,9 +493,9 @@ void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex, int i)
 	draw_end = (line_height >> 1) + (screenHeight >> 1);
 	if (draw_end >= screenHeight)
 		draw_end = screenHeight - 1;
-	if (r->side == 0)
+	if (r->hit != 2 && r->side == 0)
 		r->wall_hit_pos_x = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
-	else
+	else if (r->hit != 2)
 		r->wall_hit_pos_x = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
 	if (r->hit == 2)
 		t = tex->tex_door;
@@ -535,7 +648,7 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
-		run_dda(ray, player, g->map);
+		run_dda(ray, player, g);
 		get_walls(ray, player, g->o_text, i);
 		++i;
 	}
@@ -595,30 +708,6 @@ int	key_release(int key, t_game *g)
 	return (0);
 }
 
-int	player_near_door(t_game *g, t_door **door)
-{
-	int	i;
-	int	door_y;
-	int	door_x;
-	int	dy;
-	int	dx;
-
-	i = 0;
-	while (door[i])
-	{
-		door_y = door[i]->pos_y;
-		door_x = door[i]->pos_x;
-		dy = g->player->pos_y - door_y;
-		dx = g->player->pos_x - door_x;
-		if ((dy == 1 && dx == 0)
-			|| (dy == -1 && dx == 0)
-			|| (dy == 0 && dx == 1)
-			|| (dy == 0 && dx == -1))
-			return (1);
-		++i;
-	}
-	return (0);
-}
 int	mouse_move(int x, int y, t_game *g)
 {
 	(void)y;
@@ -658,54 +747,55 @@ static void	apply_mouse_rotation(t_game *g)
 int	handle_input(t_game *g)
 {
 	int	moved;
+	int	door_changed;
 
 	moved = 0;
 	get_time(g->player);
 	if (g->player->kp_w)
 	{
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))])
-			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == '0'
-			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + (g->player->dir_x * g->player->move_speed))]) == 'D'))
+		if (is_walkable_tile(g, (int)g->player->pos_y,
+				(int)(g->player->pos_x + (g->player->dir_x
+					* g->player->move_speed))))
 			g->player->pos_x += g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)])
-			&& ((g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == '0'
-			|| (g->map[(int)(g->player->pos_y + (g->player->dir_y * g->player->move_speed))][(int)(g->player->pos_x)]) == 'D'))
+		if (is_walkable_tile(g,
+				(int)(g->player->pos_y + (g->player->dir_y
+					* g->player->move_speed)), (int)g->player->pos_x))
 			g->player->pos_y += g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
 	if (g->player->kp_s)
 	{
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)])
-			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == '0'
-			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_x * g->player->move_speed)]) == 'D'))
+		if (is_walkable_tile(g, (int)g->player->pos_y,
+				(int)(g->player->pos_x - g->player->dir_x
+					* g->player->move_speed)))
 			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)])
-			&& ((g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == '0'
-			|| (g->map[(int)(g->player->pos_y - g->player->dir_y * g->player->move_speed)][(int)(g->player->pos_x)]) == 'D'))
+		if (is_walkable_tile(g,
+				(int)(g->player->pos_y - g->player->dir_y
+					* g->player->move_speed), (int)g->player->pos_x))
 			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
 	if (g->player->kp_d)
 	{
-		if ((g->map[(int)(g->player->pos_y + g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)])
-			&& ((g->map[(int)(g->player->pos_y + g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)]) == '0'
-			|| (g->map[(int)(g->player->pos_y + g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)]) == 'D'))
+		if (is_walkable_tile(g,
+				(int)(g->player->pos_y + g->player->dir_x
+					* g->player->move_speed), (int)g->player->pos_x))
 			g->player->pos_y += g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_y * g->player->move_speed)])
-			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_y * g->player->move_speed)]) == '0'
-			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x - g->player->dir_y * g->player->move_speed)]) == 'D'))
+		if (is_walkable_tile(g, (int)g->player->pos_y,
+				(int)(g->player->pos_x - g->player->dir_y
+					* g->player->move_speed)))
 			g->player->pos_x -= g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
 	if (g->player->kp_a)
 	{
-		if ((g->map[(int)(g->player->pos_y - g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)])
-			&& ((g->map[(int)(g->player->pos_y - g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)]) == '0'
-			|| (g->map[(int)(g->player->pos_y - g->player->dir_x * g->player->move_speed)][(int)(g->player->pos_x)]) == 'D'))
+		if (is_walkable_tile(g,
+				(int)(g->player->pos_y - g->player->dir_x
+					* g->player->move_speed), (int)g->player->pos_x))
 			g->player->pos_y -= g->player->dir_x * g->player->move_speed;
-		if ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + g->player->dir_y * g->player->move_speed)])
-			&& ((g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + g->player->dir_y * g->player->move_speed)]) == '0'
-			|| (g->map[(int)(g->player->pos_y)][(int)(g->player->pos_x + g->player->dir_y * g->player->move_speed)]) == 'D'))
+		if (is_walkable_tile(g, (int)g->player->pos_y,
+				(int)(g->player->pos_x + g->player->dir_y
+					* g->player->move_speed)))
 			g->player->pos_x += g->player->dir_y * g->player->move_speed;
 		moved = 1;
 	}
@@ -734,13 +824,11 @@ int	handle_input(t_game *g)
 		apply_mouse_rotation(g);
 		moved = 1;
 	}
+	door_changed = update_doors(g);
 	if (moved)
-	{
 		upd_player_minimap(g);
-		if (player_near_door(g, g->door))
-			printf("ABRE TE SESAMO\n");
+	if (moved || door_changed)
 		calc_rays(g->mlx, g->ray, g->player, g);
-	}
 	return (0);
 }
 

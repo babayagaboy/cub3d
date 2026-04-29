@@ -37,7 +37,8 @@ typedef struct s_door
 {
 	double	pos_x;
 	double	pos_y;
-	int		open;
+	double	open_pct;
+	int		opening;
 }			t_door;
 
 
