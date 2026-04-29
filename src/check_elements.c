@@ -32,17 +32,25 @@ int	check_rbg(char *str, int *arr)
 int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
 {
 	int	fd;
+	size_t rc;
+	char	*buff;
+
+	buff = malloc(sizeof(char) * 10);
+	if (!buff)
+		return (0);
 
 	fd = open(&line[5], O_RDONLY);
+	rc = read(fd, buff, 10);
 	vars->elements_found += value;
-	if (fd >= 0)
+	if (fd >= 0 &&  buff != NULL)
 	{
 		vars->opened += value;
 		*tex_path = ft_strdup(&line[5]);
+		free(buff);
 		close(fd);
 	}
 	else
-		return (0);
+		return (free(buff), 0);
 	return (1);
 }
 
@@ -61,6 +69,8 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 	int	type;
 	int	fd;
 	int	increment;
+	size_t rc;
+	char	*buff;
 
 	vars->elements_found += value;
 	type = f_c_type(&line[2]);
@@ -70,15 +80,20 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 		increment = 2;
 	if (type == 2)
 	{
+		buff = malloc(sizeof(char) * 10);
+		if (!buff)
+			return (0);
 		fd = open(&line[4], O_RDONLY);
-		if (fd >= 0)
+		rc = read(fd, buff, 10);
+		if (fd >= 0 && buff != NULL)
 		{
 			vars->f_c_element += increment;
 			choose_corect_path(line, value, tex);
+			free(buff);
 			close(fd);
 		}
 		else
-			return (0);
+			return (free(buff), 0);
 	}
 	else
 	{
