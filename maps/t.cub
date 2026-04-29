@@ -1,4 +1,4 @@
-F 23,123,56
+F 220, 100, 0
 
 SO ./textures/south.xpm  
 WE ./textures/west.xpm
@@ -7,11 +7,10 @@ EA ./textures/east.xpm
 C 23,234,76
 NO ./textures/north.xpm
 
-D ./textures/north.xpm
+D      ./textures/starWarsDoor.xpm
 
 
 111111
-101001
-110001
-100N01
-111111
+100  11
+10N011
+111111111

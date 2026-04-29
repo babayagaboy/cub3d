@@ -29,8 +29,6 @@ int	count_elements(char **cub, int y, int *door_found)
 		clean = ft_findspace(cub[y]);
 		if (ft_strncmp(clean, "D", 1) == 0)
 			*door_found = 1;
-		printf("Door status: %d\n", *door_found);
-		printf("String: %s\n", clean);
 		count++;
 		if (*door_found == 1)
 		{

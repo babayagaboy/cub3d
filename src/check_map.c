@@ -63,11 +63,31 @@ int		check_walls(char **map, int y, int x)
 	if (!map)
 		return (0);
 	int	count = 0;
+	if (y > 0 && map[y - 1] && map[y - 1][x] && (is_wall(map[y - 1][x]) || map[y - 1][x] == '0')) // North
+		count++;
+	if (map[y + 1] && map[y + 1][x] && (is_wall(map[y + 1][x]) || map[y + 1][x] == '0')) // South
+		count++;
+	if (x > 0 && map[y][x - 1] && (is_wall(map[y][x - 1]) || map[y][x - 1] == '0')) // West
+		count++;
+	if (map[y][x + 1] && (is_wall(map[y][x + 1]) || map[y][x + 1] == '0')) // East
+		count++;
+	if (count == 4)
+		return (1);
+	printf("[%d][%d] = %d\n", y, x, count);
+	return (0);
+}
+
+int		check_walls_doors(char **map, int y, int x)
+{
+	if (!map)
+		return (0);
+
+	int	count = 0;
 	if (y > 0 && map[y - 1] && map[y - 1][x] && (is_wall(map[y - 1][x]) || map[y - 1][x] == '0' || map[y - 1][x] == 'D')) // North
 		count++;
 	if (map[y + 1] && map[y + 1][x] && (is_wall(map[y + 1][x]) || map[y + 1][x] == '0' || map[y + 1][x] == 'D')) // South
 		count++;
-	if (x > 0 && map[y][x - 1] && (is_wall(map[y][x - 1]) || map[y][x - 1] == '0' || map[y][x - 1] == 'D')) // West
+	if (x > 0 && map[y][x - 1] && (is_wall(map[y][x - 1]) || map[y][x - 1] == '0' || map[y][x - 1] == 'D' )) // West
 		count++;
 	if (map[y][x + 1] && (is_wall(map[y][x + 1]) || map[y][x + 1] == '0' || map[y][x + 1] == 'D')) // East
 		count++;
@@ -124,7 +144,7 @@ int	check_doors(char **map, int y, int x)
 	return (0);
 }
 
-int		check_map_interior(char **map)
+int		check_map_interior(char **map, t_ele_var *vars)
 {
 	int	y;
 	int	x;
@@ -135,15 +155,26 @@ int		check_map_interior(char **map)
 		x = 1;
 		while (map[y][x] != '\0')
 		{
-			if (map[y][x] == '0' && check_walls(map, y, x) == 0)
+			if (vars->door_found == 1)
 			{
-				printf ("The check wall failed\n");
-				return (0);
+				if (map[y][x] == '0' && check_walls_doors(map, y, x) == 0)
+				{
+					printf ("The check wall failed\n");
+					return (0);
+				}
+				if (map[y][x] == 'D' && check_doors(map, y, x) == 0)
+				{
+					printf ("The check door failed\n");
+					return (0);
+				}
 			}
-			if (map[y][x] == 'D' && check_doors(map, y, x) == 0)
+			else
 			{
-				printf ("The check door failed\n");
-				return (0);
+				if (map[y][x] == '0' && check_walls(map, y, x) == 0)
+				{
+					printf ("The check wall failed\n");
+					return (0);
+				}
 			}
 			x++;
 		}
@@ -177,7 +208,7 @@ void	get_player_orientation(char player_orientation, t_player *p)
 }
 
 
-int		check_map(char **map, t_player *p, t_game *g)
+int		check_map(char **map, t_player *p, t_game *g, t_ele_var *vars)
 {
 	int	*player_coords;
 	char	player_orientation;
@@ -190,7 +221,7 @@ int		check_map(char **map, t_player *p, t_game *g)
 		return (0);
 	player_orientation = map[player_coords[0]][player_coords[1]];
 	map[player_coords[0]][player_coords[1]] = '0';
-	if (!check_map_borders(map, g) || !check_map_interior(map))
+	if (!check_map_borders(map, g) || !check_map_interior(map, vars))
 	{
 		free(player_coords);
 		return (0);

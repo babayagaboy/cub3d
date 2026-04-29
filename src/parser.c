@@ -115,7 +115,7 @@ int	parser(int argc, char *argv[], t_game *g)
 	print_debug(g);
 	if (!check_elements(g->elements_file, g->o_text, vars))
 		return (printf("Elements file failed\n"), free_all(g), 0);
-	if (!check_map(g->map, g->player, g))
+	if (!check_map(g->map, g->player, g, vars))
 		return (printf("Map file failed\n"), free_all(g), 0);
 	if (!get_textures(g->mlx, g->o_text))
 		return (printf("Textures failed\n"), free_all(g), 0);

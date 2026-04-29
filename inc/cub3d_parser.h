@@ -31,11 +31,12 @@ void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex);
 int		*get_player_coords(char **map);
 int		check_walls(char **map, int y, int x);
 int		check_map_borders(char **map, t_game *g);
-int		check_map_interior(char **map);
+int		check_map_interior(char **map, t_ele_var *vars);
 int		check_doors(char **map, int y, int x);
+int		check_walls_doors(char **map, int y, int x);
 int		is_wall(char c);
 int		is_player(char c);
-int		check_map(char **map, t_player *p, t_game *g);
+int		check_map(char **map, t_player *p, t_game *g, t_ele_var *vars);
 
 
 
