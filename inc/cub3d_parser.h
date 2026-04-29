@@ -83,8 +83,10 @@ int		load_cub_file(t_game *g, char *file);
 int		load_elements_and_map(t_game *g, t_ele_var *vars);
 void	print_debug(t_game *g);
 void	free_all(t_game *g);
+void	free_memory(char **arr);
 
 int get_textures(t_mlx *mlx, t_ori_tex *tex);
+void load_texture(t_mlx *mlx, t_texture **tex_d, char *path);
 
 
 # include <cub3d.h>

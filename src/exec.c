@@ -14,6 +14,103 @@
 
 int buffer[screenHeight][screenWidth];
 
+int		background(int color)
+{
+	if (color != 0x5B6EE1
+		&& color != 0x6C77D1
+		&& color != 0x5C6CDC
+		&& color != 0x5667CF
+		&& color != 0x515FB8
+		&& color != 0x4C5AB4
+		&& color != 0x4B5695
+		&& color != 0x3B4584
+		&& color != 0x394171
+		&& color != 0x3B4584
+		&& color != 0x706B8D)
+		return (0);
+	return (1);
+}
+
+void	get_guns_sprite(t_game *g)
+{
+	int i = 0;
+	g->pistol1 = malloc(sizeof(t_gun));
+	if (!g->pistol1)
+		return ;
+	g->pistol1->tex_arr = malloc(sizeof(t_texture *) * 6);
+	if (!g->pistol1->tex_arr)
+		return ;
+	while (i < 5)
+	{
+		g->pistol1->tex_arr[i] = malloc(sizeof(t_texture));
+		if (!g->pistol1->tex_arr[i])
+			return ;
+		++i;
+	}
+	load_texture(g->mlx, &g->pistol1->tex_arr[0], "./assets/pistol1_0.xpm");
+	load_texture(g->mlx, &g->pistol1->tex_arr[1], "./assets/pistol1_1.xpm");
+	load_texture(g->mlx, &g->pistol1->tex_arr[2], "./assets/pistol1_2.xpm");
+	load_texture(g->mlx, &g->pistol1->tex_arr[3], "./assets/pistol1_3.xpm");
+	load_texture(g->mlx, &g->pistol1->tex_arr[4], "./assets/pistol1_3.xpm");
+	i = 0;
+	while(i < 5)
+	{
+		if(!g->pistol1->tex_arr[i])
+			printf("coc\n");
+		printf("text[%d] loaded\n", i);
+		++i;
+	}
+}
+
+void draw_gun_hud(t_game *g, int i)
+{
+    t_texture    *tex;
+    int          start_x;
+    int          start_y;
+    int          x;
+    int          y;
+    unsigned int color;
+    unsigned int *pixels;
+
+    if (!g->pistol1 || !g->pistol1->tex_arr[i])
+        return;
+    tex = g->pistol1->tex_arr[i];
+    start_x = (screenWidth - tex->width) - (screenWidth / 7);
+    start_y = screenHeight - tex->height + 50;
+    pixels = (unsigned int *)tex->data;
+    y = 0;
+    while (y < tex->height)
+    {
+        x = 0;
+        while (x < tex->width)
+        {
+            int bx = start_x + x;
+            int by = start_y + y;
+
+            color = pixels[y * (tex->line_len / 4) + x];
+            if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+                && color != 0)
+            {
+				if (!background(color))
+	                buffer[by][bx] = color;
+            }
+            ++x;
+        }
+        ++y;
+    }
+}
+
+void run_gun_animation(t_game *g)
+{
+	int i = 0;
+	while (i < 5)
+	{
+		draw_gun_hud(g, i);
+		usleep(100);
+		i++;
+	}
+}
+
 t_door	*find_door(t_game *g, int y, int x)
 {
 	int	i;
@@ -656,6 +753,7 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		get_c_colored(g->o_text);
 	if (!g->o_text->path_floor)
 		get_f_colored(g->o_text);
+	draw_gun_hud(g, 0);
 	drawbuffer(g->mlx);
 	i = 0;
 	while (i < screenHeight)
@@ -674,6 +772,8 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 
 int	key_press(int key, t_game *g)
 {
+	if (key == 1)
+		g->player->kp_lc = 1;
 	if (key == KEY_W)
 		g->player->kp_w = 1;
 	if (key == KEY_S)
@@ -693,6 +793,8 @@ int	key_press(int key, t_game *g)
 
 int	key_release(int key, t_game *g)
 {
+	if (key == 1)
+		g->player->kp_lc = 0;
 	if (key == KEY_W)
 		g->player->kp_w = 0;
 	if (key == KEY_S)
@@ -722,7 +824,7 @@ int	mouse_move(int x, int y, t_game *g)
 	return (0);
 }
 
-static void	apply_mouse_rotation(t_game *g)
+void	apply_mouse_rotation(t_game *g)
 {
 	double	rot;
 	double	old_dir_x;
@@ -824,6 +926,8 @@ int	handle_input(t_game *g)
 		apply_mouse_rotation(g);
 		moved = 1;
 	}
+	if (g->player->kp_lc)
+		run_gun_animation(g);
 	door_changed = update_doors(g);
 	if (moved)
 		upd_player_minimap(g);
@@ -845,9 +949,12 @@ void	start(t_game *game)
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
+	mlx_hook(game->mlx->win, 4, 1L << 2, key_press, game);
+	mlx_hook(game->mlx->win, 5, 1L << 3, key_release, game);
 	mlx_mouse_move(game->mlx->mlx, game->mlx->win, game->center_x, game->center_y);
 	game->door = NULL;
 	game->door = get_door_cords(game->map);
 	mlx_loop_hook(game->mlx->mlx, handle_input, game);
+	get_guns_sprite(game);
 	calc_rays(game->mlx, game->ray, game->player, game);
 }

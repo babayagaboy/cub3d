@@ -51,7 +51,7 @@ typedef struct s_elements_var
 	int		door_found;
 }	t_ele_var;
 
-typedef struct s_textures
+typedef struct s_texture
 {
 	void	*img_ptr;
 	char	*data;
@@ -89,7 +89,13 @@ typedef struct s_player
 	int		kp_d;
 	int		kp_la;
 	int		kp_ra;
+	int		kp_lc;
 }	t_player;
+
+typedef struct s_gun
+{
+	t_texture	**tex_arr;
+}			t_gun;
 
 typedef struct s_ray
 {
@@ -147,7 +153,6 @@ typedef struct s_ori_tex
 	t_texture	*tex_four;
 	t_texture	*tex_five;
 
-
 	char	*path_north;
 	char	*path_south;
 	char	*path_east;
@@ -173,6 +178,8 @@ typedef struct s_game
 	t_texture	*txt;
 	t_ori_tex	*o_text;
 	t_door		**door;
+	t_gun		*pistol1;
+	t_gun		*pistol2;
 	char		**cub;
 	char		**elements_file;
 	char		**map;
