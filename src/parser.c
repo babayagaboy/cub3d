@@ -126,6 +126,7 @@ int	parser(int argc, char *argv[], t_game *g)
 		printf("In parser rbg_floor[%d]: %d\n", i, g->o_text->rgb_floor[i]);
 	printf("GOOD GOY\n");*/
 	free_memory(g->cub);
+	free(vars);
 	return (1);
 }
 

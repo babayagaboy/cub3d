@@ -13,6 +13,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
+# include "libft/libft.h"
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdio.h>
@@ -89,14 +90,17 @@ typedef struct s_player
 	int		kp_d;
 	int		kp_la;
 	int		kp_ra;
-	int		kp_lc;	int	gun_frame;
-	double	gun_anim_timer;
+	int		kp_lc;
+	int		kp_rc;
 }	t_player;
 
-typedef struct s_gun
+typedef struct s_weapon
 {
 	t_texture	**tex_arr;
-}			t_gun;
+	int			weapon_frame;
+	double		weapon_anim_timer;
+	int			deployed;
+}			t_weapon;
 
 typedef struct s_ray
 {
@@ -179,8 +183,7 @@ typedef struct s_game
 	t_texture	*txt;
 	t_ori_tex	*o_text;
 	t_door		**door;
-	t_gun		*pistol1;
-	t_gun		*pistol2;
+	t_weapon	*lightsaber;
 	char		**cub;
 	char		**elements_file;
 	char		**map;
@@ -195,6 +198,7 @@ typedef struct s_game
 	int			center_y;
 	int			mouse_dx;
 	int			warping;
+	int			door_count;
 }	t_game;
 
 # include <cub3d_exec.h>

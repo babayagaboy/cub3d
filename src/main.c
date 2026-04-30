@@ -59,14 +59,21 @@ int	main(int argc, char **argv)
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 		return (free(game->mlx), free(game->player), 1);
+	game->player->kp_ra = 0;
+	game->player->kp_la = 0;
 	//dubg(game);
 	start(game);
 	mlx_loop(game->mlx->mlx);
-	free(game);
+	//free(game);
+	for (int i = 0; i < game->door_count; i++)
+		free(game->door[i]);
+	free(game->door);
 	free(game->mlx);
 	free(game->player);
 	free(game->ray);
 	free(game->player);
+	free(game->txt);
+	free(game->o_text);
 	free_memory(game->elements_file);
 	free_memory(game->map);
 	free (game);
