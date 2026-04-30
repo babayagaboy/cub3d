@@ -26,7 +26,57 @@ int		background(int color)
 		&& color != 0x3B4584
 		&& color != 0x394171
 		&& color != 0x3B4584
-		&& color != 0x706B8D)
+		&& color != 0x706B8D
+		&& color != 0x4D5270
+		&& color != 0x6B4683 
+		&& color != 0x6D4985
+		&& color != 0x674A8D
+		&& color != 0x364080
+		&& color != 0x6A4A8B
+		&& color != 0x754C87
+		&& color != 0x6A4A8B
+		&& color != 0x754C87
+		&& color != 0x78508A
+		&& color != 0x664D94
+		&& color != 0x6A4E92
+		&& color != 0x654F98
+		&& color != 0x6C5095
+		&& color != 0x65519D
+		&& color != 0x6A529B
+		&& color != 0x745395
+		&& color != 0x535CA4
+		&& color != 0x6555A4
+		&& color != 0x6B58A7
+		&& color != 0x6357AA
+		&& color != 0x6359AD
+		&& color != 0x715BA6
+		&& color != 0x625BB4
+		&& color != 0x6A5DB3
+		&& color != 0x615EBB
+		&& color != 0x6B61B7
+		&& color != 0x6360BE
+		&& color != 0x5F62C4
+		&& color != 0x5364CA
+		&& color != 0x5E65CC
+		&& color != 0x5D67D0
+		&& color != 0x5D69D4
+		&& color != 0x5C6AD6
+		&& color != 0x5C6CDB
+		&& color != 0x5B6DDD
+		&& color != 0x5F71DD
+		&& color != 0x6162C2
+		&& color != 0x6266CA
+		&& color != 0x7077C6
+		&& color != 0x6069D2
+		&& color != 0x5B6EE0
+		&& color != 0x5B6EE1
+		&& color != 0x6678E3
+		&& color != 0x78416C
+		&& color != 0x6E4175
+		&& color != 0x6E447B
+		&& color != 0x734273
+		&& color != 0x784677
+		&& color != 0x72457B)
 		return (0);
 	return (1);
 }
@@ -75,6 +125,7 @@ void draw_gun_hud(t_game *g, int i)
     if (!g->pistol1 || !g->pistol1->tex_arr[i])
         return;
     tex = g->pistol1->tex_arr[i];
+	//printf("Value of i in draw_gun_hud: %d\n", i);
     start_x = (screenWidth - tex->width) - (screenWidth / 7);
     start_y = screenHeight - tex->height + 50;
     pixels = (unsigned int *)tex->data;
@@ -102,12 +153,18 @@ void draw_gun_hud(t_game *g, int i)
 
 void run_gun_animation(t_game *g)
 {
-	int i = 0;
-	while (i < 5)
+	if (g->player->gun_frame == 0)
+		return ;
+	g->player->gun_anim_timer += g->player->frame_time;
+	if (g->player->gun_anim_timer >= 0.6)
 	{
-		draw_gun_hud(g, i);
-		usleep(100);
-		i++;
+		g->player->gun_anim_timer -= 0.6;
+		g->player->gun_frame++;
+		if (g->player->gun_frame >= 5)
+		{
+			g->player->gun_frame = 0;
+			g->player->gun_anim_timer = 0;
+		}
 	}
 }
 
@@ -753,7 +810,7 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		get_c_colored(g->o_text);
 	if (!g->o_text->path_floor)
 		get_f_colored(g->o_text);
-	draw_gun_hud(g, 0);
+	draw_gun_hud(g, g->player->gun_frame);
 	drawbuffer(g->mlx);
 	i = 0;
 	while (i < screenHeight)
@@ -770,10 +827,38 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
+int mouse_press(int button, int x, int y, t_game *g)
+{
+    (void)x; 
+    (void)y;
+
+if (button == 1)
+    {
+        g->player->kp_lc = 1;
+        if (g->player->gun_frame == 0)
+        {
+            g->player->gun_frame = 1;
+            g->player->gun_anim_timer = 0;
+        }
+    }
+    return (0);
+}
+
+int mouse_release(int button, int x, int y, t_game *g)
+{
+    (void)x; 
+    (void)y;
+
+    if (button == 1)
+    {
+		printf("Left click release detected\n");
+        g->player->kp_lc = 0;
+    }
+    return (0);
+}
+
 int	key_press(int key, t_game *g)
 {
-	if (key == 1)
-		g->player->kp_lc = 1;
 	if (key == KEY_W)
 		g->player->kp_w = 1;
 	if (key == KEY_S)
@@ -793,8 +878,6 @@ int	key_press(int key, t_game *g)
 
 int	key_release(int key, t_game *g)
 {
-	if (key == 1)
-		g->player->kp_lc = 0;
 	if (key == KEY_W)
 		g->player->kp_w = 0;
 	if (key == KEY_S)
@@ -850,8 +933,10 @@ int	handle_input(t_game *g)
 {
 	int	moved;
 	int	door_changed;
+	int	redraw;
 
 	moved = 0;
+	redraw = 0;
 	get_time(g->player);
 	if (g->player->kp_w)
 	{
@@ -926,12 +1011,15 @@ int	handle_input(t_game *g)
 		apply_mouse_rotation(g);
 		moved = 1;
 	}
-	if (g->player->kp_lc)
+	if (g->player->gun_frame != 0)
+	{
 		run_gun_animation(g);
+		redraw = 1;
+	}
 	door_changed = update_doors(g);
 	if (moved)
 		upd_player_minimap(g);
-	if (moved || door_changed)
+	if (moved || door_changed || redraw)
 		calc_rays(g->mlx, g->ray, g->player, g);
 	return (0);
 }
@@ -946,11 +1034,14 @@ void	start(t_game *game)
 	game->center_y = screenHeight / 2;
 	game->mouse_dx = 0;
 	game->warping = 0;
+	game->player->kp_lc = 0;
+	game->player->gun_frame = 0;
+	game->player->gun_anim_timer = 0;
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
-	mlx_hook(game->mlx->win, 4, 1L << 2, key_press, game);
-	mlx_hook(game->mlx->win, 5, 1L << 3, key_release, game);
+	mlx_hook(game->mlx->win, 4, 1L << 2, mouse_press, game);
+	mlx_hook(game->mlx->win, 5, 1L << 3, mouse_release, game);
 	mlx_mouse_move(game->mlx->mlx, game->mlx->win, game->center_x, game->center_y);
 	game->door = NULL;
 	game->door = get_door_cords(game->map);

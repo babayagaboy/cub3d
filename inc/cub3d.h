@@ -89,7 +89,8 @@ typedef struct s_player
 	int		kp_d;
 	int		kp_la;
 	int		kp_ra;
-	int		kp_lc;
+	int		kp_lc;	int	gun_frame;
+	double	gun_anim_timer;
 }	t_player;
 
 typedef struct s_gun
