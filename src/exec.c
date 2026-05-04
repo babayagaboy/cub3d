@@ -37,7 +37,23 @@ static void	free_weapon(t_weapon *weapon, t_mlx *mlx)
 		}
 		free(weapon->tex_arr);
 	}
-	free(weapon);
+}
+static void	free_weapon_attk(t_weapon *weapon, t_mlx *mlx)
+{
+	int i;
+
+	if (!weapon)
+		return ;
+	if (weapon->tex_atk_arr)
+	{
+		i = 0;
+		while (weapon->tex_atk_arr[i])
+		{
+			free_t_texture(weapon->tex_atk_arr[i], mlx);
+			++i;
+		}
+		free(weapon->tex_atk_arr);
+	}
 }
 
 int buffer[screenHeight][screenWidth];
@@ -64,6 +80,8 @@ void	get_guns_sprite(t_game *g)
 	}
 	g->lightsaber->weapon_frame = 0;
 	g->lightsaber->weapon_anim_timer = 0.0;
+	g->lightsaber->weapon_state = 0;
+	g->lightsaber->attack_pending = 0;
 	g->lightsaber->deployed = 0;
 	while (i < 6)
 	{
@@ -77,6 +95,44 @@ void	get_guns_sprite(t_game *g)
 		if (!g->lightsaber->tex_arr[i])
 		{
 			free_weapon(g->lightsaber, g->mlx);
+			free(g->lightsaber);
+			return ;
+		}
+		++i;
+	}
+}
+
+void	get_weapon_attck_sprite(t_game *g)
+{
+	int i;
+
+	i = 0;
+	g->lightsaber->tex_atk_arr = ft_calloc(7, sizeof(t_texture *));
+	if (!g->lightsaber->tex_atk_arr)
+	{
+		free_weapon(g->lightsaber, g->mlx);
+		free(g->lightsaber);
+		return ;
+	}
+	g->lightsaber->weapon_frame = 0;
+	g->lightsaber->weapon_anim_timer = 0.0;
+	g->lightsaber->weapon_state = 0;
+	g->lightsaber->attack_pending = 0;
+	g->lightsaber->deployed = 0;
+	while (i < 6)
+	{
+		load_texture(g->mlx, &g->lightsaber->tex_atk_arr[i],
+			i == 0 ? "./assets/SwordAttack1.xpm" :
+			i == 1 ? "./assets/SwordAttack2.xpm" :
+			i == 2 ? "./assets/SwordAttack3.xpm" :
+			i == 3 ? "./assets/SwordAttack4.xpm" :
+			i == 4 ? "./assets/SwordAttack5.xpm" :
+			"./assets/SwordAttack6.xpm");
+		if (!g->lightsaber->tex_atk_arr[i])
+		{
+			free_weapon(g->lightsaber, g->mlx);
+			free_weapon_attk(g->lightsaber, g->mlx);
+			free(g->lightsaber);
 			return ;
 		}
 		++i;
@@ -119,43 +175,85 @@ void draw_weapon_hud(t_game *g, int i)
     }
 }
 
+void draw_attack_hud(t_game *g, int i)
+{
+    t_texture		*tex;
+    int				start_x;
+    int				start_y;
+    int				x;
+    int				y;
+    unsigned int	color;
+    unsigned int	*pixels;
+	float			scale = 1.5;  // Scale factor: 2 = 50% size, 3 = 33% size, etc.
+
+    if (!g->lightsaber || !g->lightsaber->tex_atk_arr[i])
+        return ;
+    tex = g->lightsaber->tex_atk_arr[i];
+    start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
+    start_y = screenHeight - (tex->height / scale) + 50;
+    pixels = (unsigned int *)tex->data;
+    y = 0;
+    while (y < tex->height)
+    {
+        x = 0;
+        while (x < tex->width)
+        {
+            int bx = start_x + (x / scale);
+            int by = start_y + (y / scale);
+
+            color = pixels[y * (tex->line_len / 4) + x];
+            if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+                && (color & 0xFF000000) == 0)
+                buffer[by][bx] = color;
+            ++x;
+        }
+        ++y;
+    }
+}
+
 void run_weapon_animation(t_game *g)
 {
-	if (g->lightsaber->weapon_frame == 0)
+	if (g->lightsaber->weapon_state == 0)
 		return ;
-	if (g->lightsaber->deployed == 0)
+	g->lightsaber->weapon_anim_timer += g->player->frame_time;
+	if (g->lightsaber->weapon_anim_timer < 0.066)
+		return ;
+	g->lightsaber->weapon_anim_timer -= 0.066;
+	g->lightsaber->weapon_frame++;
+	if (g->lightsaber->weapon_state == 1)
 	{
-		g->lightsaber->weapon_anim_timer += g->player->frame_time;
-		if (g->lightsaber->weapon_anim_timer >= 0.066)
+		if (g->lightsaber->weapon_frame >= 6)
 		{
-			g->lightsaber->weapon_anim_timer -= 0.066;
-			g->lightsaber->weapon_frame++;
-			if (g->lightsaber->weapon_frame >= 6)
+			g->lightsaber->weapon_frame = 5;
+			g->lightsaber->weapon_anim_timer = 0;
+			g->lightsaber->deployed = 1;
+			if (g->lightsaber->attack_pending)
 			{
-				g->lightsaber->weapon_frame = 5;
+				g->lightsaber->attack_pending = 0;
+				g->lightsaber->weapon_state = 2;
+				g->lightsaber->weapon_frame = 1;
 				g->lightsaber->weapon_anim_timer = 0;
+			}
+			else
+			{
+				g->lightsaber->weapon_state = 0;
 			}
 		}
 	}
-	else
-	{ 
-		if (g->lightsaber->weapon_frame > 0)
-		{
-			g->lightsaber->weapon_anim_timer += g->player->frame_time;
-			if (g->lightsaber->weapon_anim_timer >= 0.066)
-			{
-				g->lightsaber->weapon_anim_timer -= 0.066;
-				g->lightsaber->weapon_frame--;
-				if (g->lightsaber->weapon_frame < 0)
-					g->lightsaber->weapon_frame = 0;
-			}
-		}
-		if (g->lightsaber->weapon_frame <= 0)
+	else if (g->lightsaber->weapon_state == 2)
+	{
+		if (g->lightsaber->weapon_frame >= 6)
 		{
 			g->lightsaber->weapon_frame = 0;
 			g->lightsaber->weapon_anim_timer = 0;
+			g->lightsaber->weapon_state = 0;
 		}
 	}
+}
+
+void	run_attack_animation(t_game *g)
+{
+	(void)g;
 }
 
 t_door	*find_door(t_game *g, int y, int x)
@@ -801,7 +899,10 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		get_c_colored(g->o_text);
 	if (!g->o_text->path_floor)
 		get_f_colored(g->o_text);
-	draw_weapon_hud(g, g->lightsaber->weapon_frame);
+	if (g->lightsaber->weapon_state == 2)
+		draw_attack_hud(g, g->lightsaber->weapon_frame);
+	else if (g->lightsaber->deployed || g->lightsaber->weapon_state == 1)
+		draw_weapon_hud(g, g->lightsaber->weapon_frame);
 	drawbuffer(g->mlx);
 	i = 0;
 	while (i < screenHeight)
@@ -823,18 +924,24 @@ int mouse_press(int button, int x, int y, t_game *g)
     (void)x; 
     (void)y;
 
-	if (button == 3)
+	if (button == 1)
     {
-        g->player->kp_rc = 1;
-        if (g->lightsaber->weapon_frame == 0)
+        if (g->lightsaber->weapon_state != 0)
+            return (0);
+        g->player->kp_lc = 1;
+        if (g->lightsaber->deployed == 0)
         {
+            g->lightsaber->weapon_state = 1;
+            g->lightsaber->weapon_frame = 1;
+            g->lightsaber->weapon_anim_timer = 0;
+            g->lightsaber->attack_pending = 1;
+        }
+        else
+        {
+            g->lightsaber->weapon_state = 2;
             g->lightsaber->weapon_frame = 1;
             g->lightsaber->weapon_anim_timer = 0;
         }
-		if (g->lightsaber->deployed == 0)
-			g->lightsaber->deployed = 1;
-		else
-			g->lightsaber->deployed = 0;
     }
     return (0);
 }
@@ -844,8 +951,8 @@ int mouse_release(int button, int x, int y, t_game *g)
     (void)x; 
     (void)y;
 
-    if (button == 3)
-        g->player->kp_rc = 0;
+    if (button == 1)
+        g->player->kp_lc = 0;
     return (0);
 }
 
@@ -1003,7 +1110,7 @@ int	handle_input(t_game *g)
 		apply_mouse_rotation(g);
 		moved = 1;
 	}
-	if (g->lightsaber->weapon_frame != 0)
+	if (g->lightsaber->weapon_state != 0)
 	{
 		run_weapon_animation(g);
 		redraw = 1;
@@ -1039,5 +1146,6 @@ void	start(t_game *game)
 	mlx_loop_hook(game->mlx->mlx, handle_input, game);
 	printf("Hello\n");
 	get_guns_sprite(game);
+	get_weapon_attck_sprite(game);
 	calc_rays(game->mlx, game->ray, game->player, game);
 }

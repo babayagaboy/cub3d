@@ -97,9 +97,10 @@ typedef struct s_player
 typedef struct s_weapon
 {
 	t_texture	**tex_arr;
+	t_texture	**tex_atk_arr;
 	int			weapon_frame;
-	double		weapon_anim_timer;
-	int			deployed;
+	double		weapon_anim_timer;	int		weapon_state;
+	int		attack_pending;	int			deployed;
 }			t_weapon;
 
 typedef struct s_ray

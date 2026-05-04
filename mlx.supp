@@ -1,0 +1,118 @@
+# MLX Library Suppressions
+{
+   <mlx_leak_malloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libmlx.a
+}
+
+{
+   <mlx_leak_calloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:calloc
+   obj:*/libmlx.a
+}
+
+{
+   <mlx_invalid_read>
+   Memcheck:Addr8
+   obj:*/libmlx.a
+}
+
+{
+   <mlx_invalid_write>
+   Memcheck:Value8
+   obj:*/libmlx.a
+}
+
+{
+   <mlx_cond_jump>
+   Memcheck:Cond
+   obj:*/libmlx.a
+}
+
+{
+   <mlx_free_mismatch>
+   Memcheck:Free
+   fun:free
+   obj:*/libmlx.a
+}
+
+# X11 Library Suppressions (initialized by mlx)
+{
+   <x11_leak_malloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libX11.so*
+}
+
+{
+   <x11_leak_calloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:calloc
+   obj:*/libX11.so*
+}
+
+# XExt Library Suppressions
+{
+   <xext_leak>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libXext.so*
+}
+
+{
+   <xext_leak_calloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:calloc
+   obj:*/libXext.so*
+}
+
+# XCursor Library Suppressions
+{
+   <xcursor_leak>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libXcursor.so*
+}
+
+# XRender Library Suppressions
+{
+   <xrender_leak>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libXrender.so*
+}
+
+# XCB Library Suppressions
+{
+   <xcb_leak>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:malloc
+   obj:*/libxcb.so*
+}
+
+{
+   <xcb_leak_calloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:calloc
+   obj:*/libxcb.so*
+}
+
+{
+   <xcb_leak_realloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable,indirect
+   fun:realloc
+   obj:*/libxcb.so*
+}
