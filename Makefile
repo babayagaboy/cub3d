@@ -47,12 +47,15 @@ OBJS		= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
+$(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 	@echo "Ready!"
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
+
+$(MLX):
+	@$(MAKE) -C $(MLX_DIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
@@ -60,11 +63,11 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 clean:
 	@rm -rf $(OBJDIR)
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(LIBFT_DIR) $(MLX_DIR) clean
 
 fclean: clean
 	@rm -f $(NAME)
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(LIBFT_DIR) $(MLX_DIR) fclean
 
 re: fclean all
 
