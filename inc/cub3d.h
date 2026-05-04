@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/23 17:38:06 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/04 16:43:49 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,10 @@ typedef struct s_weapon
 	t_texture	**tex_arr;
 	t_texture	**tex_atk_arr;
 	int			weapon_frame;
-	double		weapon_anim_timer;	int		weapon_state;
-	int		attack_pending;	int			deployed;
+	double		weapon_anim_timer;
+	int		weapon_state;
+	int		attack_pending;	
+	int			deployed;
 }			t_weapon;
 
 typedef struct s_ray
