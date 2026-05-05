@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p_utils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:10:27 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 14:10:46 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:39:55 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	find_player(char **map, int *coord)
 			if (map[i][j] == 'N' || map[i][j] == 'S'
 				|| map[i][j] == 'W' || map[i][j] == 'E')
 			{
-				coord[0] = i; //y
-				coord[1] = j; //x
+				coord[0] = i;
+				coord[1] = j;
 				count++;
 			}
 			j++;
@@ -42,8 +42,10 @@ int	find_player(char **map, int *coord)
 
 char	*ft_findspace(char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
 		i++;
-	return(&str[i]);
+	return (&str[i]);
 }

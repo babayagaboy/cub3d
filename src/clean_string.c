@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean_string.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:04:39 by myivanov          #+#    #+#             */
-/*   Updated: 2026/03/25 14:04:58 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:32:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,14 @@ char	*looksmax_string(char *str)
 	char	**splited;
 	char	*cleaned;
 	int		size;
-	char	c[] = {' ', '\t', '\b', '\f', '\r', '\0'};
+	char	c[6];
 
+	c[0] = ' ';
+	c[1] = '\t';
+	c[2] = '\b';
+	c[3] = '\f';
+	c[4] = '\r';
+	c[5] = '\0';
 	if (!str)
 		return (NULL);
 	splited = ft_split(str, c);

@@ -6,19 +6,11 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/23 17:38:00 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:39:00 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-void dubg(t_game *game)
-{
-	printf("player coords = y: %f, x: %f\n", game->player->pos_y, game->player->pos_x);
-	printf("player orientation = dir_y: %f, dir_x: %f\n", game->player->dir_y, game->player->dir_x);
-	printf("map coords = y: %i, x: %d\n", game->map_h, game->map_w);
-
-}
 
 int	main(int argc, char **argv)
 {
@@ -48,23 +40,14 @@ int	main(int argc, char **argv)
 	init_player(game->player);
 	if(!parser(argc, argv, game))
 		return (free(game->player), free(game->mlx) ,free(game), 0);
-
-	// for (int i = 0; i < 3; ++i)
-	// 	printf("In main rbg_ceiling[%d]: %d\n", i, game->o_text->rgb_ceiling[i]);
-	// printf("\n");
-	// for (int i = 0; i < 3; ++i)
-	// 	printf("In main rbg_floor[%d]: %d\n", i, game->o_text->rgb_floor[i]);
-		
 	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 		return (free(game->mlx), free(game->player), 1);
 	game->player->kp_ra = 0;
 	game->player->kp_la = 0;
-	//dubg(game);
 	start(game);
 	mlx_loop(game->mlx->mlx);
-	//free(game);
 	for (int i = 0; i < game->door_count; i++)
 		free(game->door[i]);
 	free(game->door);

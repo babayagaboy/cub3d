@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/15 17:48:19 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/05 22:45:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 int	check_rbg(char *str, int *arr)
 {
 	char	**splited;
-	char	c[] = {',', '\0'};
+	char	c[2];
 	int		result;
 
+	c[0] = ',';
+	c[1] = '\0';
 	if (!str)
 		return (0);
 	splited = ft_split(str, c);
@@ -31,18 +33,17 @@ int	check_rbg(char *str, int *arr)
 
 int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
 {
-	int	fd;
-	size_t rc;
+	int		fd;
+	size_t	rc;
 	char	*buff;
 
 	buff = malloc(sizeof(char) * 10);
 	if (!buff)
 		return (0);
-
 	fd = open(&line[5], O_RDONLY);
 	rc = read(fd, buff, 10);
 	vars->elements_found += value;
-	if (fd >= 0 &&  buff != NULL)
+	if (fd >= 0 && buff != NULL)
 	{
 		vars->opened += value;
 		*tex_path = ft_strdup(&line[5]);
@@ -64,49 +65,6 @@ void	choose_corect_path(char *line, int value, t_ori_tex *tex)
 		tex->path_door = ft_strdup(&line[4]);
 }
 
-int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
-{
-	int	type;
-	int	fd;
-	int	increment;
-	size_t rc;
-	char	*buff;
-
-	vars->elements_found += value;
-	type = f_c_type(&line[2]);
-	if (value == 5)
-		increment = 1;
-	else
-		increment = 2;
-	if (type == 2)
-	{
-		buff = malloc(sizeof(char) * 10);
-		if (!buff)
-			return (0);
-		fd = open(&line[4], O_RDONLY);
-		rc = read(fd, buff, 10);
-		if (fd >= 0 && buff != NULL)
-		{
-			vars->f_c_element += increment;
-			choose_corect_path(line, value, tex);
-			free(buff);
-			close(fd);
-		}
-		else
-			return (free(buff), 0);
-	}
-	else
-	{
-		if (value == 5 && check_rbg(&line[2], tex->rgb_floor))
-			vars->f_c_element += increment;
-		if (value == 6 && check_rbg(&line[2], tex->rgb_ceiling))
-			vars->f_c_element += increment;
-		else
-			return (0);
-	}
-	return (1);
-}
-
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 {
 	if (ft_strncmp(line, "NO", 2) == 0 && line[2] == ' ')
@@ -118,7 +76,7 @@ void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 	else if (ft_strncmp(line, "EA", 2) == 0 && line[2] == ' ')
 		handle_texture(line, 4, vars, &tex->path_east);
 	else if (ft_strncmp(line, "F", 1) == 0 && line[1] == ' ')
-		 handle_floor_ceiling(line, 5, vars, tex);
+		handle_floor_ceiling(line, 5, vars, tex);
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
 		handle_floor_ceiling(line, 6, vars, tex);
 	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
@@ -128,12 +86,10 @@ void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 	}
 }
 
-
-
 int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 {
-	int	y;
-	
+	int		y;
+
 	if (!elements)
 		return (0);
 	y = 0;
@@ -144,15 +100,15 @@ int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 	}
 	if (vars->door_found)
 	{
-		if (vars->elements_found == 28 && vars->opened == 10 && vars->f_c_element == 5)
+		if (vars->elements_found == 28
+			&& vars->opened == 10 && vars->f_c_element == 5)
 			return (1);
 	}
 	else
 	{
-		if (vars->elements_found == 21 && vars->opened == 10 && vars->f_c_element == 3)
+		if (vars->elements_found == 21
+			&& vars->opened == 10 && vars->f_c_element == 3)
 			return (1);
 	}
 	return (0);
 }
-
-

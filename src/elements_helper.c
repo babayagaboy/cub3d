@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elements_helper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:49:52 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/06 15:09:03 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:32:52 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 int	f_c_type(char *str)
 {
 	if (!ft_strncmp(str, "./", 2))
-		return (2); //file type
+		return (2);
 	else
-		return (1); //RGB type
+		return (1);
 }
 
 int	is_numeric_str(char *str)

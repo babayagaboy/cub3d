@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/05/05 20:40:53 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/05/05 23:29:58 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,10 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/free.c	\
 				$(SRCDIR)/check_elements.c \
+				$(SRCDIR)/handle_floor_ceiling.c \
 				$(SRCDIR)/check_map.c \
+				$(SRCDIR)/check_map_utils.c \
+				$(SRCDIR)/check_doors.c \
 				$(SRCDIR)/clean_string.c \
 				$(SRCDIR)/elements_helper.c \
 				$(SRCDIR)/get_elements.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_elements.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:00:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/04/06 15:49:16 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:36:47 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int	count_elements(char **cub, int y, int *door_found)
 {
-	int	count;
+	int		count;
 	char	*clean;
 
 	count = 0;
@@ -24,28 +24,23 @@ int	count_elements(char **cub, int y, int *door_found)
 		if (cub[y] && (ft_isempty(cub[y]) || cub[y][0] == '\n'))
 		{
 			y++;
-			continue;
+			continue ;
 		}
 		clean = ft_findspace(cub[y]);
 		if (ft_strncmp(clean, "D", 1) == 0)
 			*door_found = 1;
 		count++;
-		if (*door_found == 1)
-		{
-			if (count == 8)
-				break ;
-		}
-		else
-		{
-			if (count == 7)
-				break ;
-		}
+		if (*door_found == 1 && count == 8)
+			break ;
+		else if (*door_found != 1 && count == 7)
+			break ;
 		y++;
 	}
 	return (count);
 }
 
-int	process_line(char *line, char **elements_file, int i, int *stop, int door_found)
+int	process_line(char *line, char **elements_file,
+	int i, int *stop, int door_found)
 {
 	char	*clean;
 	int		find_stop;
@@ -55,7 +50,6 @@ int	process_line(char *line, char **elements_file, int i, int *stop, int door_fo
 		find_stop = 6;
 	else
 		find_stop = 5;
-	
 	if (i > find_stop)
 	{
 		*stop = 1;
@@ -83,7 +77,7 @@ char	**fill_elements(char **cub, int *y, int count, int door_found)
 		if (cub[*y] && (ft_isempty(cub[*y]) || cub[*y][0] == '\n'))
 		{
 			(*y)++;
-			continue;
+			continue ;
 		}
 		if (!process_line(cub[*y], elements_file, i, &stop, door_found))
 			return (free_char_arr(elements_file, i), NULL);
@@ -103,7 +97,6 @@ char	**get_elements(char **cub, int *y, t_ele_var *vars)
 
 	if (!cub)
 		return (NULL);
-
 	count = count_elements(cub, *y, &vars->door_found);
 	elements_file = fill_elements(cub, y, count, vars->door_found);
 	return (elements_file);

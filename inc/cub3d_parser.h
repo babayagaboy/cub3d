@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/04/15 17:47:00 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/05 23:29:37 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex);
 
 
 int		*get_player_coords(char **map);
+void	get_player_orientation(char player_orientation, t_player *p);
 int		check_walls(char **map, int y, int x);
 int		check_map_borders(char **map, t_game *g);
 int		check_map_interior(char **map, t_ele_var *vars);
