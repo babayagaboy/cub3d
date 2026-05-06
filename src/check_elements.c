@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 18:17:39 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 18:37:55 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,9 @@ int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
 		return (0);
 	fd = open(&line[5], O_RDONLY);
 	rc = read(fd, buff, 10);
-	printf("rc: %zu\n", rc);
 	vars->elements_found += value;
 	if (fd >= 0 && rc > 0)
 	{
-		printf("Entered buff is not null\n");
 		vars->opened += value;
 		*tex_path = ft_strdup(&line[5]);
 		if (buff != NULL)

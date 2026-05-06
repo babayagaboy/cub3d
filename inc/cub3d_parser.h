@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 17:53:54 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 18:31:05 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int		get_color(int r, int g, int b);
 int		init_buffer(t_game *g);
 int		malloc_structs(t_game **game);
 void	get_fc(t_game *g, t_player *p, t_ori_tex *t, int i);
-void	handle_path(char *line, int value, t_ori_tex *tex);
+int     handle_path(char *line, int value, t_ori_tex *tex);
 char	*get_lightsaber_attack_texture_path(int i);
 int		init_lightsaber_attack_struct(t_game *g);
 int		load_lightsaber_attack_textures(t_game *g);

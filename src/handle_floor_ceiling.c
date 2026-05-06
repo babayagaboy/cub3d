@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 22:45:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 17:26:26 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 18:37:47 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	get_fc(t_game *g, t_player *p, t_ori_tex *t, int i)
 	}
 }
 
-void	handle_path(char *line, int value, t_ori_tex *tex)
+int	handle_path(char *line, int value, t_ori_tex *tex)
 {
 	char	*buff;
 	int		fd;
@@ -43,17 +43,18 @@ void	handle_path(char *line, int value, t_ori_tex *tex)
 
 	buff = malloc(sizeof(char) * 10);
 	if (!buff)
-		return ;
+		return (0);
 	fd = open(&line[4], O_RDONLY);
 	rc = read(fd, buff, 10);
-	if (fd >= 0 && buff != NULL)
+	if (fd >= 0 && rc >= 1)
 	{
 		choose_corect_path(line, value, tex);
 		free(buff);
 		close(fd);
 	}
 	else
-		free(buff);
+		return (free(buff), 0);
+	return (1);
 }
 
 int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
@@ -69,8 +70,10 @@ int	handle_floor_ceiling(char *line, int value, t_ele_var *vars, t_ori_tex *tex)
 		increment = 2;
 	if (type == 2)
 	{
-		handle_path(line, value, tex);
-		vars->f_c_element += increment;
+		if (handle_path(line, value, tex))
+			vars->f_c_element += increment;
+		else
+			return (0);
 	}
 	else
 	{
