@@ -12,28 +12,40 @@
 
 #include <cub3d.h>
 
+int malloc_structs(t_game **game)
+{
+    *game = malloc(sizeof(t_game));
+    if (!*game)
+        return 1;
+
+    (*game)->player = malloc(sizeof(t_player));
+    if (!(*game)->player)
+        return (free(*game), 1);
+
+    (*game)->mlx = malloc(sizeof(t_mlx));
+    if (!(*game)->mlx)
+        return (free((*game)->player), free(*game), 1);
+
+    (*game)->o_text = malloc(sizeof(t_ori_tex));
+    if (!(*game)->o_text)
+        return (free((*game)->mlx), free((*game)->player), free(*game), 1);
+
+    (*game)->txt = malloc(sizeof(t_texture));
+    if (!(*game)->txt)
+        return (free((*game)->o_text), free((*game)->mlx), free((*game)->player), free(*game), 1);
+
+    return 0;
+}
+
 int	main(int argc, char **argv)
 {
 	t_game *game;
 
-	game = malloc(sizeof(t_game));
-	if (!game)
-		return (1);
-	game->player = malloc(sizeof(t_player));
-	if (!game->player)
-		return (free(game), 1);
-	game->mlx = malloc(sizeof(t_mlx));
-	if (!game->mlx)
-		return (1);
-	game->o_text = malloc(sizeof(t_ori_tex));
-	if (!game->o_text)
-		return (1);
-	game->txt = malloc(sizeof(t_texture));
-	if (!game->txt)
-		return (1);
-	game->door =  malloc(sizeof(t_door *));
-	if (!game->door)
-		return (1);
+	game = NULL;
+
+	if (malloc_structs(&game))
+		return (-1);
+
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win || !game->mlx->img || !game->mlx->addr)
 		return (free(game->mlx), 1);
@@ -48,17 +60,5 @@ int	main(int argc, char **argv)
 	game->player->kp_la = 0;
 	start(game);
 	mlx_loop(game->mlx->mlx);
-	for (int i = 0; i < game->door_count; i++)
-		free(game->door[i]);
-	free(game->door);
-	free(game->mlx);
-	free(game->player);
-	free(game->ray);
-	free(game->player);
-	free(game->txt);
-	free(game->o_text);
-	free_memory(game->elements_file);
-	free_memory(game->map);
-	free (game);
 	return (0);
 }

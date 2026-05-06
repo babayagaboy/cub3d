@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/05/05 23:29:58 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/05/06 15:41:08 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,10 @@ SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/p_utils.c \
 				$(SRCDIR)/read_file.c \
 				$(SRCDIR)/textures.c \
+				$(SRCDIR)/get_guns_sprite.c \
+				$(SRCDIR)/get_attack_sprite.c \
+				$(SRCDIR)/run_weapon_animation.c \
+				$(SRCDIR)/minimap.c \
 				$(SRCDIR)/exec.c \
 				$(SRCDIR)/main.c
 

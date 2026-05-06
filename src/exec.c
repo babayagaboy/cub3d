@@ -3,284 +3,153 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:29:02 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/04 17:06:01 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 15:40:38 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-void	free_t_texture(t_texture *tex, t_mlx *mlx)
-{
-	if (!tex)
-		return ;
-	if (tex->img_ptr && mlx && mlx->mlx)
-		mlx_destroy_image(mlx->mlx, tex->img_ptr);
-	free(tex);
-}
-
-void	free_weapon(t_weapon *weapon, t_mlx *mlx)
-{
-	int i;
-
-	if (!weapon)
-		return ;
-	if (weapon->tex_arr)
-	{
-		i = 0;
-		while (weapon->tex_arr[i])
-		{
-			free_t_texture(weapon->tex_arr[i], mlx);
-			++i;
-		}
-		free(weapon->tex_arr);
-	}
-}
-void	free_weapon_attk(t_weapon *weapon, t_mlx *mlx)
-{
-	int i;
-
-	if (!weapon)
-		return ;
-	if (weapon->tex_atk_arr)
-	{
-		i = 0;
-		while (weapon->tex_atk_arr[i])
-		{
-			free_t_texture(weapon->tex_atk_arr[i], mlx);
-			++i;
-		}
-		free(weapon->tex_atk_arr);
-	}
-}
-
 int buffer[screenHeight][screenWidth];
 
-int		background(int color)
+//----------------------------------------------
+typedef struct s_weapon_hud
 {
-	(void)color;
-	return (1);
+	t_texture	*tex;
+	int			start_x;
+	int			start_y;
+	float		scale;
+} 				t_weapon_hud;
+
+void	get_weapon_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y)
+{
+	*start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
+	*start_y = screenHeight - (tex->height / scale) + 50;
 }
 
-void	get_guns_sprite(t_game *g)
+void	draw_weapon_hud_row(t_weapon_hud *hud, int y)
 {
-	int i;
-
-	i = 0;
-	g->lightsaber = malloc(sizeof(t_weapon));
-	if (!g->lightsaber)
-		return ;
-	g->lightsaber->tex_arr = ft_calloc(7, sizeof(t_texture *));
-	if (!g->lightsaber->tex_arr)
-	{
-		free(g->lightsaber);
-		return ;
-	}
-	g->lightsaber->weapon_frame = 0;
-	g->lightsaber->weapon_anim_timer = 0.0;
-	g->lightsaber->weapon_state = 0;
-	g->lightsaber->attack_pending = 0;
-	g->lightsaber->deployed = 0;
-	while (i < 6)
-	{
-		load_texture(g->mlx, &g->lightsaber->tex_arr[i],
-			i == 0 ? "./assets/lightsaber_equip1.xpm" :
-			i == 1 ? "./assets/lightsaber_equip2.xpm" :
-			i == 2 ? "./assets/lightsaber_equip3.xpm" :
-			i == 3 ? "./assets/lightsaber_equip4.xpm" :
-			i == 4 ? "./assets/lightsaber_equip5.xpm" :
-			"./assets/lightsaber_equip6.xpm");
-		if (!g->lightsaber->tex_arr[i])
-		{
-			free_weapon(g->lightsaber, g->mlx);
-			free(g->lightsaber);
-			return ;
-		}
-		++i;
-	}
-}
-
-void	get_weapon_attck_sprite(t_game *g)
-{
-	int i;
-
-	i = 0;
-	g->lightsaber->tex_atk_arr = ft_calloc(7, sizeof(t_texture *));
-	if (!g->lightsaber->tex_atk_arr)
-	{
-		free_weapon(g->lightsaber, g->mlx);
-		free(g->lightsaber);
-		return ;
-	}
-	g->lightsaber->weapon_frame = 0;
-	g->lightsaber->weapon_anim_timer = 0.0;
-	g->lightsaber->weapon_state = 0;
-	g->lightsaber->attack_pending = 0;
-	g->lightsaber->deployed = 0;
-	while (i < 6)
-	{
-		load_texture(g->mlx, &g->lightsaber->tex_atk_arr[i],
-			i == 0 ? "./assets/SwordAttack1.xpm" :
-			i == 1 ? "./assets/SwordAttack2.xpm" :
-			i == 2 ? "./assets/SwordAttack3.xpm" :
-			i == 3 ? "./assets/SwordAttack4.xpm" :
-			i == 4 ? "./assets/SwordAttack5.xpm" :
-			"./assets/SwordAttack6.xpm");
-		if (!g->lightsaber->tex_atk_arr[i])
-		{
-			free_weapon(g->lightsaber, g->mlx);
-			free_weapon_attk(g->lightsaber, g->mlx);
-			free(g->lightsaber);
-			return ;
-		}
-		++i;
-	}
-}
-
-void draw_weapon_hud(t_game *g, int i)
-{
-	t_texture		*tex;
-	int				start_x;
-	int				start_y;
 	int				x;
-	int				y;
 	unsigned int	color;
 	unsigned int	*pixels;
-	float			scale = 1.5;  // Scale factor: 2 = 50% size, 3 = 33% size, etc.
+	int				bx;
+	int				by;
+
+	x = 0;
+	pixels = (unsigned int *)hud->tex->data;
+	while (x < hud->tex->width)
+	{
+		bx = hud->start_x + (x / hud->scale);
+		by = hud->start_y + (y / hud->scale);
+
+		color = pixels[y * (hud->tex->line_len / 4) + x];
+		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+			&& (color & 0xFF000000) == 0)
+		{
+			buffer[by][bx] = color;
+		}
+		x++;
+	}
+}
+
+void	draw_weapon_hud_pixels(t_weapon_hud *hud)
+{
+	int	y;
+
+	y = 0;
+	while (y < hud->tex->height)
+	{
+		draw_weapon_hud_row(hud, y);
+		y++;
+	}
+}
+
+void	draw_weapon_hud(t_game *g, int i)
+{
+	t_weapon_hud	hud;
 
 	if (!g->lightsaber || !g->lightsaber->tex_arr[i])
 		return ;
-	tex = g->lightsaber->tex_arr[i];
-	start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
-	start_y = screenHeight - (tex->height / scale) + 50;
-	pixels = (unsigned int *)tex->data;
-	y = 0;
-	while (y < tex->height)
-	{
-		x = 0;
-		while (x < tex->width)
-		{
-			int bx = start_x + (x / scale);
-			int by = start_y + (y / scale);
 
-			color = pixels[y * (tex->line_len / 4) + x];
-			if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
-				&& (color & 0xFF000000) == 0)
-				buffer[by][bx] = color;
-			++x;
-		}
-		++y;
-	}
+	hud.tex = g->lightsaber->tex_arr[i];
+	hud.scale = 1.5;
+
+	get_weapon_hud_start_pos(hud.tex, hud.scale, &hud.start_x, &hud.start_y);
+	draw_weapon_hud_pixels(&hud);
+}
+//----------------------------------------------
+
+
+//----------------------------------------------
+typedef struct s_attack_hud
+{
+	t_texture	*tex;
+	int			start_x;
+	int			start_y;
+	float		scale;
+}				t_attack_hud;
+
+void	get_attack_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y)
+{
+	*start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
+	*start_y = screenHeight - (tex->height / scale) + 50;
 }
 
-void draw_attack_hud(t_game *g, int i)
+void	draw_attack_hud_row(t_attack_hud *hud, int y)
 {
-	t_texture		*tex;
-	int				start_x;
-	int				start_y;
 	int				x;
-	int				y;
 	unsigned int	color;
 	unsigned int	*pixels;
-	float			scale = 1.5;  // Scale factor: 2 = 50% size, 3 = 33% size, etc.
+	int				bx;
+	int				by;
 
-	if (!g->lightsaber || !g->lightsaber->tex_atk_arr[i])
-		return ;
-	tex = g->lightsaber->tex_atk_arr[i];
-	start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
-	start_y = screenHeight - (tex->height / scale) + 50;
-	pixels = (unsigned int *)tex->data;
+	x = 0;
+	pixels = (unsigned int *)hud->tex->data;
+	while (x < hud->tex->width)
+	{
+		bx = hud->start_x + (x / hud->scale);
+		by = hud->start_y + (y / hud->scale);
+
+		color = pixels[y * (hud->tex->line_len / 4) + x];
+		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+			&& (color & 0xFF000000) == 0)
+		{
+			buffer[by][bx] = color;
+		}
+		x++;
+	}
+}
+
+void	draw_attack_hud_pixels(t_attack_hud *hud)
+{
+	int	y;
+
 	y = 0;
-	while (y < tex->height)
+	while (y < hud->tex->height)
 	{
-		x = 0;
-		while (x < tex->width)
-		{
-			int bx = start_x + (x / scale);
-			int by = start_y + (y / scale);
-
-			color = pixels[y * (tex->line_len / 4) + x];
-			if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
-				&& (color & 0xFF000000) == 0)
-				buffer[by][bx] = color;
-			++x;
-		}
-		++y;
+		draw_attack_hud_row(hud, y);
+		y++;
 	}
 }
 
-void run_weapon_animation(t_game *g)
+void	draw_attack_hud(t_game *g, int i)
 {
-	if (g->lightsaber->weapon_state == 0)
-		return ;
-	g->lightsaber->weapon_anim_timer += g->player->frame_time;
-	if (g->lightsaber->weapon_anim_timer < 0.066)
-		return ;
-	g->lightsaber->weapon_anim_timer -= 0.066;
-	if (g->lightsaber->weapon_state == 1)
-		g->lightsaber->weapon_frame++;
-	else if (g->lightsaber->weapon_state == 2)
-		g->lightsaber->weapon_frame++;
-	else if (g->lightsaber->weapon_state == 3)
-		g->lightsaber->weapon_frame--;
-	if (g->lightsaber->weapon_state == 1)
-	{
-		if (g->lightsaber->weapon_frame >= 6)
-		{
-			g->lightsaber->weapon_frame = 5;
-			g->lightsaber->weapon_anim_timer = 0;
-			g->lightsaber->deployed = 1;
-			if (g->lightsaber->attack_pending)
-			{
-				g->lightsaber->attack_pending = 0;
-				g->lightsaber->weapon_state = 2;
-				g->lightsaber->weapon_frame = 1;
-				g->lightsaber->weapon_anim_timer = 0;
-			}
-			else
-			{
-				g->lightsaber->weapon_state = 0;
-			}
-		}
-	}
-	else if (g->lightsaber->weapon_state == 3)
-	{
-		g->lightsaber->weapon_frame--;
-		if (g->lightsaber->weapon_frame <= 0)
-		{
-			g->lightsaber->weapon_frame = 0;
-			g->lightsaber->weapon_anim_timer = 0;
-			g->lightsaber->deployed = 0;
-			g->lightsaber->weapon_state = 0;
-		}
-	}
-	else if (g->lightsaber->weapon_state == 2)
-	{
-		if (g->lightsaber->weapon_frame >= 6)
-		{
-			g->lightsaber->weapon_frame = 5;
-			g->lightsaber->weapon_anim_timer = 0;
-			g->lightsaber->weapon_state = 0;
-		}
-	}
-	else if (g->lightsaber->weapon_state == 3)
-	{
-		if (g->lightsaber->weapon_frame <= 0)
-		{
-			g->lightsaber->weapon_frame = 0;
-			g->lightsaber->weapon_anim_timer = 0;
-			g->lightsaber->deployed = 0;
-			g->lightsaber->weapon_state = 0;
-		}
-	}
+    t_attack_hud hud;
+
+    if (!g->lightsaber || !g->lightsaber->tex_atk_arr[i])
+        return;
+
+    hud.tex = g->lightsaber->tex_atk_arr[i];
+    hud.scale = 1.5;
+
+    get_attack_hud_start_pos(hud.tex, hud.scale, &hud.start_x, &hud.start_y);
+    draw_attack_hud_pixels(&hud);
 }
 
-void	run_attack_animation(t_game *g)
-{
-	(void)g;
-}
+//----------------------------------------------
+
 
 t_door	*find_door(t_game *g, int y, int x)
 {
@@ -298,60 +167,91 @@ t_door	*find_door(t_game *g, int y, int x)
 	return (NULL);
 }
 
-int	is_player_adjacent_to_door(t_game *g, t_door *door)
-{
-	int	player_y;
-	int	player_x;
-	int	door_y;
-	int	door_x;
-	int	diff_y;
-	int	diff_x;
 
-	player_y = (int)g->player->pos_y;
-	player_x = (int)g->player->pos_x;
-	door_y = (int)door->pos_y;
+//----------------------------------------------
+
+void	get_player_door_diff(t_player *player, t_door *door, int *diff_x, int *diff_y)
+{
+	int	player_x;
+	int	player_y;
+	int	door_x ;
+	int	door_y;
+
+
+	player_x = (int)player->pos_x;
+	player_y = (int)player->pos_y;
 	door_x = (int)door->pos_x;
-	diff_y = player_y - door_y;
-	diff_x = player_x - door_x;
+	door_y = (int)door->pos_y;
+	*diff_x = player_x - door_x;
+	*diff_y = player_y - door_y;
+}
+
+int	check_adjacent(int diff_x, int diff_y)
+{
 	if ((diff_y == 0 && diff_x == 0)
 		|| (diff_y == 1 && diff_x == 0)
 		|| (diff_y == -1 && diff_x == 0)
 		|| (diff_y == 0 && diff_x == 1)
 		|| (diff_y == 0 && diff_x == -1))
 		return (1);
-	return (0);
+    return (0);
+}
+
+int	is_player_adjacent_to_door(t_game *g, t_door *door)
+{
+	int	diff_x;
+	int	diff_y;
+
+	get_player_door_diff(g->player, door, &diff_x, &diff_y);
+	return (check_adjacent(diff_x, diff_y));
+}
+
+//----------------------------------------------
+
+
+
+int	update_single_door(t_game *g, t_door *door, double speed)
+{
+	double	old_pct;
+
+	old_pct = door->open_pct;
+	door->opening = is_player_adjacent_to_door(g, door);
+	if (door->opening)
+		door->open_pct += speed;
+	else
+		door->open_pct -= speed;
+
+	if (door->open_pct < 0.0)
+		door->open_pct = 0.0;
+	if (door->open_pct > 1.0)
+		door->open_pct = 1.0;
+
+	if (fabs(door->open_pct - old_pct) > 0.0001)
+    	return (1); // door mudou
+    return (0); // door não mudou
 }
 
 int	update_doors(t_game *g)
 {
 	int		i;
 	int		changed;
-	double	old_pct;
 	double	speed;
 
 	if (!g->door)
 		return (0);
-	i = 0;
+
 	changed = 0;
 	speed = g->player->frame_time * 1.5;
+	i = 0;
 	while (g->door[i])
 	{
-		old_pct = g->door[i]->open_pct;
-		g->door[i]->opening = is_player_adjacent_to_door(g, g->door[i]);
-		if (g->door[i]->opening)
-			g->door[i]->open_pct += speed;
-		else
-			g->door[i]->open_pct -= speed;
-		if (g->door[i]->open_pct < 0.0)
-			g->door[i]->open_pct = 0.0;
-		if (g->door[i]->open_pct > 1.0)
-			g->door[i]->open_pct = 1.0;
-		if (fabs(g->door[i]->open_pct - old_pct) > 0.0001)
+		if (update_single_door(g, g->door[i], speed))
 			changed = 1;
-		++i;
+		i++;
 	}
 	return (changed);
 }
+
 
 int	is_walkable_tile(t_game *g, int y, int x)
 {
@@ -452,7 +352,7 @@ void	init_mlx(t_mlx *mlx)
 {
 	mlx->mlx = mlx_init();
 	if (!mlx->mlx)
-	return ;
+		return ;
 	mlx->win = mlx_new_window(mlx->mlx, screenWidth, screenHeight, "cub3d");
 	mlx->img = mlx_new_image(mlx->mlx, screenWidth, screenHeight);
 	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp,
@@ -487,40 +387,55 @@ void	calc_camera(t_ray *r, t_player *p, int i)
 	r->ray_dir_x = p->dir_x + p->plane_x * r->camera_x;
 }
 
+
+void	calc_dda_axis_x(t_ray *r, t_player *p)
+{
+	if (r->ray_dir_x == 0)
+		r->delta_dist_x = 1e30;
+	else
+		r->delta_dist_x = fabs(1 / r->ray_dir_x);
+
+	if (r->ray_dir_x < 0)
+	{
+		r->step_x = -1;
+		r->side_dist_x = (p->pos_x - r->map_x) * r->delta_dist_x;
+	}
+	else
+	{
+		r->step_x = 1;
+		r->side_dist_x = (r->map_x + 1.0 - p->pos_x) * r->delta_dist_x;
+	}
+}
+
+void	calc_dda_axis_y(t_ray *r, t_player *p)
+{
+	if (r->ray_dir_y == 0)
+		r->delta_dist_y = 1e30;
+	else
+		r->delta_dist_y = fabs(1 / r->ray_dir_y);
+
+	if (r->ray_dir_y < 0)
+	{
+		r->step_y = -1;
+		r->side_dist_y = (p->pos_y - r->map_y) * r->delta_dist_y;
+	}
+	else
+	{
+		r->step_y = 1;
+		r->side_dist_y = (r->map_y + 1.0 - p->pos_y) * r->delta_dist_y;
+	}
+}
+
+
 void	calc_dda(t_ray *r, t_player *p)
 {
 	r->map_x = (int)p->pos_x;
 	r->map_y = (int)p->pos_y;
 
-	if (r->ray_dir_x == 0)
-		r->delta_dist_x = 1e30;
-	else
-		r->delta_dist_x = fabs(1 / r->ray_dir_x);
-	if (r->ray_dir_y == 0)
-		r->delta_dist_y = 1e30;
-	else
-		r->delta_dist_y = fabs(1 / r->ray_dir_y);
-	if (r->ray_dir_x < 0)
-	{
-		r->step_x = -1;
-		r->side_dist_x = ((p->pos_x - r->map_x) * r->delta_dist_x);
-	}
-	else
-	{
-		r->step_x = 1;
-		r->side_dist_x = ((r->map_x + 1.0 - p->pos_x) * r->delta_dist_x);
-	}
-	if (r->ray_dir_y < 0)
-	{
-		r->step_y = -1;
-		r->side_dist_y = ((p->pos_y - r->map_y) * r->delta_dist_y);
-	}
-	else
-	{
-		r->step_y = 1;
-		r->side_dist_y = ((r->map_y + 1.0 - p->pos_y) * r->delta_dist_y);
-	}
+	calc_dda_axis_x(r, p);
+	calc_dda_axis_y(r, p);
 }
+
 
 int	get_door_side(char **map, int y, int x)
 {
@@ -532,49 +447,73 @@ int	get_door_side(char **map, int y, int x)
 	return (1);
 }
 
-int	hit_door_plane(t_ray *r, t_player *p, t_game *g)
+
+
+
+
+int	hit_door_plane_x(t_ray *r, t_player *p, t_door *door)
 {
 	double	door_plane;
 	double	hit_pos;
 	double	local_pos;
+
+	if (r->ray_dir_x == 0)
+		return (0);
+
+	door_plane = r->map_x + 0.5;
+	r->perp_wall_dist = (door_plane - p->pos_x) / r->ray_dir_x;
+	hit_pos = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
+	local_pos = hit_pos - r->map_y;
+
+	if (r->perp_wall_dist > 0 && local_pos >= 0.0
+		&& local_pos <= (1.0 - door->open_pct))
+	{
+		r->wall_hit_pos_x = local_pos + door->open_pct;
+		return (1);
+	}
+	return (0);
+}
+
+int	hit_door_plane_y(t_ray *r, t_player *p, t_door *door)
+{
+	double	door_plane;
+	double	hit_pos;
+	double	local_pos;
+
+	if (r->ray_dir_y == 0)
+		return (0);
+
+	door_plane = r->map_y + 0.5;
+	r->perp_wall_dist = (door_plane - p->pos_y) / r->ray_dir_y;
+	hit_pos = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
+	local_pos = hit_pos - r->map_x;
+
+	if (r->perp_wall_dist > 0 && local_pos >= 0.0
+		&& local_pos <= (1.0 - door->open_pct))
+	{
+		r->wall_hit_pos_x = local_pos + door->open_pct;
+		return (1);
+	}
+	return (0);
+}
+
+
+int	hit_door_plane(t_ray *r, t_player *p, t_game *g)
+{
 	t_door	*door;
 
 	door = find_door(g, r->map_y, r->map_x);
 	if (!door || door->open_pct >= 1.0)
-		return (0);
+		return 0;
+
 	r->door_side = get_door_side(g->map, r->map_y, r->map_x);
+
 	if (r->door_side == 0)
-	{
-		if (r->ray_dir_x == 0)
-			return (0);
-		door_plane = r->map_x + 0.5;
-		r->perp_wall_dist = (door_plane - p->pos_x) / r->ray_dir_x;
-		hit_pos = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
-		local_pos = hit_pos - r->map_y;
-		if (r->perp_wall_dist > 0 && local_pos >= 0.0
-			&& local_pos <= (1.0 - door->open_pct))
-		{
-			r->wall_hit_pos_x = local_pos + door->open_pct;
-			return (1);
-		}
-	}
+		return hit_door_plane_x(r, p, door);
 	else
-	{
-		if (r->ray_dir_y == 0)
-			return (0);
-		door_plane = r->map_y + 0.5;
-		r->perp_wall_dist = (door_plane - p->pos_y) / r->ray_dir_y;
-		hit_pos = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
-		local_pos = hit_pos - r->map_x;
-		if (r->perp_wall_dist > 0 && local_pos >= 0.0
-			&& local_pos <= (1.0 - door->open_pct))
-		{
-			r->wall_hit_pos_x = local_pos + door->open_pct;
-			return (1);
-		}
-	}
-	return (0);
+		return hit_door_plane_y(r, p, door);
 }
+
 
 int	get_door_count(char **map)
 {
@@ -655,154 +594,259 @@ t_door	**get_door_coords(t_game *g, char **map)
 	return (door);
 }
 
+//------------------------------------------
+
+void	step_dda(t_ray *r, t_player *p, t_game *g)
+{
+	if (r->side_dist_x < r->side_dist_y)
+	{
+		r->side_dist_x += r->delta_dist_x;
+		r->map_x += r->step_x;
+		r->side = 0;
+	}
+	else
+	{
+		r->side_dist_y += r->delta_dist_y;
+		r->map_y += r->step_y;
+		r->side = 1;
+	}
+	if (g->map[r->map_y][r->map_x] == 'D')
+	{
+		if (hit_door_plane(r, p, g))
+		{
+			r->hit = 2;
+			r->side = r->door_side;
+		}
+	}
+	else if (g->map[r->map_y][r->map_x] != '0')
+	{
+		r->hit = 1;
+	}
+}
+
+void	calc_perp_wall_dist(t_ray *r)
+{
+	if (r->hit == 2)
+		return ;
+
+	if (r->side == 0)
+		r->perp_wall_dist = r->side_dist_x - r->delta_dist_x;
+	else
+		r->perp_wall_dist = r->side_dist_y - r->delta_dist_y;
+}
+
 void	run_dda(t_ray *r, t_player *p, t_game *g)
 {
 	r->hit = 0;
 	while (r->hit == 0)
-	{
-		if (r->side_dist_x < r->side_dist_y)
-		{
-			r->side_dist_x += r->delta_dist_x;
-			r->map_x += r->step_x;
-			r->side = 0;
-		}
-		else
-		{
-			r->side_dist_y += r->delta_dist_y;
-			r->map_y += r->step_y;
-			r->side = 1;
-		}
-		if (g->map[r->map_y][r->map_x] == 'D')
-		{
-			if (hit_door_plane(r, p, g))
-			{
-				r->hit = 2;
-				r->side = r->door_side;
-			}
-		}
-		else if (g->map[r->map_y][r->map_x] != '0')
-			r->hit = 1;
-	}
-	if (r->hit == 2)
-		return ;
-	if (r->side == 0)
-		r->perp_wall_dist = (r->side_dist_x - r->delta_dist_x);
-	else
-		r->perp_wall_dist = (r->side_dist_y - r->delta_dist_y);
+		step_dda(r, p, g);
+
+	calc_perp_wall_dist(r);
 }
 
-void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
-{
-	int		pos;
-	int		j;
-	int		tex_x;
-	int		tex_y;
-	int		color;
+//---------------------------------------------
 
-	j = 0;
+
+//----------------------------------------------- 
+
+
+void	init_floor_ceil_params(t_ray *r, t_player *p, int i)
+{
+	int	pos;
+
 	r->ray_dir_x_l = p->dir_x - p->plane_x;
 	r->ray_dir_y_l = p->dir_y - p->plane_y;
 	r->ray_dir_x_r = p->dir_x + p->plane_x;
 	r->ray_dir_y_r = p->dir_y + p->plane_y;
-	if (i <= (screenHeight >> 1))
-		return ;
+
 	pos = i - (screenHeight >> 1);
 	p->pos_z = (screenHeight >> 1);
 	p->row_dis = p->pos_z / pos;
+
 	r->floor_step_x = p->row_dis * (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
 	r->floor_step_y = p->row_dis * (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
+
 	r->floor_x = p->pos_x + p->row_dis * r->ray_dir_x_l;
 	r->floor_y = p->pos_y + p->row_dis * r->ray_dir_y_l;
+}
+
+void	draw_ceil_pixel(t_ori_tex *t, t_ray *r, int screen_i, int j)
+{
+	int	tex_x;
+	int	tex_y;
+	int	color;
+	int	*pixels;
+
+	pixels = (int *)t->tex_ceiling->data;
+	tex_x = (int)(t->tex_ceiling->width * (r->floor_x - floor(r->floor_x)));
+	tex_y = (int)(t->tex_ceiling->height * (r->floor_y - floor(r->floor_y)));
+	color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
+	buffer[screenHeight - screen_i - 1][j] = color;
+}
+
+void draw_floor_pixel(t_ori_tex *t, t_ray *r, int screen_i, int j)
+{
+	int	tex_x;
+	int	tex_y;
+	int	color;
+	int	*pixels;
+
+	pixels = (int *)t->tex_floor->data;
+	tex_x = (int)(t->tex_floor->width * (r->floor_x - floor(r->floor_x)));
+	tex_y = (int)(t->tex_floor->height * (r->floor_y - floor(r->floor_y)));
+	color = pixels[tex_y * (t->tex_floor->line_len / 4) + tex_x];
+	buffer[screen_i][j] = color;
+}
+
+void	get_fc(t_ray *r, t_player *p, t_ori_tex *t, int i)
+{
+	int	j;
+
+	if (i <= (screenHeight >> 1))
+    	return ;
+
+	init_floor_ceil_params(r, p, i);
+
+	j = 0;
 	while (j < screenWidth)
 	{
-		double	frac_x = r->floor_x - floor(r->floor_x);
-		double	frac_y = r->floor_y - floor(r->floor_y);
-
 		if (t->path_ceiling)
-		{
-			int *pixels = (int *)t->tex_ceiling->data;
-			tex_x = (int)(t->tex_ceiling->width * frac_x);
-			tex_y = (int)(t->tex_ceiling->height * frac_y);
-			color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
-			buffer[screenHeight - i - 1][j] = color;
-		}
+			draw_ceil_pixel(t, r, i, j);
 		if (t->path_floor)
-		{
-			int *pixels = (int *)t->tex_floor->data;
-			tex_x = (int)(t->tex_floor->width * frac_x);
-			tex_y = (int)(t->tex_floor->height * frac_y);
-			color = pixels[tex_y * (t->tex_floor->line_len / 4) + tex_x];
-			buffer[i][j] = color;
-		}
+			draw_floor_pixel(t, r, i, j);
+
 		r->floor_x += r->floor_step_x;
 		r->floor_y += r->floor_step_y;
 		++j;
 	}
 }
+//----------------------------------------------- 
 
-void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex, int i)
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+
+typedef struct s_draw_params
 {
+	t_ray		*r;
 	t_texture	*t;
-	int			line_height;
+	int			tex_x;
 	int			draw_start;
 	int			draw_end;
-	int			tex_x;
-	int			tex_y;
-	int			start;
-	int			end;
-	int			color;
+	int			i;
+} t_draw_params;
 
-	t = NULL;
+typedef struct s_wall_calc
+{
+	int	line_height;
+	int	draw_start;
+	int	draw_end;
+} t_wall_calc;
+
+int	calc_draw_positions(t_ray *r, int *draw_start, int *draw_end)
+{
+	int	line_height;
+
 	if (r->perp_wall_dist <= 0)
 		r->perp_wall_dist = 0.1;
 	line_height = (int)(screenHeight / r->perp_wall_dist);
-	draw_start = ((-1 * line_height) >> 1) + (screenHeight >> 1);
-	if (draw_start < 0)
-		draw_start = 0;
-	draw_end = (line_height >> 1) + (screenHeight >> 1);
-	if (draw_end >= screenHeight)
-		draw_end = screenHeight - 1;
+
+	*draw_start = ((-1 * line_height) >> 1) + (screenHeight >> 1);
+	if (*draw_start < 0)
+		*draw_start = 0;
+
+	*draw_end = (line_height >> 1) + (screenHeight >> 1);
+	if (*draw_end >= screenHeight)
+		*draw_end = screenHeight - 1;
+
+	return (line_height);
+}
+
+void	calc_wall_hit(t_ray *r, t_player *p)
+{
 	if (r->hit != 2 && r->side == 0)
 		r->wall_hit_pos_x = p->pos_y + r->perp_wall_dist * r->ray_dir_y;
 	else if (r->hit != 2)
 		r->wall_hit_pos_x = p->pos_x + r->perp_wall_dist * r->ray_dir_x;
+}
+
+t_texture	*select_texture(t_ray *r, t_ori_tex *tex)
+{
 	if (r->hit == 2)
-		t = tex->tex_door;
+		return (tex->tex_door);
 	else if (r->side == 0 && r->ray_dir_x > 0)
-		t = tex->tex_west;
+		return (tex->tex_west);
 	else if (r->side == 0)
-		t = tex->tex_east;
+		return (tex->tex_east);
 	else if (r->ray_dir_y > 0)
-		t = tex->tex_north;
-	else if (r->side == 1)
-		t = tex->tex_south;
+		return (tex->tex_north);
+	else
+		return (tex->tex_south);
+}
+
+int	calc_tex_mapping(t_ray *r, t_texture *t, int line_height, int draw_start)
+{
+	int tex_x;
+
 	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x);
 	r->tex_step = 1.0 * t->height / line_height;
 	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
+
 	tex_x = (int)(r->wall_hit_pos_x * (1.0 * t->width));
 	if (r->side == 0 && r->ray_dir_x > 0)
 		tex_x = t->width - tex_x - 1;
 	if (r->side == 1 && r->ray_dir_y < 0)
 		tex_x = t->width - tex_x - 1;
-	start = draw_start;
-	end = draw_end;
-	while (start <= end)
+
+	return tex_x;
+}
+
+void	draw_vertical_line(t_draw_params *dp)
+{
+	int	start;
+	int	tex_y;
+	int	*pixels;
+	int	color;
+
+	start = dp->draw_start;
+	while (start <= dp->draw_end)
 	{
-		if (start >= 0 && start < screenHeight && i >= 0 && i < screenWidth)
+		if (start >= 0 && start < screenHeight && dp->i >= 0 && dp->i < screenWidth)
 		{
-			tex_y = (int)r->tex_pos;
+			tex_y = (int)dp->r->tex_pos;
 			if (tex_y < 0)
 				tex_y = 0;
-			if (tex_y >= t->height)
-				tex_y = t->height - 1;
-			int *pixels = (int *)t->data;
-			color = pixels[tex_y * (t->line_len / 4) + tex_x];
-			buffer[start][i] = color;
+			if (tex_y >= dp->t->height)
+				tex_y = dp->t->height - 1;
+
+			pixels = (int *)dp->t->data;
+			color = pixels[tex_y * (dp->t->line_len / 4) + dp->tex_x];
+			buffer[start][dp->i] = color;
 		}
-		r->tex_pos += r->tex_step;
+		dp->r->tex_pos += dp->r->tex_step;
 		++start;
 	}
 }
+
+void	get_walls(t_ray *r, t_player *p, t_ori_tex *tex, int i)
+{
+	t_texture		*t;
+	t_draw_params	dp;
+	int				tex_x;
+	t_wall_calc		wc;
+
+	wc.line_height = calc_draw_positions(r, &wc.draw_start, &wc.draw_end);
+	calc_wall_hit(r, p);
+
+	t = select_texture(r, tex);
+	tex_x = calc_tex_mapping(r, t, wc.line_height, wc.draw_start);
+
+	dp = (t_draw_params){r, t, tex_x, wc.draw_start, wc.draw_end, i};
+	draw_vertical_line(&dp);
+}
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 void	get_c_colored(t_ori_tex *tex)
 {
@@ -867,69 +911,70 @@ void	upd_player_minimap(t_game *g)
 	g->player->old_pos_x = g->player->pos_x;
 }
 
-void	minimap(t_game *g)
+
+//-----------------------------------------
+//-----------------------------------------
+
+void	clear_img_buffer(t_mlx *mlx)
 {
 	int	i;
-	int	j;
-
-	if (g->map_h > g->map_w)
-		g->sp = (int)(300 / g->map_h);
-	else
-		g->sp = (int)(300 / g->map_w);
-	i = 0;
-	for (i = 0; g->minimap[i]; ++i)
-	{
-		for (j = 0; g->minimap[i][j]; ++j)
-		{
-			if (is_wall(g->minimap[i][j]))
-				put_square(i, j, 0x48494B, g);
-			if (g->minimap[i][j] == '0')
-				put_square(i, j, 0x808588, g);
-			if (g->minimap[i][j] == 'D')
-				put_square(i, j, 0x0000FF, g);
-			if (is_player(g->minimap[i][j]))
-				put_square(i, j, 0xFF0000, g);
-		}
-	}
-}
-
-void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
-{
-	int	i;
-	int	x;
 	int	size;
 
 	i = 0;
 	size = mlx->line_len * screenHeight;
+
 	while (i < size)
 	{
 		mlx->addr[i] = 0;
 		++i;
 	}
+}
+
+void	draw_floor_ceiling(t_ray *ray, t_player *player, t_ori_tex *tex)
+{
+	int	i;
+
 	i = 0;
 	while (i < screenHeight)
 	{
-		get_fc(ray, player, g->o_text, i);
+		get_fc(ray, player, tex, i);
 		++i;
 	}
+}
+
+void	cast_rays(t_ray *ray, t_player *player, t_ori_tex *tex, t_game *g)
+{
+	int	i;
+
 	i = 0;
 	while (i < screenWidth)
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);
 		run_dda(ray, player, g);
-		get_walls(ray, player, g->o_text, i);
+		get_walls(ray, player, tex, i);
 		++i;
 	}
+}
+
+void	handle_hud(t_game *g)
+{
 	if (!g->o_text->path_ceiling)
 		get_c_colored(g->o_text);
 	if (!g->o_text->path_floor)
 		get_f_colored(g->o_text);
+
 	if (g->lightsaber->weapon_state == 2)
 		draw_attack_hud(g, g->lightsaber->weapon_frame);
-	else		
+	else
 		draw_weapon_hud(g, g->lightsaber->weapon_frame);
-	drawbuffer(g->mlx);
+}
+
+void	clear_buffer(void)
+{
+	int	i;
+	int	x;
+
 	i = 0;
 	while (i < screenHeight)
 	{
@@ -941,47 +986,72 @@ void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 		}
 		++i;
 	}
-	minimap(g);
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
-int mouse_press(int button, int x, int y, t_game *g)
+void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g)
 {
-	(void)x; 
+	clear_img_buffer(mlx);
+
+	draw_floor_ceiling(ray, player, g->o_text);
+	cast_rays(ray, player, g->o_text, g);
+
+	handle_hud(g);
+	drawbuffer(g->mlx);
+
+	clear_buffer();
+	minimap(g);
+
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+}
+//--------------------------------------------
+//-------------------------------------------
+
+static void	handle_left_click(t_game *g)
+{
+	if (g->lightsaber->weapon_state != 0)
+		return ;
+
+	g->player->kp_lc = 1;
+
+	if (g->lightsaber->deployed == 0 || g->lightsaber->weapon_state == 1)
+		return ;
+
+	g->lightsaber->weapon_state = 2;
+	g->lightsaber->weapon_frame = 1;
+	g->lightsaber->deployed = 1;
+}
+
+static void	handle_right_click(t_game *g)
+{
+	if (g->lightsaber->weapon_state != 0)
+		return ;
+
+	g->player->kp_rc = 1;
+
+	if (g->lightsaber->deployed == 0)
+	{
+		g->lightsaber->weapon_state = 1;
+		g->lightsaber->weapon_anim_timer = 0;
+		g->lightsaber->deployed = 1;
+	}
+	else
+	{
+		g->lightsaber->weapon_state = 3;
+		g->lightsaber->weapon_frame = 5;
+		g->lightsaber->weapon_anim_timer = 0;
+	}
+}
+
+int	mouse_press(int button, int x, int y, t_game *g)
+{
+	(void)x;
 	(void)y;
 
 	if (button == 1)
-	{
-		if (g->lightsaber->weapon_state != 0)
-			return (0);
-		g->player->kp_lc = 1;
-		if (g->lightsaber->deployed == 0 || g->lightsaber->weapon_state == 1)
-			return (0);
-		else
-		{
-			g->lightsaber->weapon_state = 2;
-			g->lightsaber->weapon_frame = 1;
-			g->lightsaber->deployed = 1;
-		}
-	}
+		handle_left_click(g);
 	else if (button == 3)
-	{
-		if (g->lightsaber->weapon_state != 0)
-			return (0);
-		g->player->kp_rc = 1;
-		if (g->lightsaber->deployed == 0)
-		{
-			g->lightsaber->weapon_state = 1;
-			g->lightsaber->weapon_anim_timer = 0;
-			g->lightsaber->deployed = 1;
-		}
-		else
-		{
-			g->lightsaber->weapon_state = 3;
-			g->lightsaber->weapon_frame = 5;
-			g->lightsaber->weapon_anim_timer = 0;
-		}
-	}
+		handle_right_click(g);
+
 	return (0);
 }
 
@@ -1012,7 +1082,10 @@ int	key_press(int key, t_game *g)
 	if (key == KEY_RIGHT)
 		g->player->kp_ra = 1;
 	if (key == KEY_ESC)
+	{
+		free_project(g);
 		exit(0);
+	}
 	return (0);
 }
 
@@ -1069,93 +1142,159 @@ void	apply_mouse_rotation(t_game *g)
 	g->mouse_dx = 0;
 }
 
-int	handle_input(t_game *g)
+
+//--------------------------------------
+//-------------------------------------
+
+static int	move_forward(t_game *g)
+{
+	t_player	*p;
+
+	p = g->player;
+	if (!p->kp_w)
+		return (0);
+
+	if (is_walkable_tile(g, (int)p->pos_y, (int)(p->pos_x + p->dir_x * p->move_speed)))
+		p->pos_x += p->dir_x * p->move_speed;
+	if (is_walkable_tile(g, (int)(p->pos_y + p->dir_y * p->move_speed), (int)p->pos_x))
+		p->pos_y += p->dir_y * p->move_speed;
+
+	return (1);
+}
+
+static int	move_backward(t_game *g)
+{
+	t_player	*p;
+
+	p = g->player;
+	if (!p->kp_s)
+		return (0);
+
+	if (is_walkable_tile(g, (int)p->pos_y, (int)(p->pos_x - p->dir_x * p->move_speed)))
+		p->pos_x -= p->dir_x * p->move_speed;
+	if (is_walkable_tile(g, (int)(p->pos_y - p->dir_y * p->move_speed), (int)p->pos_x))
+		p->pos_y -= p->dir_y * p->move_speed;
+
+	return (1);
+}
+
+static int	move_right(t_game *g)
+{
+	t_player	*p;
+
+	p = g->player;
+
+	if (!p->kp_d)
+		return (0);
+
+	if (is_walkable_tile(g, (int)(p->pos_y + p->dir_x * p->move_speed), (int)p->pos_x))
+		p->pos_y += p->dir_x * p->move_speed;
+	if (is_walkable_tile(g, (int)p->pos_y, (int)(p->pos_x - p->dir_y * p->move_speed)))
+		p->pos_x -= p->dir_y * p->move_speed;
+
+	return (1);
+}
+
+static int	move_left(t_game *g)
+{
+	t_player	*p;
+
+	p = g->player;
+
+	if (!p->kp_a)
+		return (0);
+
+	if (is_walkable_tile(g, (int)(p->pos_y - p->dir_x * p->move_speed), (int)p->pos_x))
+		p->pos_y -= p->dir_x * p->move_speed;
+	if (is_walkable_tile(g, (int)p->pos_y, (int)(p->pos_x + p->dir_y * p->move_speed)))
+		p->pos_x += p->dir_y * p->move_speed;
+
+	return (1);
+}
+
+static int	handle_movement(t_game *g)
 {
 	int	moved;
-	int	door_changed;
-	int	redraw;
 
 	moved = 0;
-	redraw = 0;
-	get_time(g->player);
-	if (g->player->kp_w)
+
+	if (move_forward(g))
+		moved = 1;
+	if (move_backward(g))
+		moved = 1;
+	if (move_right(g))
+		moved = 1;
+	if (move_left(g))
+		moved = 1;
+
+	return (moved);
+}
+
+static int	handle_rotation_keys(t_game *g)
+{
+	int			moved;
+	double		old_dir;
+	double		old_plane;
+	double		angle;
+	t_player	*p;
+
+	moved = 0;
+	p = g->player;
+	if (p->kp_ra || p->kp_la)
 	{
-		if (is_walkable_tile(g, (int)g->player->pos_y,
-				(int)(g->player->pos_x + (g->player->dir_x
-					* g->player->move_speed))))
-			g->player->pos_x += g->player->dir_x * g->player->move_speed;
-		if (is_walkable_tile(g,
-				(int)(g->player->pos_y + (g->player->dir_y
-					* g->player->move_speed)), (int)g->player->pos_x))
-			g->player->pos_y += g->player->dir_y * g->player->move_speed;
+		angle = (p->kp_ra) ? p->rot_speed : -p->rot_speed;
+
+		old_dir = p->dir_x;
+		p->dir_x = p->dir_x * cos(angle) - p->dir_y * sin(angle);
+		p->dir_y = old_dir * sin(angle) + p->dir_y * cos(angle);
+
+		old_plane = p->plane_x;
+		p->plane_x = p->plane_x * cos(angle) - p->plane_y * sin(angle);
+		p->plane_y = old_plane * sin(angle) + p->plane_y * cos(angle);
+
 		moved = 1;
 	}
-	if (g->player->kp_s)
-	{
-		if (is_walkable_tile(g, (int)g->player->pos_y,
-				(int)(g->player->pos_x - g->player->dir_x
-					* g->player->move_speed)))
-			g->player->pos_x -= g->player->dir_x * g->player->move_speed;
-		if (is_walkable_tile(g,
-				(int)(g->player->pos_y - g->player->dir_y
-					* g->player->move_speed), (int)g->player->pos_x))
-			g->player->pos_y -= g->player->dir_y * g->player->move_speed;
-		moved = 1;
-	}
-	if (g->player->kp_d)
-	{
-		if (is_walkable_tile(g,
-				(int)(g->player->pos_y + g->player->dir_x
-					* g->player->move_speed), (int)g->player->pos_x))
-			g->player->pos_y += g->player->dir_x * g->player->move_speed;
-		if (is_walkable_tile(g, (int)g->player->pos_y,
-				(int)(g->player->pos_x - g->player->dir_y
-					* g->player->move_speed)))
-			g->player->pos_x -= g->player->dir_y * g->player->move_speed;
-		moved = 1;
-	}
-	if (g->player->kp_a)
-	{
-		if (is_walkable_tile(g,
-				(int)(g->player->pos_y - g->player->dir_x
-					* g->player->move_speed), (int)g->player->pos_x))
-			g->player->pos_y -= g->player->dir_x * g->player->move_speed;
-		if (is_walkable_tile(g, (int)g->player->pos_y,
-				(int)(g->player->pos_x + g->player->dir_y
-					* g->player->move_speed)))
-			g->player->pos_x += g->player->dir_y * g->player->move_speed;
-		moved = 1;
-	}
-	if (g->player->kp_ra)
-	{
-		g->player->old_dir_x = g->player->dir_x;
-		g->player->dir_x = g->player->dir_x * cos(g->player->rot_speed) - g->player->dir_y * sin(g->player->rot_speed);
-		g->player->dir_y = g->player->old_dir_x * sin(g->player->rot_speed) + g->player->dir_y * cos(g->player->rot_speed);
-		g->player->old_plane_x = g->player->plane_x;
-		g->player->plane_x = g->player->plane_x * cos(g->player->rot_speed) - g->player->plane_y * sin(g->player->rot_speed);
-		g->player->plane_y = g->player->old_plane_x * sin(g->player->rot_speed) + g->player->plane_y * cos(g->player->rot_speed);
-		moved = 1;
-	}
-	if (g->player->kp_la)
-	{
-		g->player->old_dir_x = g->player->dir_x;
-		g->player->dir_x = g->player->dir_x * cos(-g->player->rot_speed) - g->player->dir_y * sin(-g->player->rot_speed);
-		g->player->dir_y = g->player->old_dir_x * sin(-g->player->rot_speed) + g->player->dir_y * cos(-g->player->rot_speed);
-		g->player->old_plane_x = g->player->plane_x;
-		g->player->plane_x = g->player->plane_x * cos(-g->player->rot_speed) - g->player->plane_y * sin(-g->player->rot_speed);
-		g->player->plane_y = g->player->old_plane_x * sin(-g->player->rot_speed) + g->player->plane_y * cos(-g->player->rot_speed);
-		moved = 1;
-	}
+	return (moved);
+}
+
+static int	handle_mouse_rotation(t_game *g)
+{
 	if (g->mouse_dx != 0)
 	{
 		apply_mouse_rotation(g);
-		moved = 1;
+		return (1);
 	}
+	return (0);
+}
+
+static int	handle_weapons(t_game *g)
+{
 	if (g->lightsaber->weapon_state != 0)
 	{
 		run_weapon_animation(g);
-		redraw = 1;
+		return (1);
 	}
+	return (0);
+}
+
+int	handle_input(t_game *g)
+{
+	int	moved;
+	int	redraw;
+	int	door_changed;
+
+	moved = 0;
+	redraw = 0;
+
+	get_time(g->player);
+	if (handle_movement(g))
+		moved = 1;
+	if (handle_rotation_keys(g))
+		moved = 1;
+	if (handle_mouse_rotation(g))
+		moved = 1;
+	if (handle_weapons(g))
+		redraw = 1;
 	door_changed = update_doors(g);
 	if (moved)
 		upd_player_minimap(g);
@@ -1176,16 +1315,16 @@ void	start(t_game *game)
 	game->warping = 0;
 	game->player->kp_lc = 0;
 	game->player->kp_rc = 0;
+	game->door = NULL;
+	game->door = get_door_coords(game, game->map);
+	mlx_loop_hook(game->mlx->mlx, handle_input, game);
+	get_guns_sprite(game);
+	get_weapon_attack_sprite(game);
+	calc_rays(game->mlx, game->ray, game->player, game);
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
 	mlx_hook(game->mlx->win, 4, 1L << 2, mouse_press, game);
 	mlx_hook(game->mlx->win, 5, 1L << 3, mouse_release, game);
 	mlx_mouse_move(game->mlx->mlx, game->mlx->win, game->center_x, game->center_y);
-	game->door = NULL;
-	game->door = get_door_coords(game, game->map);
-	mlx_loop_hook(game->mlx->mlx, handle_input, game);
-	get_guns_sprite(game);
-	get_weapon_attck_sprite(game);
-	calc_rays(game->mlx, game->ray, game->player, game);
 }

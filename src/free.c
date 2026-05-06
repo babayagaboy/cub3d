@@ -61,3 +61,96 @@ void	free_int_arr(int **arr, int i)
 	}
 	free(arr);
 }
+
+void	free_t_texture(t_texture *tex, t_mlx *mlx)
+{
+	if (!tex)
+		return ;
+	if (tex->img_ptr && mlx && mlx->mlx)
+		mlx_destroy_image(mlx->mlx, tex->img_ptr);
+	free(tex);
+}
+
+void	free_weapon(t_weapon *weapon, t_mlx *mlx)
+{
+	int i;
+
+	if (!weapon)
+		return ;
+	if (weapon->tex_arr)
+	{
+		i = 0;
+		while (weapon->tex_arr[i])
+		{
+			free_t_texture(weapon->tex_arr[i], mlx);
+			++i;
+		}
+		free(weapon->tex_arr);
+	}
+}
+void	free_weapon_attk(t_weapon *weapon, t_mlx *mlx)
+{
+	int i;
+
+	if (!weapon)
+		return ;
+	if (weapon->tex_atk_arr)
+	{
+		i = 0;
+		while (weapon->tex_atk_arr[i])
+		{
+			free_t_texture(weapon->tex_atk_arr[i], mlx);
+			++i;
+		}
+		free(weapon->tex_atk_arr);
+	}
+}
+
+void	free_texture_pack(t_game *g)
+{
+	free_t_texture(g->o_text->tex_north, g->mlx);
+	free_t_texture(g->o_text->tex_south, g->mlx);
+	free_t_texture(g->o_text->tex_east, g->mlx);
+	free_t_texture(g->o_text->tex_west, g->mlx);
+	free_t_texture(g->o_text->tex_floor, g->mlx);
+	free_t_texture(g->o_text->tex_ceiling, g->mlx);
+	free_t_texture(g->o_text->tex_door, g->mlx);
+
+	free(g->o_text->path_floor);
+	free(g->o_text->path_ceiling);
+	free(g->o_text->path_door);
+	free(g->o_text->path_north);
+	free(g->o_text->path_south);
+	free(g->o_text->path_west);
+	free(g->o_text->path_east);
+	free(g->o_text);
+	free(g->txt);
+}
+
+void	free_project(t_game *g)
+{
+	for (int i = 0; i < g->door_count; i++)
+	{
+		free(g->door[i]);
+	}
+	free(g->door);
+	if (g->lightsaber)
+	{
+		free_weapon(g->lightsaber, g->mlx);
+		free_weapon_attk(g->lightsaber, g->mlx);
+		free(g->lightsaber);
+	}
+	free_texture_pack(g);
+	free_memory(g->minimap);
+	if (g->mlx->img)
+		mlx_destroy_image(g->mlx->mlx, g->mlx->img);
+	if (g->mlx->win)
+		mlx_destroy_window(g->mlx->mlx, g->mlx->win);
+	free(g->mlx);
+	free(g->player);
+	free(g->ray);
+	free_memory(g->elements_file);
+	free_memory(g->map);
+	free(g);
+}
+

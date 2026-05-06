@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_parser.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 23:29:37 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 15:42:07 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ void	free_int_arr(int **arr, int i);
 void	free_char_arr(char **arr, int i);
 void	free_memory(char **arr);
 void	free_memory_int(int **arr);
+void	free_project(t_game *g);
+void	free_t_texture(t_texture *tex, t_mlx *mlx);
+void	free_weapon(t_weapon *weapon, t_mlx *mlx);
+void	free_weapon_attk(t_weapon *weapon, t_mlx *mlx);
+void	free_texture_pack(t_game *g);
 
 
 int 	check_rbg(char *str, int *arr);
@@ -86,8 +91,27 @@ void	print_debug(t_game *g);
 void	free_all(t_game *g);
 void	free_memory(char **arr);
 
-int get_textures(t_mlx *mlx, t_ori_tex *tex);
+int     get_textures(t_mlx *mlx, t_ori_tex *tex);
 void load_texture(t_mlx *mlx, t_texture **tex_d, char *path);
+
+
+
+
+
+
+
+void	get_guns_sprite(t_game *g);
+void	get_weapon_attack_sprite(t_game *g);
+
+int		update_weapon_timer_and_frame(t_game *g);
+void	handle_weapon_state_1(t_game *g);
+void	handle_weapon_state_2(t_game *g);
+void	handle_weapon_state_3(t_game *g);
+void	run_weapon_animation(t_game *g);
+
+void	put_square(int y, int x, int color, t_game *g);
+void	put_pixel(t_mlx *mlx, int x, int y, int color);
+void	minimap(t_game *g);
 
 
 # include <cub3d.h>
