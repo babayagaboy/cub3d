@@ -3,37 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 23:39:00 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 17:51:45 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+int	init_buffer(t_game *g)
+{
+	int	i;
+
+	i = 0;
+	while (i < screenHeight)
+	{
+		g->buffer[i] = malloc(sizeof(int) * screenWidth);
+		if (!g->buffer[i])
+		{
+			while (--i)
+			{
+				free(g->buffer[i]);
+			}
+			free(g->buffer);
+			return (0);
+		}
+		++i;
+	}
+	return (1);
+}
 
 int malloc_structs(t_game **game)
 {
     *game = malloc(sizeof(t_game));
     if (!*game)
         return 1;
-
     (*game)->player = malloc(sizeof(t_player));
     if (!(*game)->player)
         return (free(*game), 1);
-
     (*game)->mlx = malloc(sizeof(t_mlx));
     if (!(*game)->mlx)
         return (free((*game)->player), free(*game), 1);
-
     (*game)->o_text = malloc(sizeof(t_ori_tex));
     if (!(*game)->o_text)
         return (free((*game)->mlx), free((*game)->player), free(*game), 1);
-
     (*game)->txt = malloc(sizeof(t_texture));
     if (!(*game)->txt)
-        return (free((*game)->o_text), free((*game)->mlx), free((*game)->player), free(*game), 1);
-
+		return (free((*game)->o_text), free((*game)->mlx), free((*game)->player), free(*game), 1);
+	(*game)->buffer = malloc(sizeof(int *) * screenHeight);
+	if (!(*game)->buffer)
+		return (free((*game)->player), free((*game)->txt), free(*game), 1);
+	if (!init_buffer(*game))
+		return (free((*game)->player), free((*game)->txt), free(*game), 1);
     return 0;
 }
 
@@ -42,7 +64,6 @@ int	main(int argc, char **argv)
 	t_game *game;
 
 	game = NULL;
-
 	if (malloc_structs(&game))
 		return (-1);
 

@@ -6,19 +6,11 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 13:04:34 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 13:59:53 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 17:53:43 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-typedef struct s_attack_hud
-{
-	t_texture	*tex;
-	int			start_x;
-	int			start_y;
-	float		scale;
-}				t_attack_hud;
 
 void	get_attack_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y)
 {
@@ -26,7 +18,7 @@ void	get_attack_hud_start_pos(t_texture *tex, float scale, int *start_x, int *st
 	*start_y = screenHeight - (tex->height / scale) + 50;
 }
 
-void	draw_attack_hud_row(t_attack_hud *hud, int y)
+void	draw_attack_hud_row(t_attack_hud *hud, t_game *g, int y)
 {
 	int				x;
 	unsigned int	color;
@@ -45,20 +37,20 @@ void	draw_attack_hud_row(t_attack_hud *hud, int y)
 		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
 			&& (color & 0xFF000000) == 0)
 		{
-			//buffer[by][bx] = color;  NEED BUFFER IN HEADER
+			g->buffer[by][bx] = color;
 		}
 		x++;
 	}
 }
 
-void	draw_attack_hud_pixels(t_attack_hud *hud)
+void	draw_attack_hud_pixels(t_attack_hud *hud, t_game *g)
 {
 	int	y;
 
 	y = 0;
 	while (y < hud->tex->height)
 	{
-		draw_attack_hud_row(hud, y);
+		draw_attack_hud_row(hud, g, y);
 		y++;
 	}
 }
@@ -74,5 +66,5 @@ void    draw_attack_hud(t_game *g, int i)
     hud.scale = 1.5;
 
     get_attack_hud_start_pos(hud.tex, hud.scale, &hud.start_x, &hud.start_y);
-    draw_attack_hud_pixels(&hud);
+    draw_attack_hud_pixels(&hud, g);
 }

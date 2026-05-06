@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:25:07 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 15:42:07 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 17:53:54 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,6 @@ void	free_memory(char **arr);
 int     get_textures(t_mlx *mlx, t_ori_tex *tex);
 void load_texture(t_mlx *mlx, t_texture **tex_d, char *path);
 
-
-
-
-
-
-
 void	get_guns_sprite(t_game *g);
 void	get_weapon_attack_sprite(t_game *g);
 
@@ -113,6 +107,94 @@ void	put_square(int y, int x, int color, t_game *g);
 void	put_pixel(t_mlx *mlx, int x, int y, int color);
 void	minimap(t_game *g);
 
+int	hit_door_plane(t_ray *r, t_player *p, t_game *g);
+int	get_door_side(char **map, int y, int x);
+t_door	*find_door(t_game *g, int y, int x);
+int	hit_door_plane_x(t_ray *r, t_player *p, t_door *door);
+int	hit_door_plane_y(t_ray *r, t_player *p, t_door *door);
+void	calc_perp_wall_dist(t_ray *r);
+void	step_dda(t_ray *r, t_player *p, t_game *g);
+void	calc_dda(t_ray *r, t_player *p);
+void	calc_dda_axis_y(t_ray *r, t_player *p);
+void	calc_dda_axis_x(t_ray *r, t_player *p);
+
+
+void	free_buffer(t_game *g);
+int		ft_isdigit(int c);
+int		is_walkable_tile(t_game *g, int y, int x);
+int		get_color(int r, int g, int b);
+int		init_buffer(t_game *g);
+int		malloc_structs(t_game **game);
+void	get_fc(t_game *g, t_player *p, t_ori_tex *t, int i);
+void	handle_path(char *line, int value, t_ori_tex *tex);
+char	*get_lightsaber_attack_texture_path(int i);
+int		init_lightsaber_attack_struct(t_game *g);
+int		load_lightsaber_attack_textures(t_game *g);
+char	*get_lightsaber_texture_path(int i);
+int		init_lightsaber_struct(t_game *g);
+int		load_lightsaber_textures(t_game *g);
+int		calc_tex_mapping(t_ray *r, t_texture *t, int line_height, int draw_start);
+t_texture	*select_texture(t_ray *r, t_ori_tex *tex);
+void	get_attack_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y);
+void	draw_attack_hud_row(t_attack_hud *hud, t_game *g, int y);
+void	draw_attack_hud_pixels(t_attack_hud *hud, t_game *g);
+void	draw_attack_hud(t_game *g, int i);
+void	get_weapon_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y);
+void	draw_weapon_hud_row(t_weapon_hud *hud, t_game *g, int y);
+void	draw_weapon_hud_pixels(t_weapon_hud *hud, t_game *g);
+void	draw_weapon_hud(t_game *g, int i);
+void	handle_hud(t_game *g);
+void	drawbuffer(t_mlx *mlx, t_game *g);
+void	draw_vertical_line(t_draw_params *dp, t_game *g);
+void	clear_buffer(t_game *g);
+void	run_dda(t_ray *r, t_player *p, t_game *g);
+void	calc_camera(t_ray *r, t_player *p, int i);
+void	upd_player_minimap(t_game *g);
+void	clear_img_buffer(t_mlx *mlx);
+void	get_player_door_diff(t_player *player, t_door *door, int *diff_x, int *diff_y);
+int		check_adjacent(int diff_x, int diff_y);
+int		is_player_adjacent_to_door(t_game *g, t_door *door);
+int		update_single_door(t_game *g, t_door *door, double speed);
+int		update_doors(t_game *g);
+int		get_door_count(char **map);
+int		key_press(int key, t_game *g);
+int		key_release(int key, t_game *g);
+void	handle_left_click(t_game *g);
+void	handle_right_click(t_game *g);
+int		handle_mouse_rotation(t_game *g);
+int		mouse_move(int x, int y, t_game *g);
+void	apply_mouse_rotation(t_game *g);
+int		mouse_press(int button, int x, int y, t_game *g);
+int		mouse_release(int button, int x, int y, t_game *g);
+void	init_mlx(t_mlx *mlx);
+void	init_player(t_player *p);
+void	init_floor_ceil_params(t_ray *r, t_player *p, int i);
+int		calc_cell_size(t_game *g);
+void	draw_cell(t_game *g, int i, int j);
+void	draw_minimap_row(t_game *g, int i);
+char	get_player_marker(t_player *player);
+int		calc_draw_positions(t_ray *r, int *draw_start, int *draw_end);
+void	calc_wall_hit(t_ray *r, t_player *p);
+void	get_walls(t_game *g, t_player *p, t_ori_tex *tex, int i);
+void	cast_rays(t_ray *ray, t_player *player, t_ori_tex *tex, t_game *g);
+void	calc_rays(t_mlx *mlx, t_ray *ray, t_player *player, t_game *g);
+int		handle_input(t_game *g);
+void	start(t_game *game);
+double	get_timestamp(void);
+void	get_time(t_player *p);
+void	draw_ceil_pixel(t_ori_tex *t, t_game *g, int screen_i, int j);
+void	draw_floor_pixel(t_ori_tex *t, t_game *g, int screen_i, int j);
+void	draw_floor_ceiling(t_game *g, t_player *player, t_ori_tex *tex);
+void	get_c_colored(t_ori_tex *tex, t_game *g);
+void	get_f_colored(t_ori_tex *tex, t_game *g);
+int     move_forward(t_game *g);
+int     move_backward(t_game *g);
+int     move_right(t_game *g);
+int     move_left(t_game *g);
+int     handle_movement(t_game *g);
+int     handle_rotation_keys(t_game *g);
+int     handle_weapons(t_game *g);
+t_door	**get_door_coords(t_game *g, char **map);
 
 # include <cub3d.h>
 

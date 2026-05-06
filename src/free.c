@@ -3,72 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 23:33:05 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:57:41 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-void	free_memory(char **arr)
+void	free_buffer(t_game *g)
 {
 	int	i;
 
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free (arr);
-}
-
-void	free_memory_int(int **arr)
-{
-	int	i;
-
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free (arr);
-}
-
-void	free_char_arr(char **arr, int i)
-{
-	int	j;
-
-	j = 0;
-	while (j < i)
+	i = screenHeight;
+	while (--i)
 	{
-		free(arr[j]);
-		j++;
+		free(g->buffer[i]);
 	}
-	free(arr);
-}
-
-void	free_int_arr(int **arr, int i)
-{
-	int	j;
-
-	j = 0;
-	while (j < i)
-	{
-		free(arr[j]);
-		j++;
-	}
-	free(arr);
-}
-
-void	free_t_texture(t_texture *tex, t_mlx *mlx)
-{
-	if (!tex)
-		return ;
-	if (tex->img_ptr && mlx && mlx->mlx)
-		mlx_destroy_image(mlx->mlx, tex->img_ptr);
-	free(tex);
+	free(g->buffer);
 }
 
 void	free_weapon(t_weapon *weapon, t_mlx *mlx)
@@ -151,6 +104,6 @@ void	free_project(t_game *g)
 	free(g->ray);
 	free_memory(g->elements_file);
 	free_memory(g->map);
+	free_buffer(g);
 	free(g);
 }
-

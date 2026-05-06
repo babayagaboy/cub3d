@@ -3,14 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   handle_floor_ceiling.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 22:45:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 22:56:31 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 17:26:26 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+void	get_fc(t_game *g, t_player *p, t_ori_tex *t, int i)
+{
+	int	j;
+
+	if (i <= (screenHeight >> 1))
+    	return ;
+
+	init_floor_ceil_params(g->ray, p, i);
+
+	j = 0;
+	while (j < screenWidth)
+	{
+		if (t->path_ceiling)
+			draw_ceil_pixel(t, g, i, j);
+		if (t->path_floor)
+			draw_floor_pixel(t, g, i, j);
+
+		g->ray->floor_x += g->ray->floor_step_x;
+		g->ray->floor_y += g->ray->floor_step_y;
+		++j;
+	}
+}
 
 void	handle_path(char *line, int value, t_ori_tex *tex)
 {

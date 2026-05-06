@@ -6,7 +6,7 @@
 #    By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/05/06 15:41:08 by myivanov         ###   ########.fr        #
+#    Updated: 2026/05/06 17:47:23 by myivanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/free.c	\
+				$(SRCDIR)/free_utils.c \
 				$(SRCDIR)/check_elements.c \
 				$(SRCDIR)/handle_floor_ceiling.c \
 				$(SRCDIR)/check_map.c \
@@ -42,7 +43,21 @@ SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/get_attack_sprite.c \
 				$(SRCDIR)/run_weapon_animation.c \
 				$(SRCDIR)/minimap.c \
-				$(SRCDIR)/exec.c \
+				$(SRCDIR)/dda.c \
+				$(SRCDIR)/init.c \
+				$(SRCDIR)/rays.c \
+				$(SRCDIR)/time.c \
+				$(SRCDIR)/draw.c \
+				$(SRCDIR)/draw_attack_hud.c \
+				$(SRCDIR)/draw_fc.c \
+				$(SRCDIR)/draw_weapon_hud.c \
+				$(SRCDIR)/handle_inputs.c \
+				$(SRCDIR)/handle_mouse.c \
+				$(SRCDIR)/handle_mouse_clicks.c \
+				$(SRCDIR)/doors.c \
+				$(SRCDIR)/general_utils.c \
+				$(SRCDIR)/move.c \
+				$(SRCDIR)/start.c \
 				$(SRCDIR)/main.c
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/04 16:43:49 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 17:20:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ typedef struct s_ori_tex
 
 typedef struct s_game
 {
+	int			**buffer;
 	t_mlx		*mlx;
 	t_player	*player;
 	t_ray		*ray;
@@ -203,6 +204,39 @@ typedef struct s_game
 	int			warping;
 	int			door_count;
 }	t_game;
+
+typedef struct s_draw_params
+{
+	t_ray		*r;
+	t_texture	*t;
+	int			tex_x;
+	int			draw_start;
+	int			draw_end;
+	int			i;
+} t_draw_params;
+
+typedef struct s_wall_calc
+{
+	int	line_height;
+	int	draw_start;
+	int	draw_end;
+} t_wall_calc;
+
+typedef struct s_weapon_hud
+{
+    t_texture	*tex;
+    int			start_x;
+    int			start_y;
+    float		scale;
+} 				t_weapon_hud;
+
+typedef struct s_attack_hud
+{
+	t_texture	*tex;
+	int			start_x;
+	int			start_y;
+	float		scale;
+}				t_attack_hud;
 
 # include <cub3d_exec.h>
 # include <cub3d_parser.h>

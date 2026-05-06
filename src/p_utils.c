@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p_utils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:10:27 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/05 23:39:55 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:36:37 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,31 @@ char	*ft_findspace(char *str)
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
 		i++;
 	return (&str[i]);
+}
+
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+int	is_walkable_tile(t_game *g, int y, int x)
+{
+	t_door	*door;
+
+	if (!g->map[y] || !g->map[y][x])
+		return (0);
+	if (g->map[y][x] == '0')
+		return (1);
+	if (g->map[y][x] != 'D')
+		return (0);
+	door = find_door(g, y, x);
+	if (!door)
+		return (0);
+	return (door->open_pct >= 0.9);
+}
+
+int	get_color(int r, int g, int b)
+{
+	return (r * (256 * 256) + g * 256 + b);
 }

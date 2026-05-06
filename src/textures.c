@@ -3,14 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:02:28 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 23:45:41 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:32:35 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+int	calc_tex_mapping(t_ray *r, t_texture *t, int line_height, int draw_start)
+{
+	int tex_x;
+
+	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x);
+	r->tex_step = 1.0 * t->height / line_height;
+	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
+
+	tex_x = (int)(r->wall_hit_pos_x * (1.0 * t->width));
+	if (r->side == 0 && r->ray_dir_x > 0)
+		tex_x = t->width - tex_x - 1;
+	if (r->side == 1 && r->ray_dir_y < 0)
+		tex_x = t->width - tex_x - 1;
+
+	return tex_x;
+}
+
+t_texture	*select_texture(t_ray *r, t_ori_tex *tex)
+{
+	if (r->hit == 2)
+		return (tex->tex_door);
+	else if (r->side == 0 && r->ray_dir_x > 0)
+		return (tex->tex_west);
+	else if (r->side == 0)
+		return (tex->tex_east);
+	else if (r->ray_dir_y > 0)
+		return (tex->tex_north);
+	else
+		return (tex->tex_south);
+}
 
 void	load_texture(t_mlx *mlx, t_texture **tex_d, char *path)
 {

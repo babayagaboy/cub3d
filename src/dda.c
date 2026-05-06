@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 15:45:36 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 15:48:22 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,3 @@ void	calc_perp_wall_dist(t_ray *r)
 	else
 		r->perp_wall_dist = r->side_dist_y - r->delta_dist_y;
 }
-
-
