@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_guns_sprite.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 13:04:34 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 13:19:11 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:32:02 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,32 +33,29 @@ int	init_lightsaber_struct(t_game *g)
 	g->lightsaber = malloc(sizeof(t_weapon));
 	if (!g->lightsaber)
 		return (1);
-
 	g->lightsaber->tex_arr = ft_calloc(7, sizeof(t_texture *));
 	if (!g->lightsaber->tex_arr)
 	{
 		free(g->lightsaber);
 		return (1);
 	}
-
 	g->lightsaber->weapon_frame = 0;
 	g->lightsaber->weapon_anim_timer = 0.0;
 	g->lightsaber->weapon_state = 0;
 	g->lightsaber->attack_pending = 0;
 	g->lightsaber->deployed = 0;
-
 	return (0);
 }
 
 int	load_lightsaber_textures(t_game *g)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < 6)
 	{
 		load_texture(g->mlx, &g->lightsaber->tex_arr[i],
-						get_lightsaber_texture_path(i));
+			get_lightsaber_texture_path(i));
 		if (!g->lightsaber->tex_arr[i])
 		{
 			free_weapon(g->lightsaber, g->mlx);
@@ -67,7 +64,6 @@ int	load_lightsaber_textures(t_game *g)
 		}
 		i++;
 	}
-
 	return (0);
 }
 

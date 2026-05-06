@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_fc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:34:12 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 18:16:45 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:15:01 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ void	draw_ceil_pixel(t_ori_tex *t, t_game *g, int screen_i, int j)
 	int	*pixels;
 
 	pixels = (int *)t->tex_ceiling->data;
-	tex_x = (int)(t->tex_ceiling->width * (g->ray->floor_x - floor(g->ray->floor_x)));
-	tex_y = (int)(t->tex_ceiling->height * (g->ray->floor_y - floor(g->ray->floor_y)));
+	tex_x = (int)(t->tex_ceiling->width
+			* (g->ray->floor_x - floor(g->ray->floor_x)));
+	tex_y = (int)(t->tex_ceiling->height
+			* (g->ray->floor_y - floor(g->ray->floor_y)));
 	color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
 	g->buffer[screenHeight - screen_i - 1][j] = color;
 }
@@ -34,8 +36,10 @@ void	draw_floor_pixel(t_ori_tex *t, t_game *g, int screen_i, int j)
 	int	*pixels;
 
 	pixels = (int *)t->tex_floor->data;
-	tex_x = (int)(t->tex_floor->width * (g->ray->floor_x - floor(g->ray->floor_x)));
-	tex_y = (int)(t->tex_floor->height * (g->ray->floor_y - floor(g->ray->floor_y)));
+	tex_x = (int)(t->tex_floor->width
+			* (g->ray->floor_x - floor(g->ray->floor_x)));
+	tex_y = (int)(t->tex_floor->height
+			* (g->ray->floor_y - floor(g->ray->floor_y)));
 	color = pixels[tex_y * (t->tex_floor->line_len / 4) + tex_x];
 	g->buffer[screen_i][j] = color;
 }

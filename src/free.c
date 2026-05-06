@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 16:57:41 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:22:24 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_buffer(t_game *g)
 
 void	free_weapon(t_weapon *weapon, t_mlx *mlx)
 {
-	int i;
+	int	i;
 
 	if (!weapon)
 		return ;
@@ -41,9 +41,10 @@ void	free_weapon(t_weapon *weapon, t_mlx *mlx)
 		free(weapon->tex_arr);
 	}
 }
+
 void	free_weapon_attk(t_weapon *weapon, t_mlx *mlx)
 {
-	int i;
+	int	i;
 
 	if (!weapon)
 		return ;
@@ -68,7 +69,6 @@ void	free_texture_pack(t_game *g)
 	free_t_texture(g->o_text->tex_floor, g->mlx);
 	free_t_texture(g->o_text->tex_ceiling, g->mlx);
 	free_t_texture(g->o_text->tex_door, g->mlx);
-
 	free(g->o_text->path_floor);
 	free(g->o_text->path_ceiling);
 	free(g->o_text->path_door);
@@ -82,10 +82,11 @@ void	free_texture_pack(t_game *g)
 
 void	free_project(t_game *g)
 {
-	for (int i = 0; i < g->door_count; i++)
-	{
-		free(g->door[i]);
-	}
+	int	i;
+
+	i = 0;
+	while (i < g->door_count)
+		free(g->door[i++]);
 	free(g->door);
 	if (g->lightsaber)
 	{

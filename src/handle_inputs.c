@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_inputs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:28:19 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 17:33:31 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:44:29 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	handle_movement(t_game *g)
 	int	moved;
 
 	moved = 0;
-
 	if (move_forward(g))
 		moved = 1;
 	if (move_backward(g))
@@ -26,7 +25,6 @@ int	handle_movement(t_game *g)
 		moved = 1;
 	if (move_left(g))
 		moved = 1;
-
 	return (moved);
 }
 
@@ -42,20 +40,21 @@ int	handle_rotation_keys(t_game *g)
 	p = g->player;
 	if (p->kp_ra || p->kp_la)
 	{
-		angle = (p->kp_ra) ? p->rot_speed : -p->rot_speed;
-
+		if (p->kp_ra)
+			angle = p->rot_speed;
+		else
+			angle = -p->rot_speed;
 		old_dir = p->dir_x;
 		p->dir_x = p->dir_x * cos(angle) - p->dir_y * sin(angle);
 		p->dir_y = old_dir * sin(angle) + p->dir_y * cos(angle);
-
 		old_plane = p->plane_x;
 		p->plane_x = p->plane_x * cos(angle) - p->plane_y * sin(angle);
 		p->plane_y = old_plane * sin(angle) + p->plane_y * cos(angle);
-
 		moved = 1;
 	}
 	return (moved);
 }
+
 int	handle_weapons(t_game *g)
 {
 	if (g->lightsaber->weapon_state != 0)
@@ -65,6 +64,7 @@ int	handle_weapons(t_game *g)
 	}
 	return (0);
 }
+
 int	key_press(int key, t_game *g)
 {
 	if (key == KEY_W)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p_utils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:10:27 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:36:37 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:54:22 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int	ft_isdigit(int c)
 		return (1);
 	return (0);
 }
+
 int	is_walkable_tile(t_game *g, int y, int x)
 {
 	t_door	*door;

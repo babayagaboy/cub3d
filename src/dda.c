@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dda.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 15:45:36 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:12:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/06 23:57:07 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	calc_dda_axis_x(t_ray *r, t_player *p)
 		r->delta_dist_x = 1e30;
 	else
 		r->delta_dist_x = fabs(1 / r->ray_dir_x);
-
 	if (r->ray_dir_x < 0)
 	{
 		r->step_x = -1;
@@ -37,7 +36,6 @@ void	calc_dda_axis_y(t_ray *r, t_player *p)
 		r->delta_dist_y = 1e30;
 	else
 		r->delta_dist_y = fabs(1 / r->ray_dir_y);
-
 	if (r->ray_dir_y < 0)
 	{
 		r->step_y = -1;
@@ -50,12 +48,10 @@ void	calc_dda_axis_y(t_ray *r, t_player *p)
 	}
 }
 
-
 void	calc_dda(t_ray *r, t_player *p)
 {
 	r->map_x = (int)p->pos_x;
 	r->map_y = (int)p->pos_y;
-
 	calc_dda_axis_x(r, p);
 	calc_dda_axis_y(r, p);
 }
@@ -83,16 +79,13 @@ void	step_dda(t_ray *r, t_player *p, t_game *g)
 		}
 	}
 	else if (g->map[r->map_y][r->map_x] != '0')
-	{
 		r->hit = 1;
-	}
 }
 
 void	calc_perp_wall_dist(t_ray *r)
 {
 	if (r->hit == 2)
 		return ;
-
 	if (r->side == 0)
 		r->perp_wall_dist = r->side_dist_x - r->delta_dist_x;
 	else

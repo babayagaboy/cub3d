@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:26:02 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:26:39 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:47:09 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	init_mlx(t_mlx *mlx)
 	mlx->win = mlx_new_window(mlx->mlx, screenWidth, screenHeight, "cub3d");
 	mlx->img = mlx_new_image(mlx->mlx, screenWidth, screenHeight);
 	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp,
-	&mlx->line_len, &mlx->endian);
+			&mlx->line_len, &mlx->endian);
 }
 
 void	init_player(t_player *p)
@@ -29,17 +29,13 @@ void	init_player(t_player *p)
 	p->kp_s = 0;
 	p->kp_a = 0;
 	p->kp_d = 0;
-
 	p->old_pos_x = p->pos_x;
 	p->old_pos_y = p->pos_y;
-
 	p->plane_y = p->dir_x * 0.66;
 	p->plane_x = -p->dir_y * 0.66;
-
 	p->time = get_timestamp();
 	p->old_time = p->time;
 	p->frame_time = 0;
-
 	p->move_speed = 0;
 	p->rot_speed = 0;
 }
@@ -52,14 +48,13 @@ void	init_floor_ceil_params(t_ray *r, t_player *p, int i)
 	r->ray_dir_y_l = p->dir_y - p->plane_y;
 	r->ray_dir_x_r = p->dir_x + p->plane_x;
 	r->ray_dir_y_r = p->dir_y + p->plane_y;
-
 	pos = i - (screenHeight >> 1);
 	p->pos_z = (screenHeight >> 1);
 	p->row_dis = p->pos_z / pos;
-
-	r->floor_step_x = p->row_dis * (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
-	r->floor_step_y = p->row_dis * (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
-
+	r->floor_step_x = p->row_dis
+		* (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
+	r->floor_step_y = p->row_dis
+		* (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
 	r->floor_x = p->pos_x + p->row_dis * r->ray_dir_x_l;
 	r->floor_y = p->pos_y + p->row_dis * r->ray_dir_y_l;
 }

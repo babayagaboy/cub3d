@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:29:30 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:30:43 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:46:24 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,17 @@ int	mouse_press(int button, int x, int y, t_game *g)
 {
 	(void)x;
 	(void)y;
-
 	if (button == 1)
 		handle_left_click(g);
 	else if (button == 3)
 		handle_right_click(g);
-
 	return (0);
 }
 
-int mouse_release(int button, int x, int y, t_game *g)
+int	mouse_release(int button, int x, int y, t_game *g)
 {
-	(void)x; 
+	(void)x;
 	(void)y;
-
 	if (button == 1)
 		g->player->kp_lc = 0;
 	if (button == 3)

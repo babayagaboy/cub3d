@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+         #
+#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/05/06 17:47:23 by myivanov         ###   ########.fr        #
+#    Updated: 2026/05/07 00:10:00 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,8 @@ SRCS		=	$(SRCDIR)/parser.c	\
 				$(SRCDIR)/handle_mouse.c \
 				$(SRCDIR)/handle_mouse_clicks.c \
 				$(SRCDIR)/doors.c \
+				$(SRCDIR)/door_utils.c \
+				$(SRCDIR)/door_utils2.c \
 				$(SRCDIR)/general_utils.c \
 				$(SRCDIR)/move.c \
 				$(SRCDIR)/start.c \

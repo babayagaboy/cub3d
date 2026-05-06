@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:18:21 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:58:33 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:16:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	drawbuffer(t_mlx *mlx, t_game *g)
 		}
 		++y;
 	}
-
 }
 
 void	put_square(int y, int x, int color, t_game *g)
@@ -69,14 +68,14 @@ void	draw_vertical_line(t_draw_params *dp, t_game *g)
 	start = dp->draw_start;
 	while (start <= dp->draw_end)
 	{
-		if (start >= 0 && start < screenHeight && dp->i >= 0 && dp->i < screenWidth)
+		if (start >= 0 && start < screenHeight
+			&& dp->i >= 0 && dp->i < screenWidth)
 		{
 			tex_y = (int)dp->r->tex_pos;
 			if (tex_y < 0)
 				tex_y = 0;
 			if (tex_y >= dp->t->height)
 				tex_y = dp->t->height - 1;
-
 			pixels = (int *)dp->t->data;
 			color = pixels[tex_y * (dp->t->line_len / 4) + dp->tex_x];
 			g->buffer[start][dp->i] = color;

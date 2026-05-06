@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:27:26 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:27:53 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 00:55:48 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	handle_input(t_game *g)
 
 	moved = 0;
 	redraw = 0;
-
 	get_time(g->player);
 	if (handle_movement(g))
 		moved = 1;
@@ -61,5 +60,6 @@ void	start(t_game *game)
 	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
 	mlx_hook(game->mlx->win, 4, 1L << 2, mouse_press, game);
 	mlx_hook(game->mlx->win, 5, 1L << 3, mouse_release, game);
-	mlx_mouse_move(game->mlx->mlx, game->mlx->win, game->center_x, game->center_y);
+	mlx_mouse_move(game->mlx->mlx, game->mlx->win,
+		game->center_x, game->center_y);
 }
