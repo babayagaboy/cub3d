@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:26:02 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:47:09 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	init_mlx(t_mlx *mlx)
 	mlx->mlx = mlx_init();
 	if (!mlx->mlx)
 		return ;
-	mlx->win = mlx_new_window(mlx->mlx, screenWidth, screenHeight, "cub3d");
-	mlx->img = mlx_new_image(mlx->mlx, screenWidth, screenHeight);
+	mlx->win = mlx_new_window(mlx->mlx, SCREENWIDTH, SCREENHEIGHT, "cub3d");
+	mlx->img = mlx_new_image(mlx->mlx, SCREENWIDTH, SCREENHEIGHT);
 	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp,
 			&mlx->line_len, &mlx->endian);
 }
@@ -48,13 +48,13 @@ void	init_floor_ceil_params(t_ray *r, t_player *p, int i)
 	r->ray_dir_y_l = p->dir_y - p->plane_y;
 	r->ray_dir_x_r = p->dir_x + p->plane_x;
 	r->ray_dir_y_r = p->dir_y + p->plane_y;
-	pos = i - (screenHeight >> 1);
-	p->pos_z = (screenHeight >> 1);
+	pos = i - (SCREENHEIGHT >> 1);
+	p->pos_z = (SCREENHEIGHT >> 1);
 	p->row_dis = p->pos_z / pos;
 	r->floor_step_x = p->row_dis
-		* (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
+		* (r->ray_dir_x_r - r->ray_dir_x_l) / SCREENWIDTH;
 	r->floor_step_y = p->row_dis
-		* (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
+		* (r->ray_dir_y_r - r->ray_dir_y_l) / SCREENWIDTH;
 	r->floor_x = p->pos_x + p->row_dis * r->ray_dir_x_l;
 	r->floor_y = p->pos_y + p->row_dis * r->ray_dir_y_l;
 }

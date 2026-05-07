@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 00:22:24 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 13:56:08 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-void	free_buffer(t_game *g)
-{
-	int	i;
-
-	i = screenHeight;
-	while (--i)
-	{
-		free(g->buffer[i]);
-	}
-	free(g->buffer);
-}
 
 void	free_weapon(t_weapon *weapon, t_mlx *mlx)
 {
@@ -105,6 +93,6 @@ void	free_project(t_game *g)
 	free(g->ray);
 	free_memory(g->elements_file);
 	free_memory(g->map);
-	free_buffer(g);
+	free_memory_int(g->buffer);
 	free(g);
 }

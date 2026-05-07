@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:27:26 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:55:48 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	start(t_game *game)
 	game->minimap = copy_map(game->map, 0, game->map_h);
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
 	game->player->prev_tile = '0';
-	game->center_x = screenWidth / 2;
-	game->center_y = screenHeight / 2;
+	game->center_x = SCREENWIDTH / 2;
+	game->center_y = SCREENHEIGHT / 2;
 	game->mouse_dx = 0;
 	game->warping = 0;
 	game->player->kp_lc = 0;

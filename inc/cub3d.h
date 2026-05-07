@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:26:31 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 17:20:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:55:51 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@
 # include <limits.h>
 # include <sys/time.h>
 # include "../mlx/mlx.h"
+# include <cub3d_proto.h>
 
-# define screenWidth	1520
-# define screenHeight	980
+# define SCREENWIDTH	1520
+# define SCREENHEIGHT	980
 # define KEY_W			119
 # define KEY_S			115
 # define KEY_A			97
@@ -42,14 +43,14 @@ typedef struct s_door
 	int		opening;
 }			t_door;
 
-
 typedef struct s_elements_var
 {
 	char	*line;
-	int 	elements_found;
-	int 	opened;
-	int 	f_c_element;
+	int		elements_found;
+	int		opened;
+	int		f_c_element;
 	int		door_found;
+	int		stop;
 }	t_ele_var;
 
 typedef struct s_texture
@@ -62,7 +63,6 @@ typedef struct s_texture
 	int		line_len;
 	int		endian;
 }	t_texture;
-
 
 typedef struct s_player
 {
@@ -100,8 +100,8 @@ typedef struct s_weapon
 	t_texture	**tex_atk_arr;
 	int			weapon_frame;
 	double		weapon_anim_timer;
-	int		weapon_state;
-	int		attack_pending;	
+	int			weapon_state;
+	int			attack_pending;	
 	int			deployed;
 }			t_weapon;
 
@@ -160,22 +160,20 @@ typedef struct s_ori_tex
 	t_texture	*tex_three;
 	t_texture	*tex_four;
 	t_texture	*tex_five;
-
-	char	*path_north;
-	char	*path_south;
-	char	*path_east;
-	char	*path_west;
-	char	*path_floor;
-	char	*path_ceiling;
-	char	*path_door;
-	char	*path_one;
-	char	*path_two;
-	char	*path_three;
-	char	*path_four;
-	char	*path_five;
-
-	int		rgb_floor[3];
-	int		rgb_ceiling[3];
+	char		*path_north;
+	char		*path_south;
+	char		*path_east;
+	char		*path_west;
+	char		*path_floor;
+	char		*path_ceiling;
+	char		*path_door;
+	char		*path_one;
+	char		*path_two;
+	char		*path_three;
+	char		*path_four;
+	char		*path_five;
+	int			rgb_floor[3];
+	int			rgb_ceiling[3];
 }	t_ori_tex;
 
 typedef struct s_game
@@ -213,22 +211,22 @@ typedef struct s_draw_params
 	int			draw_start;
 	int			draw_end;
 	int			i;
-} t_draw_params;
+}	t_draw_params;
 
 typedef struct s_wall_calc
 {
 	int	line_height;
 	int	draw_start;
 	int	draw_end;
-} t_wall_calc;
+}	t_wall_calc;
 
 typedef struct s_weapon_hud
 {
-    t_texture	*tex;
-    int			start_x;
-    int			start_y;
-    float		scale;
-} 				t_weapon_hud;
+	t_texture	*tex;
+	int			start_x;
+	int			start_y;
+	float		scale;
+}	t_weapon_hud;
 
 typedef struct s_attack_hud
 {
@@ -236,9 +234,6 @@ typedef struct s_attack_hud
 	int			start_x;
 	int			start_y;
 	float		scale;
-}				t_attack_hud;
-
-# include <cub3d_exec.h>
-# include <cub3d_parser.h>
+}	t_attack_hud;
 
 #endif

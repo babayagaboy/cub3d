@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_fc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:34:12 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:15:01 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	draw_ceil_pixel(t_ori_tex *t, t_game *g, int screen_i, int j)
 	tex_y = (int)(t->tex_ceiling->height
 			* (g->ray->floor_y - floor(g->ray->floor_y)));
 	color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
-	g->buffer[screenHeight - screen_i - 1][j] = color;
+	g->buffer[SCREENHEIGHT - screen_i - 1][j] = color;
 }
 
 void	draw_floor_pixel(t_ori_tex *t, t_game *g, int screen_i, int j)
@@ -51,8 +51,8 @@ void	get_c_colored(t_ori_tex *tex, t_game *g)
 	int	half_h;
 
 	x = 0;
-	half_h = screenHeight >> 1;
-	while (x < screenWidth)
+	half_h = SCREENHEIGHT >> 1;
+	while (x < SCREENWIDTH)
 	{
 		y = 0;
 		while (y < half_h)
@@ -73,11 +73,11 @@ void	get_f_colored(t_ori_tex *tex, t_game *g)
 	int	half_h;
 
 	x = 0;
-	half_h = screenHeight >> 1;
-	while (x < screenWidth)
+	half_h = SCREENHEIGHT >> 1;
+	while (x < SCREENWIDTH)
 	{
 		y = half_h;
-		while (y < screenHeight)
+		while (y < SCREENHEIGHT)
 		{
 			if (g->buffer[y][x] == 0)
 				g->buffer[y][x] = get_color(tex->rgb_floor[0],
@@ -93,7 +93,7 @@ void	draw_floor_ceiling(t_game *g, t_player *player, t_ori_tex *tex)
 	int	i;
 
 	i = 0;
-	while (i < screenHeight)
+	while (i < SCREENHEIGHT)
 	{
 		get_fc(g, player, tex, i);
 		++i;

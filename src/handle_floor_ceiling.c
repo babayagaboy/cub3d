@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_floor_ceiling.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 22:45:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 00:36:56 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	get_fc(t_game *g, t_player *p, t_ori_tex *t, int i)
 {
 	int	j;
 
-	if (i <= (screenHeight >> 1))
+	if (i <= (SCREENHEIGHT >> 1))
 		return ;
 	init_floor_ceil_params(g->ray, p, i);
 	j = 0;
-	while (j < screenWidth)
+	while (j < SCREENWIDTH)
 	{
 		if (t->path_ceiling)
 			draw_ceil_pixel(t, g, i, j);

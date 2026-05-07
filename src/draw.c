@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:18:21 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:16:36 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	put_pixel(t_mlx *mlx, int x, int y, int color)
 {
 	char	*dst;
 
-	if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight)
+	if (x < 0 || x >= SCREENWIDTH || y < 0 || y >= SCREENHEIGHT)
 		return ;
 	dst = mlx->addr + (y * mlx->line_len + x * (mlx->bpp / 8));
 	*(unsigned int *)dst = color;
@@ -28,10 +28,10 @@ void	drawbuffer(t_mlx *mlx, t_game *g)
 	int	x;
 
 	y = 0;
-	while (y < screenHeight)
+	while (y < SCREENHEIGHT)
 	{
 		x = 0;
-		while (x < screenWidth)
+		while (x < SCREENWIDTH)
 		{
 			put_pixel(mlx, x, y, g->buffer[y][x]);
 			++x;
@@ -68,8 +68,8 @@ void	draw_vertical_line(t_draw_params *dp, t_game *g)
 	start = dp->draw_start;
 	while (start <= dp->draw_end)
 	{
-		if (start >= 0 && start < screenHeight
-			&& dp->i >= 0 && dp->i < screenWidth)
+		if (start >= 0 && start < SCREENHEIGHT
+			&& dp->i >= 0 && dp->i < SCREENWIDTH)
 		{
 			tex_y = (int)dp->r->tex_pos;
 			if (tex_y < 0)
@@ -91,10 +91,10 @@ void	clear_buffer(t_game *g)
 	int	x;
 
 	i = 0;
-	while (i < screenHeight)
+	while (i < SCREENHEIGHT)
 	{
 		x = 0;
-		while (x < screenWidth)
+		while (x < SCREENWIDTH)
 		{
 			g->buffer[i][x] = 0;
 			++x;

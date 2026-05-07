@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rays.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:39:21 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:54:47 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ int	calc_draw_positions(t_ray *r, int *draw_start, int *draw_end)
 
 	if (r->perp_wall_dist <= 0)
 		r->perp_wall_dist = 0.1;
-	line_height = (int)(screenHeight / r->perp_wall_dist);
-	*draw_start = ((-1 * line_height) >> 1) + (screenHeight >> 1);
+	line_height = (int)(SCREENHEIGHT / r->perp_wall_dist);
+	*draw_start = ((-1 * line_height) >> 1) + (SCREENHEIGHT >> 1);
 	if (*draw_start < 0)
 		*draw_start = 0;
-	*draw_end = (line_height >> 1) + (screenHeight >> 1);
-	if (*draw_end >= screenHeight)
-		*draw_end = screenHeight - 1;
+	*draw_end = (line_height >> 1) + (SCREENHEIGHT >> 1);
+	if (*draw_end >= SCREENHEIGHT)
+		*draw_end = SCREENHEIGHT - 1;
 	return (line_height);
 }
 
@@ -56,7 +56,7 @@ void	cast_rays(t_ray *ray, t_player *player, t_ori_tex *tex, t_game *g)
 	int	i;
 
 	i = 0;
-	while (i < screenWidth)
+	while (i < SCREENWIDTH)
 	{
 		calc_camera(ray, player, i);
 		calc_dda(ray, player);

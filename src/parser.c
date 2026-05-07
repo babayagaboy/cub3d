@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/05 23:46:23 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 13:40:54 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int	parser(int argc, char *argv[], t_game *g)
 	vars->opened = 0;
 	vars->f_c_element = 0;
 	vars->door_found = 0;
+	vars->stop = 0;
 	if (!validate_args(argc, argv))
 		return (0);
 	if (!load_cub_file(g, argv[1]))

@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:44:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 16:44:38 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	free_memory_int(int **arr)
 
 	if (!arr)
 		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
+	i = SCREENHEIGHT - 1;
+	while (i >= 0)
+		free(arr[i--]);
 	free (arr);
 }
 

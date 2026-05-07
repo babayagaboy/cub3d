@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   general_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:42:11 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:23:19 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	run_dda(t_ray *r, t_player *p, t_game *g)
 
 void	calc_camera(t_ray *r, t_player *p, int i)
 {
-	r->camera_x = 2 * i / (double)screenWidth - 1;
+	r->camera_x = 2 * i / (double)SCREENWIDTH - 1;
 	r->ray_dir_y = p->dir_y + p->plane_y * r->camera_x;
 	r->ray_dir_x = p->dir_x + p->plane_x * r->camera_x;
 }
@@ -45,7 +45,7 @@ void	clear_img_buffer(t_mlx *mlx)
 	int	size;
 
 	i = 0;
-	size = mlx->line_len * screenHeight;
+	size = mlx->line_len * SCREENHEIGHT;
 	while (i < size)
 	{
 		mlx->addr[i] = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_attack_hud.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 13:04:34 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 00:14:10 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	get_attack_hud_start_pos(t_texture *tex, float scale,
 		int *start_x, int *start_y)
 {
-	*start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
-	*start_y = screenHeight - (tex->height / scale) + 50;
+	*start_x = (SCREENWIDTH - (tex->width / scale)) + (SCREENWIDTH / 18);
+	*start_y = SCREENHEIGHT - (tex->height / scale) + 50;
 }
 
 void	draw_attack_hud_row(t_attack_hud *hud, t_game *g, int y)
@@ -34,7 +34,7 @@ void	draw_attack_hud_row(t_attack_hud *hud, t_game *g, int y)
 		bx = hud->start_x + (x / hud->scale);
 		by = hud->start_y + (y / hud->scale);
 		color = pixels[y * (hud->tex->line_len / 4) + x];
-		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+		if (bx >= 0 && bx < SCREENWIDTH && by >= 0 && by < SCREENHEIGHT
 			&& (color & 0xFF000000) == 0)
 		{
 			g->buffer[by][bx] = color;

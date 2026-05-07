@@ -6,13 +6,13 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:29:02 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/06 16:43:14 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-int buffer[screenHeight][screenWidth];
+int buffer[SCREENHEIGHT][SCREENWIDTH];
 
 //----------------------------------------------
 // typedef struct s_weapon_hud
@@ -25,8 +25,8 @@ int buffer[screenHeight][screenWidth];
 
 // void	get_weapon_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y)
 // {
-// 	*start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
-// 	*start_y = screenHeight - (tex->height / scale) + 50;
+// 	*start_x = (SCREENWIDTH - (tex->width / scale)) + (SCREENWIDTH / 18);
+// 	*start_y = SCREENHEIGHT - (tex->height / scale) + 50;
 // }
 
 // void	draw_weapon_hud_row(t_weapon_hud *hud, int y)
@@ -45,7 +45,7 @@ int buffer[screenHeight][screenWidth];
 // 		by = hud->start_y + (y / hud->scale);
 
 // 		color = pixels[y * (hud->tex->line_len / 4) + x];
-// 		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+// 		if (bx >= 0 && bx < SCREENWIDTH && by >= 0 && by < SCREENHEIGHT
 // 			&& (color & 0xFF000000) == 0)
 // 		{
 // 			buffer[by][bx] = color;
@@ -93,8 +93,8 @@ int buffer[screenHeight][screenWidth];
 
 // void	get_attack_hud_start_pos(t_texture *tex, float scale, int *start_x, int *start_y)
 // {
-// 	*start_x = (screenWidth - (tex->width / scale)) + (screenWidth / 18);
-// 	*start_y = screenHeight - (tex->height / scale) + 50;
+// 	*start_x = (SCREENWIDTH - (tex->width / scale)) + (SCREENWIDTH / 18);
+// 	*start_y = SCREENHEIGHT - (tex->height / scale) + 50;
 // }
 
 // void	draw_attack_hud_row(t_attack_hud *hud, int y)
@@ -113,7 +113,7 @@ int buffer[screenHeight][screenWidth];
 // 		by = hud->start_y + (y / hud->scale);
 
 // 		color = pixels[y * (hud->tex->line_len / 4) + x];
-// 		if (bx >= 0 && bx < screenWidth && by >= 0 && by < screenHeight
+// 		if (bx >= 0 && bx < SCREENWIDTH && by >= 0 && by < SCREENHEIGHT
 // 			&& (color & 0xFF000000) == 0)
 // 		{
 // 			buffer[by][bx] = color;
@@ -300,7 +300,7 @@ int buffer[screenHeight][screenWidth];
 // {
 // 	char	*dst;
 
-// 	if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight)
+// 	if (x < 0 || x >= SCREENWIDTH || y < 0 || y >= SCREENHEIGHT)
 // 		return ;
 // 	dst = mlx->addr + (y * mlx->line_len + x * (mlx->bpp / 8));
 // 	*(unsigned int *)dst = color;
@@ -312,10 +312,10 @@ int buffer[screenHeight][screenWidth];
 // 	int	x;
 
 // 	y = 0;
-// 	while (y < screenHeight)
+// 	while (y < SCREENHEIGHT)
 // 	{
 // 		x = 0;
-// 		while (x < screenWidth)
+// 		while (x < SCREENWIDTH)
 // 		{
 // 			put_pixel(mlx, x, y, buffer[y][x]);
 // 			++x;
@@ -353,8 +353,8 @@ int buffer[screenHeight][screenWidth];
 // 	mlx->mlx = mlx_init();
 // 	if (!mlx->mlx)
 // 		return ;
-// 	mlx->win = mlx_new_window(mlx->mlx, screenWidth, screenHeight, "cub3d");
-// 	mlx->img = mlx_new_image(mlx->mlx, screenWidth, screenHeight);
+// 	mlx->win = mlx_new_window(mlx->mlx, SCREENWIDTH, SCREENHEIGHT, "cub3d");
+// 	mlx->img = mlx_new_image(mlx->mlx, SCREENWIDTH, SCREENHEIGHT);
 // 	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp,
 // 	&mlx->line_len, &mlx->endian);
 // }
@@ -382,7 +382,7 @@ int buffer[screenHeight][screenWidth];
 
 // void	calc_camera(t_ray *r, t_player *p, int i)
 // {
-// 	r->camera_x = 2 * i / (double)screenWidth - 1;
+// 	r->camera_x = 2 * i / (double)SCREENWIDTH - 1;
 // 	r->ray_dir_y = p->dir_y + p->plane_y * r->camera_x;
 // 	r->ray_dir_x = p->dir_x + p->plane_x * r->camera_x;
 // }
@@ -575,12 +575,12 @@ int buffer[screenHeight][screenWidth];
 // 	r->ray_dir_x_r = p->dir_x + p->plane_x;
 // 	r->ray_dir_y_r = p->dir_y + p->plane_y;
 
-// 	pos = i - (screenHeight >> 1);
-// 	p->pos_z = (screenHeight >> 1);
+// 	pos = i - (SCREENHEIGHT >> 1);
+// 	p->pos_z = (SCREENHEIGHT >> 1);
 // 	p->row_dis = p->pos_z / pos;
 
-// 	r->floor_step_x = p->row_dis * (r->ray_dir_x_r - r->ray_dir_x_l) / screenWidth;
-// 	r->floor_step_y = p->row_dis * (r->ray_dir_y_r - r->ray_dir_y_l) / screenWidth;
+// 	r->floor_step_x = p->row_dis * (r->ray_dir_x_r - r->ray_dir_x_l) / SCREENWIDTH;
+// 	r->floor_step_y = p->row_dis * (r->ray_dir_y_r - r->ray_dir_y_l) / SCREENWIDTH;
 
 // 	r->floor_x = p->pos_x + p->row_dis * r->ray_dir_x_l;
 // 	r->floor_y = p->pos_y + p->row_dis * r->ray_dir_y_l;
@@ -597,7 +597,7 @@ int buffer[screenHeight][screenWidth];
 // 	tex_x = (int)(t->tex_ceiling->width * (r->floor_x - floor(r->floor_x)));
 // 	tex_y = (int)(t->tex_ceiling->height * (r->floor_y - floor(r->floor_y)));
 // 	color = pixels[tex_y * (t->tex_ceiling->line_len / 4) + tex_x];
-// 	buffer[screenHeight - screen_i - 1][j] = color;
+// 	buffer[SCREENHEIGHT - screen_i - 1][j] = color;
 // }
 
 // void draw_floor_pixel(t_ori_tex *t, t_ray *r, int screen_i, int j)
@@ -618,13 +618,13 @@ int buffer[screenHeight][screenWidth];
 // {
 // 	int	j;
 
-// 	if (i <= (screenHeight >> 1))
+// 	if (i <= (SCREENHEIGHT >> 1))
 //     	return ;
 
 // 	init_floor_ceil_params(r, p, i);
 
 // 	j = 0;
-// 	while (j < screenWidth)
+// 	while (j < SCREENWIDTH)
 // 	{
 // 		if (t->path_ceiling)
 // 			draw_ceil_pixel(t, r, i, j);
@@ -662,15 +662,15 @@ int buffer[screenHeight][screenWidth];
 
 // 	if (r->perp_wall_dist <= 0)
 // 		r->perp_wall_dist = 0.1;
-// 	line_height = (int)(screenHeight / r->perp_wall_dist);
+// 	line_height = (int)(SCREENHEIGHT / r->perp_wall_dist);
 
-// 	*draw_start = ((-1 * line_height) >> 1) + (screenHeight >> 1);
+// 	*draw_start = ((-1 * line_height) >> 1) + (SCREENHEIGHT >> 1);
 // 	if (*draw_start < 0)
 // 		*draw_start = 0;
 
-// 	*draw_end = (line_height >> 1) + (screenHeight >> 1);
-// 	if (*draw_end >= screenHeight)
-// 		*draw_end = screenHeight - 1;
+// 	*draw_end = (line_height >> 1) + (SCREENHEIGHT >> 1);
+// 	if (*draw_end >= SCREENHEIGHT)
+// 		*draw_end = SCREENHEIGHT - 1;
 
 // 	return (line_height);
 // }
@@ -703,7 +703,7 @@ int buffer[screenHeight][screenWidth];
 
 // 	r->wall_hit_pos_x -= floor(r->wall_hit_pos_x);
 // 	r->tex_step = 1.0 * t->height / line_height;
-// 	r->tex_pos = (draw_start - (screenHeight >> 1) + (line_height >> 1)) * r->tex_step;
+// 	r->tex_pos = (draw_start - (SCREENHEIGHT >> 1) + (line_height >> 1)) * r->tex_step;
 
 // 	tex_x = (int)(r->wall_hit_pos_x * (1.0 * t->width));
 // 	if (r->side == 0 && r->ray_dir_x > 0)
@@ -724,7 +724,7 @@ int buffer[screenHeight][screenWidth];
 // 	start = dp->draw_start;
 // 	while (start <= dp->draw_end)
 // 	{
-// 		if (start >= 0 && start < screenHeight && dp->i >= 0 && dp->i < screenWidth)
+// 		if (start >= 0 && start < SCREENHEIGHT && dp->i >= 0 && dp->i < SCREENWIDTH)
 // 		{
 // 			tex_y = (int)dp->r->tex_pos;
 // 			if (tex_y < 0)
@@ -767,8 +767,8 @@ int buffer[screenHeight][screenWidth];
 // 	int	half_h;
 
 // 	x = 0;
-// 	half_h = screenHeight >> 1;
-// 	while (x < screenWidth)
+// 	half_h = SCREENHEIGHT >> 1;
+// 	while (x < SCREENWIDTH)
 // 	{
 // 		y = 0;
 // 		while (y < half_h)
@@ -789,11 +789,11 @@ int buffer[screenHeight][screenWidth];
 // 	int	half_h;
 
 // 	x = 0;
-// 	half_h = screenHeight >> 1;
-// 	while (x < screenWidth)
+// 	half_h = SCREENHEIGHT >> 1;
+// 	while (x < SCREENWIDTH)
 // 	{
 // 		y = half_h;
-// 		while (y < screenHeight)
+// 		while (y < SCREENHEIGHT)
 // 		{
 // 			if (buffer[y][x] == 0)
 // 				buffer[y][x] = get_color(tex->rgb_floor[0],
@@ -833,7 +833,7 @@ int buffer[screenHeight][screenWidth];
 // 	int	size;
 
 // 	i = 0;
-// 	size = mlx->line_len * screenHeight;
+// 	size = mlx->line_len * SCREENHEIGHT;
 
 // 	while (i < size)
 // 	{
@@ -847,7 +847,7 @@ int buffer[screenHeight][screenWidth];
 // 	int	i;
 
 // 	i = 0;
-// 	while (i < screenHeight)
+// 	while (i < SCREENHEIGHT)
 // 	{
 // 		get_fc(ray, player, tex, i);
 // 		++i;
@@ -859,7 +859,7 @@ int buffer[screenHeight][screenWidth];
 // 	int	i;
 
 // 	i = 0;
-// 	while (i < screenWidth)
+// 	while (i < SCREENWIDTH)
 // 	{
 // 		calc_camera(ray, player, i);
 // 		calc_dda(ray, player);
@@ -888,10 +888,10 @@ int buffer[screenHeight][screenWidth];
 // 	int	x;
 
 // 	i = 0;
-// 	while (i < screenHeight)
+// 	while (i < SCREENHEIGHT)
 // 	{
 // 		x = 0;
-// 		while (x < screenWidth)
+// 		while (x < SCREENWIDTH)
 // 		{
 // 			buffer[i][x] = 0;
 // 			++x;
@@ -1221,8 +1221,8 @@ int buffer[screenHeight][screenWidth];
 // 	game->minimap = copy_map(game->map, 0, game->map_h);
 // 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
 // 	game->player->prev_tile = '0';
-// 	game->center_x = screenWidth / 2;
-// 	game->center_y = screenHeight / 2;
+// 	game->center_x = SCREENWIDTH / 2;
+// 	game->center_y = SCREENHEIGHT / 2;
 // 	game->mouse_dx = 0;
 // 	game->warping = 0;
 // 	game->player->kp_lc = 0;

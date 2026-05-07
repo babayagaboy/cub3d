@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 00:52:38 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	init_buffer(t_game *g)
 	int	i;
 
 	i = 0;
-	while (i < screenHeight)
+	while (i < SCREENHEIGHT)
 	{
-		g->buffer[i] = malloc(sizeof(int) * screenWidth);
+		g->buffer[i] = malloc(sizeof(int) * SCREENWIDTH);
 		if (!g->buffer[i])
 		{
 			while (--i)
@@ -52,7 +52,7 @@ int	malloc_structs(t_game **game)
 	if (!(*game)->txt)
 		return (free((*game)->o_text), free((*game)->mlx),
 			free((*game)->player), free(*game), 1);
-	(*game)->buffer = malloc(sizeof(int *) * screenHeight);
+	(*game)->buffer = malloc(sizeof(int *) * SCREENHEIGHT);
 	if (!(*game)->buffer)
 		return (free((*game)->player), free((*game)->txt), free(*game), 1);
 	if (!init_buffer(*game))
