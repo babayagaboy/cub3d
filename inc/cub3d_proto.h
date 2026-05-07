@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:15:59 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 15:01:03 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:05:19 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ int			update_doors(t_game *g);
 int			get_door_count(char **map);
 int			key_press(int key, t_game *g);
 int			key_release(int key, t_game *g);
+int			close_window(void *param);
 void		handle_left_click(t_game *g);
 void		handle_right_click(t_game *g);
 int			handle_mouse_rotation(t_game *g);
@@ -203,5 +204,9 @@ t_door		**get_door_coords(t_game *g, char **map);
 void		init_player(t_player *p);
 void		init_mlx(t_mlx *mlx);
 void		start(t_game *game);
+int			is_xpm_path(char *path);
+int			is_xpm_path_fc(char *path);
+int			close_window(void *param);
+int			is_cub_path(char *path);
 
 #endif

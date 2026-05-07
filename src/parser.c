@@ -6,18 +6,32 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 13:40:54 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:06:25 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
+int	is_cub_path(char *path)
+{
+	size_t	len;
+
+	if (!path)
+		return (0);
+	len = ft_strlen(path);
+	if (len < 4)
+		return (0);
+	return (ft_strncmp(path + len - 4, ".cub", 4) == 0);
+}
+
 int	validate_args(int argc, char *argv[])
 {
 	if (argc != 2)
 		return (0);
-	if (!ft_strnstr(argv[1], ".cub", ft_strlen(argv[1])))
+	printf("sum\n");
+	if (!is_cub_path(argv[1]))
 		return (0);
+	printf("bitch\n");
 	return (1);
 }
 
@@ -36,7 +50,9 @@ int	load_elements_and_map(t_game *g, t_ele_var *vars)
 	y = 0;
 	g->elements_file = get_elements(g->cub, &y, vars);
 	if (!g->elements_file)
+	{
 		return (0);
+	}
 	g->map = get_map(g->cub, &y, g);
 	if (!g->map)
 	{
@@ -51,6 +67,22 @@ void	free_all(t_game *g)
 	free_memory(g->cub);
 	free_memory(g->elements_file);
 	free_memory(g->map);
+	if (!g->o_text)
+		return ;
+	if (g->o_text->path_ceiling)
+		free(g->o_text->path_ceiling);
+	if (g->o_text->path_floor)
+		free(g->o_text->path_floor);
+	if (g->o_text->path_door)
+		free(g->o_text->path_door);
+	if (g->o_text->path_north)
+		free(g->o_text->path_north);
+	if (g->o_text->path_east)
+		free(g->o_text->path_east);
+	if (g->o_text->path_south)
+		free(g->o_text->path_south);
+	if (g->o_text->path_west)
+		free(g->o_text->path_west);
 }
 
 int	parser(int argc, char *argv[], t_game *g)
@@ -65,18 +97,22 @@ int	parser(int argc, char *argv[], t_game *g)
 	vars->f_c_element = 0;
 	vars->door_found = 0;
 	vars->stop = 0;
+	printf("yo\n");
 	if (!validate_args(argc, argv))
 		return (0);
+	printf("pppp\n");
 	if (!load_cub_file(g, argv[1]))
 		return (0);
+	printf("pppp\n");
 	if (!load_elements_and_map(g, vars))
 		return (free_memory(g->cub), 0);
+	printf("pppp\n");
 	if (!check_elements(g->elements_file, g->o_text, vars))
-		return (free_all(g), 0);
+		return (free_all(g), free(vars), 0);
+	printf("pppp\n");
 	if (!check_map(g->map, g->player, g, vars))
-		return (free_all(g), 0);
-	if (!get_textures(g->mlx, g->o_text))
-		return (free_all(g), 0);
+		return (free_all(g), free(vars), 0);
+	printf("pppp\n");
 	free_memory(g->cub);
 	free(vars);
 	return (1);

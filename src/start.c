@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:27:26 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:37:46 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	start(t_game *game)
 	get_guns_sprite(game);
 	get_weapon_attack_sprite(game);
 	calc_rays(game->mlx, game->ray, game->player, game);
+	mlx_hook(game->mlx->win, 17, 0, close_window, game);
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);

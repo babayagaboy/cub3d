@@ -6,12 +6,24 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/06 18:37:55 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:10:42 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 #include "../inc/libft/libft.h"
+
+int	is_xpm_path(char *path)
+{
+	size_t	len;
+
+	if (!path)
+		return (0);
+	len = ft_strlen(path);
+	if (len < 4)
+		return (0);
+	return (ft_strncmp(path + len - 4, ".xpm", 4) == 0);
+}
 
 int	check_rbg(char *str, int *arr)
 {
@@ -36,17 +48,21 @@ int	handle_texture(char *line, int value, t_ele_var *vars, char **tex_path)
 	int		fd;
 	size_t	rc;
 	char	*buff;
+	char	*path;
 
 	buff = malloc(sizeof(char) * 10);
 	if (!buff)
 		return (0);
-	fd = open(&line[5], O_RDONLY);
+	path = &line[5];
+	if (!is_xpm_path(path))
+		return (free(buff), 0);
+	fd = open(path, O_RDONLY);
 	rc = read(fd, buff, 10);
 	vars->elements_found += value;
 	if (fd >= 0 && rc > 0)
 	{
 		vars->opened += value;
-		*tex_path = ft_strdup(&line[5]);
+		*tex_path = ft_strdup(path);
 		if (buff != NULL)
 			free(buff);
 		close(fd);
@@ -69,21 +85,40 @@ void	choose_corect_path(char *line, int value, t_ori_tex *tex)
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 {
 	if (ft_strncmp(line, "NO", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 1, vars, &tex->path_north);
+	{
+		if (!handle_texture(line, 1, vars, &tex->path_north))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "SO", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 2, vars, &tex->path_south);
+	{
+		if (!handle_texture(line, 2, vars, &tex->path_south))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "WE", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 3, vars, &tex->path_west);
+	{
+		if (!handle_texture(line, 3, vars, &tex->path_west))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "EA", 2) == 0 && line[2] == ' ')
-		handle_texture(line, 4, vars, &tex->path_east);
+	{
+		if (!handle_texture(line, 4, vars, &tex->path_east))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "F", 1) == 0 && line[1] == ' ')
-		handle_floor_ceiling(line, 5, vars, tex);
+	{
+		if (!handle_floor_ceiling(line, 5, vars, tex))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
-		handle_floor_ceiling(line, 6, vars, tex);
+	{
+		if (!handle_floor_ceiling(line, 6, vars, tex))
+			vars->stop = 1;
+	}
 	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
 	{
 		vars->door_found = 1;
-		handle_floor_ceiling(line, 7, vars, tex);
+		if (!handle_floor_ceiling(line, 7, vars, tex))
+			vars->stop = 1;
 	}
 }
 
@@ -93,23 +128,28 @@ int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 
 	if (!elements)
 		return (0);
+	
 	y = 0;
 	while (elements[y])
 	{
+		printf("here\n");
 		process_element_line(elements[y], vars, tex);
 		y++;
 	}
 	if (vars->door_found)
 	{
+		printf("1: ele_found: %d\nopened: %d\nf_c_elemente:%d\n\n", vars->elements_found, vars->opened,  vars->f_c_element);
 		if (vars->elements_found == 28
 			&& vars->opened == 10 && vars->f_c_element == 5)
 			return (1);
 	}
 	else
 	{
+		printf("2: ele_found: %d\nopened: %d\nf_c_elemente:%d\n\n", vars->elements_found, vars->opened,  vars->f_c_element);
 		if (vars->elements_found == 21
 			&& vars->opened == 10 && vars->f_c_element == 3)
 			return (1);
 	}
+	printf("3: ele_found: %d\nopened: %d\nf_c_elemente:%d\n", vars->elements_found, vars->opened,  vars->f_c_element);
 	return (0);
 }

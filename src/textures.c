@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:02:28 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:56:26 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,20 @@ int	get_textures(t_mlx *mlx, t_ori_tex *tex)
 	tex->tex_floor = NULL;
 	tex->tex_ceiling = NULL;
 	tex->tex_door = NULL;
-	load_texture(mlx, &tex->tex_north, tex->path_north);
-	load_texture(mlx, &tex->tex_south, tex->path_south);
-	load_texture(mlx, &tex->tex_east, tex->path_east);
-	load_texture(mlx, &tex->tex_west, tex->path_west);
+	if (tex->path_north)
+		load_texture(mlx, &tex->tex_north, tex->path_north);
+	if (tex->path_south)
+		load_texture(mlx, &tex->tex_south, tex->path_south);
+	if (tex->path_east)
+		load_texture(mlx, &tex->tex_east, tex->path_east);
+	if (tex->path_west)
+		load_texture(mlx, &tex->tex_west, tex->path_west);
 	if (tex->path_floor)
 		load_texture(mlx, &tex->tex_floor, tex->path_floor);
 	if (tex->path_ceiling)
 		load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
-	load_texture(mlx, &tex->tex_door, tex->path_door);
+	if (tex->path_door)
+		load_texture(mlx, &tex->tex_door, tex->path_door);
 	if (!tex->tex_north || !tex->tex_south
 		|| !tex->tex_east || !tex->tex_west)
 		return (0);

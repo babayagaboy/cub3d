@@ -6,7 +6,7 @@
 /*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 13:56:08 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:51:31 by myivanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ void	free_texture_pack(t_game *g)
 	free(g->o_text->path_east);
 	free(g->o_text);
 	free(g->txt);
+	if (g->mlx && g->mlx->mlx)
+	{
+		mlx_destroy_display(g->mlx->mlx);
+		free(g->mlx);
+		g->mlx = NULL;
+	}
 }
 
 void	free_project(t_game *g)
@@ -82,13 +88,15 @@ void	free_project(t_game *g)
 		free_weapon_attk(g->lightsaber, g->mlx);
 		free(g->lightsaber);
 	}
-	free_texture_pack(g);
 	free_memory(g->minimap);
-	if (g->mlx->img)
+	if (g->mlx && g->mlx->img)
 		mlx_destroy_image(g->mlx->mlx, g->mlx->img);
-	if (g->mlx->win)
+	if (g->mlx && g->mlx->win)
+	{
+		mlx_mouse_show(g->mlx->mlx, g->mlx->win);
 		mlx_destroy_window(g->mlx->mlx, g->mlx->win);
-	free(g->mlx);
+	}
+	free_texture_pack(g);
 	free(g->player);
 	free(g->ray);
 	free_memory(g->elements_file);
