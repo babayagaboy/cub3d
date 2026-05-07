@@ -6,11 +6,33 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:27:26 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 19:09:25 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:29:20 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+int	close_window(void *param)
+{
+	t_game	*g;
+
+	g = (t_game *)param;
+	free_project(g);
+	exit(0);
+	return (0);
+}
+
+int	is_cub_path(char *path)
+{
+	size_t	len;
+
+	if (!path)
+		return (0);
+	len = ft_strlen(path);
+	if (len < 4)
+		return (0);
+	return (ft_strncmp(path + len - 4, ".cub", 4) == 0);
+}
 
 int	handle_input(t_game *g)
 {

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 18:58:31 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:28:49 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ int	main(int argc, char **argv)
 		return (-1);
 	init_player(game->player);
 	if (!parser(argc, argv, game))
-		return (free_memory_int(game->buffer), free(game->txt), free(game->o_text)
-			,free(game->mlx), free(game->player), free(game), 0);
+		return (fmi(game->buffer), free(game->txt), free(game->o_text)
+			, free(game->mlx), free(game->player), free(game), 0);
 	init_mlx(game->mlx);
 	if (!game->mlx->mlx || !game->mlx->win
 		|| !game->mlx->img || !game->mlx->addr)
 		return (free(game->mlx), free(game->player), free(game), 1);
 	if (!get_textures(game->mlx, game->o_text))
-		return (free_memory_int(game->buffer), free(game->txt), free(game->o_text),
+		return (fmi(game->buffer), free(game->txt), free(game->o_text),
 			free(game->mlx), free(game->player), free(game), 0);
 	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));

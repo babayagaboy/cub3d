@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:15:59 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 18:52:15 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:28:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_attack_hud		t_attack_hud;
 void		free_int_arr(int **arr, int i);
 void		free_char_arr(char **arr, int i);
 void		free_memory(char **arr);
-void		free_memory_int(int **arr);
+void		fmi(int **arr);
 void		free_project(t_game *g);
 void		free_t_texture(t_texture *tex, t_mlx *mlx);
 void		free_weapon(t_weapon *weapon, t_mlx *mlx);

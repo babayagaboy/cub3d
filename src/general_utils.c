@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   general_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:42:11 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:25:31 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+int	is_xpm_path(char *path)
+{
+	size_t	len;
+
+	if (!path)
+		return (0);
+	len = ft_strlen(path);
+	if (len < 4)
+		return (0);
+	return (ft_strncmp(path + len - 4, ".xpm", 4) == 0);
+}
 
 void	run_dda(t_ray *r, t_player *p, t_game *g)
 {

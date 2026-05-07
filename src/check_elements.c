@@ -6,24 +6,12 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 19:19:41 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:25:49 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 #include "../inc/libft/libft.h"
-
-int	is_xpm_path(char *path)
-{
-	size_t	len;
-
-	if (!path)
-		return (0);
-	len = ft_strlen(path);
-	if (len < 4)
-		return (0);
-	return (ft_strncmp(path + len - 4, ".xpm", 4) == 0);
-}
 
 int	check_rbg(char *str, int *arr)
 {
@@ -109,7 +97,6 @@ int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 
 	if (!elements)
 		return (0);
-	
 	y = 0;
 	while (elements[y])
 	{

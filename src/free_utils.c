@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:44:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 14:12:00 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:28:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	free_memory(char **arr)
 	free (arr);
 }
 
-void	free_memory_int(int **arr)
+void	fmi(int **arr)
 {
 	int	i;
 

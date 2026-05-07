@@ -6,23 +6,11 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:30:38 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 19:23:35 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:29:12 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-int	is_cub_path(char *path)
-{
-	size_t	len;
-
-	if (!path)
-		return (0);
-	len = ft_strlen(path);
-	if (len < 4)
-		return (0);
-	return (ft_strncmp(path + len - 4, ".cub", 4) == 0);
-}
 
 int	validate_args(int argc, char *argv[])
 {

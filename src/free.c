@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 19:07:53 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:28:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,6 @@ void	free_project(t_game *g)
 	free(g->ray);
 	free_memory(g->elements_file);
 	free_memory(g->map);
-	free_memory_int(g->buffer);
+	fmi(g->buffer);
 	free(g);
 }

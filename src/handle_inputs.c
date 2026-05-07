@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:28:19 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 18:09:54 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:26:11 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,8 @@ int	key_press(int key, t_game *g)
 	{
 		free_project(g);
 		exit(0);
-		return(0);
+		return (0);
 	}
-	return (0);
-}
-
-int	close_window(void *param)
-{
-	t_game	*g;
-
-	g = (t_game *)param;
-	free_project(g);
-	exit(0);
 	return (0);
 }
 
