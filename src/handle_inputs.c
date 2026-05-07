@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_inputs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:28:19 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 17:18:24 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 18:09:54 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	key_press(int key, t_game *g)
 	if (key == KEY_ESC)
 	{
 		free_project(g);
-		mlx_loop_end(g->mlx);
+		exit(0);
 		return(0);
 	}
 	return (0);
@@ -94,7 +94,6 @@ int	close_window(void *param)
 
 	g = (t_game *)param;
 	free_project(g);
-	//mlx_loop_end(g->mlx);
 	exit(0);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 23:24:14 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/05 23:25:25 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:23:16 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int	check_walls_doors(char **map, int y, int x)
 		count++;
 	if (count == 4)
 		return (1);
-	printf("[%d][%d] = %d\n", y, x, count);
 	return (0);
 }
 

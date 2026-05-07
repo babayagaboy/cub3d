@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 14:07:46 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/05 23:29:06 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:20:27 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int	check_map(char **map, t_player *p, t_game *g, t_ele_var *vars)
 	map[player_coords[0]][player_coords[1]] = '0';
 	if (!check_map_borders(map, g) || !check_map_interior(map, vars))
 	{
+		printf("Error\nInvalid map\n");
 		free(player_coords);
 		return (0);
 	}

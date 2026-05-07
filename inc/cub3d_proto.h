@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_proto.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:15:59 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 17:05:19 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 18:52:15 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,5 +208,6 @@ int			is_xpm_path(char *path);
 int			is_xpm_path_fc(char *path);
 int			close_window(void *param);
 int			is_cub_path(char *path);
+void		free_mlx(t_mlx *m);
 
 #endif

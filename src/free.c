@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:43:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 16:51:31 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:07:53 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+void	free_mlx(t_mlx *m)
+{
+	mlx_mouse_show(m->mlx, m->win);
+	if (m->mlx && m->img)
+		mlx_destroy_image(m->mlx, m->img);
+	if (m && m->win)
+		mlx_destroy_window(m->mlx, m->win);
+	if (m && m->mlx)
+	{
+		mlx_destroy_display(m->mlx);
+		free(m->mlx);
+		free(m);
+		m = NULL;
+	}
+}
 
 void	free_weapon(t_weapon *weapon, t_mlx *mlx)
 {
@@ -66,12 +82,6 @@ void	free_texture_pack(t_game *g)
 	free(g->o_text->path_east);
 	free(g->o_text);
 	free(g->txt);
-	if (g->mlx && g->mlx->mlx)
-	{
-		mlx_destroy_display(g->mlx->mlx);
-		free(g->mlx);
-		g->mlx = NULL;
-	}
 }
 
 void	free_project(t_game *g)
@@ -89,14 +99,8 @@ void	free_project(t_game *g)
 		free(g->lightsaber);
 	}
 	free_memory(g->minimap);
-	if (g->mlx && g->mlx->img)
-		mlx_destroy_image(g->mlx->mlx, g->mlx->img);
-	if (g->mlx && g->mlx->win)
-	{
-		mlx_mouse_show(g->mlx->mlx, g->mlx->win);
-		mlx_destroy_window(g->mlx->mlx, g->mlx->win);
-	}
 	free_texture_pack(g);
+	free_mlx(g->mlx);
 	free(g->player);
 	free(g->ray);
 	free_memory(g->elements_file);

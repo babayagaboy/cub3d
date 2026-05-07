@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 17:16:51 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 18:58:31 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int	main(int argc, char **argv)
 		return (free(game->mlx), free(game->player), 1);
 	game->player->kp_ra = 0;
 	game->player->kp_la = 0;
-
 	start(game);
 	mlx_loop(game->mlx->mlx);
 	return (0);

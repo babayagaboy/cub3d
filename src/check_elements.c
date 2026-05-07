@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_elements.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 13:43:32 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 17:10:42 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:19:41 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,40 +85,21 @@ void	choose_corect_path(char *line, int value, t_ori_tex *tex)
 void	process_element_line(char *line, t_ele_var *vars, t_ori_tex *tex)
 {
 	if (ft_strncmp(line, "NO", 2) == 0 && line[2] == ' ')
-	{
-		if (!handle_texture(line, 1, vars, &tex->path_north))
-			vars->stop = 1;
-	}
+		handle_texture(line, 1, vars, &tex->path_north);
 	else if (ft_strncmp(line, "SO", 2) == 0 && line[2] == ' ')
-	{
-		if (!handle_texture(line, 2, vars, &tex->path_south))
-			vars->stop = 1;
-	}
+		handle_texture(line, 2, vars, &tex->path_south);
 	else if (ft_strncmp(line, "WE", 2) == 0 && line[2] == ' ')
-	{
-		if (!handle_texture(line, 3, vars, &tex->path_west))
-			vars->stop = 1;
-	}
+		handle_texture(line, 3, vars, &tex->path_west);
 	else if (ft_strncmp(line, "EA", 2) == 0 && line[2] == ' ')
-	{
-		if (!handle_texture(line, 4, vars, &tex->path_east))
-			vars->stop = 1;
-	}
+		handle_texture(line, 4, vars, &tex->path_east);
 	else if (ft_strncmp(line, "F", 1) == 0 && line[1] == ' ')
-	{
-		if (!handle_floor_ceiling(line, 5, vars, tex))
-			vars->stop = 1;
-	}
+		handle_floor_ceiling(line, 5, vars, tex);
 	else if (ft_strncmp(line, "C", 1) == 0 && line[1] == ' ')
-	{
-		if (!handle_floor_ceiling(line, 6, vars, tex))
-			vars->stop = 1;
-	}
+		handle_floor_ceiling(line, 6, vars, tex);
 	else if (ft_strncmp(line, "D", 1) == 0 && line[1] == ' ')
 	{
 		vars->door_found = 1;
-		if (!handle_floor_ceiling(line, 7, vars, tex))
-			vars->stop = 1;
+		handle_floor_ceiling(line, 7, vars, tex);
 	}
 }
 
@@ -132,24 +113,21 @@ int	check_elements(char **elements, t_ori_tex *tex, t_ele_var *vars)
 	y = 0;
 	while (elements[y])
 	{
-		printf("here\n");
 		process_element_line(elements[y], vars, tex);
 		y++;
 	}
 	if (vars->door_found)
 	{
-		printf("1: ele_found: %d\nopened: %d\nf_c_elemente:%d\n\n", vars->elements_found, vars->opened,  vars->f_c_element);
 		if (vars->elements_found == 28
 			&& vars->opened == 10 && vars->f_c_element == 5)
 			return (1);
 	}
 	else
 	{
-		printf("2: ele_found: %d\nopened: %d\nf_c_elemente:%d\n\n", vars->elements_found, vars->opened,  vars->f_c_element);
 		if (vars->elements_found == 21
 			&& vars->opened == 10 && vars->f_c_element == 3)
 			return (1);
 	}
-	printf("3: ele_found: %d\nopened: %d\nf_c_elemente:%d\n", vars->elements_found, vars->opened,  vars->f_c_element);
+	printf("Error\nElements data is corruped\n");
 	return (0);
 }

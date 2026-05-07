@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/16 20:02:52 by hgutterr          #+#    #+#              #
-#    Updated: 2026/05/07 00:10:00 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/05/07 19:13:37 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ CFLAGS		= -Wall -Wextra -Werror -g
 CFLAGS		+= -Iinc -I$(LIBFT_DIR)
 CFLAGS		+= -O3 -march=native -flto -ftree-vectorize -funroll-loops -ffast-math
 MLX_DIR		= mlx
-MLX			= $(MLX_DIR)/libmlx.a
+MLX			= $(MLX_DIR)/libmlx_Linux.a
 MLX_FLAGS 	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 

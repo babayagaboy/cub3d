@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:27:26 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 16:37:46 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 19:09:25 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ int	handle_input(t_game *g)
 	return (0);
 }
 
+/* mlx_mouse_hide(game->mlx->mlx, game->mlx->win); */
 void	start(t_game *game)
 {
-	mlx_mouse_hide(game->mlx->mlx, game->mlx->win);
 	game->minimap = copy_map(game->map, 0, game->map_h);
 	game->map[(int)game->player->pos_y][(int)game->player->pos_x] = '0';
 	game->player->prev_tile = '0';
