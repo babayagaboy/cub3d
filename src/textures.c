@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myivanov <myivanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:02:28 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 16:56:26 by myivanov         ###   ########.fr       */
+/*   Updated: 2026/05/07 20:33:28 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,54 +42,56 @@ t_texture	*select_texture(t_ray *r, t_ori_tex *tex)
 		return (tex->tex_south);
 }
 
-void	load_texture(t_mlx *mlx, t_texture **tex_d, char *path)
+int	load_texture(t_mlx *mlx, t_texture **tex_d, char *path)
 {
+	*tex_d = NULL;
 	*tex_d = malloc(sizeof(t_texture));
 	if (!*tex_d)
-		return ;
+		return (1);
 	(*tex_d)->img_ptr = mlx_xpm_file_to_image(mlx->mlx, path, &(*tex_d)->width,
 			&(*tex_d)->height);
 	if (!(*tex_d)->img_ptr)
 	{
 		free(*tex_d);
+		free(path);
 		*tex_d = NULL;
-		return ;
+		return (1);
 	}
 	(*tex_d)->data = mlx_get_data_addr((*tex_d)->img_ptr, &(*tex_d)->bpp,
 			&(*tex_d)->line_len, &(*tex_d)->endian);
 	if (!(*tex_d)->data)
 	{
 		free(*tex_d);
+		free(path);
 		*tex_d = NULL;
-		return ;
+		return (1);
 	}
+	return (0);
 }
 
 int	get_textures(t_mlx *mlx, t_ori_tex *tex)
 {
-	tex->tex_north = NULL;
-	tex->tex_south = NULL;
-	tex->tex_east = NULL;
-	tex->tex_west = NULL;
-	tex->tex_floor = NULL;
-	tex->tex_ceiling = NULL;
-	tex->tex_door = NULL;
+	int	i;
+
+	i = 0;
 	if (tex->path_north)
-		load_texture(mlx, &tex->tex_north, tex->path_north);
+		i += load_texture(mlx, &tex->tex_north, tex->path_north);
 	if (tex->path_south)
-		load_texture(mlx, &tex->tex_south, tex->path_south);
+		i += load_texture(mlx, &tex->tex_south, tex->path_south);
 	if (tex->path_east)
-		load_texture(mlx, &tex->tex_east, tex->path_east);
+		i += load_texture(mlx, &tex->tex_east, tex->path_east);
 	if (tex->path_west)
-		load_texture(mlx, &tex->tex_west, tex->path_west);
+		i += load_texture(mlx, &tex->tex_west, tex->path_west);
 	if (tex->path_floor)
-		load_texture(mlx, &tex->tex_floor, tex->path_floor);
+		i += load_texture(mlx, &tex->tex_floor, tex->path_floor);
 	if (tex->path_ceiling)
-		load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
+		i += load_texture(mlx, &tex->tex_ceiling, tex->path_ceiling);
 	if (tex->path_door)
-		load_texture(mlx, &tex->tex_door, tex->path_door);
-	if (!tex->tex_north || !tex->tex_south
-		|| !tex->tex_east || !tex->tex_west)
+		i += load_texture(mlx, &tex->tex_door, tex->path_door);
+	if (i)
+	{
+		printf("Error\nLoading texture file\n");
 		return (0);
+	}
 	return (1);
 }

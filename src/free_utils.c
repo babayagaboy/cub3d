@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 16:44:20 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 19:28:36 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 20:33:23 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,15 @@ void	free_int_arr(int **arr, int i)
 	free(arr);
 }
 
-void	free_t_texture(t_texture *tex, t_mlx *mlx)
+void	free_t_texture(t_texture *tex, t_mlx *mlx, char *path)
 {
 	if (!tex)
 		return ;
 	if (tex->img_ptr && mlx && mlx->mlx)
+	{
 		mlx_destroy_image(mlx->mlx, tex->img_ptr);
+		if (path)
+			free(path);
+	}
 	free(tex);
 }

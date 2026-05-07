@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:15:59 by myivanov          #+#    #+#             */
-/*   Updated: 2026/05/07 19:28:36 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 20:28:37 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void		free_char_arr(char **arr, int i);
 void		free_memory(char **arr);
 void		fmi(int **arr);
 void		free_project(t_game *g);
-void		free_t_texture(t_texture *tex, t_mlx *mlx);
+void		free_t_texture(t_texture *tex, t_mlx *mlx, char *path);
 void		free_weapon(t_weapon *weapon, t_mlx *mlx);
 void		free_weapon_attk(t_weapon *weapon, t_mlx *mlx);
 void		free_texture_pack(t_game *g);
@@ -94,7 +94,7 @@ void		free_all(t_game *g);
 void		free_memory(char **arr);
 
 int			get_textures(t_mlx *mlx, t_ori_tex *tex);
-void		load_texture(t_mlx *mlx, t_texture **tex_d, char *path);
+int			load_texture(t_mlx *mlx, t_texture **tex_d, char *path);
 
 void		get_guns_sprite(t_game *g);
 void		get_weapon_attack_sprite(t_game *g);

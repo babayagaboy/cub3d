@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 19:28:49 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/07 20:29:40 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	malloc_structs(t_game **game)
 	*game = malloc(sizeof(t_game));
 	if (!*game)
 		return (1);
+	memset(*game, 0, sizeof(t_game));
 	(*game)->player = malloc(sizeof(t_player));
 	if (!(*game)->player)
 		return (free(*game), 1);
@@ -77,8 +78,7 @@ int	main(int argc, char **argv)
 		|| !game->mlx->img || !game->mlx->addr)
 		return (free(game->mlx), free(game->player), free(game), 1);
 	if (!get_textures(game->mlx, game->o_text))
-		return (fmi(game->buffer), free(game->txt), free(game->o_text),
-			free(game->mlx), free(game->player), free(game), 0);
+		return (free_project(game), 0);
 	init_player(game->player);
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
