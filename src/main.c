@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/24 17:07:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/05/07 20:29:40 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/05/08 15:42:12 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	init_buffer(t_game *g)
 	i = 0;
 	while (i < SCREENHEIGHT)
 	{
-		g->buffer[i] = malloc(sizeof(int) * SCREENWIDTH);
+		g->buffer[i] = ft_calloc(sizeof(int), SCREENWIDTH);
 		if (!g->buffer[i])
 		{
 			while (--i)
